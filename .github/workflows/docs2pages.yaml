@@ -39,7 +39,7 @@ jobs:
           poetry run sphinx-build -b html . _build
           cp -r _build/* ../gh-pages/        
       - name: Deploy documentation
-        uses: JamesIves/github-pages-deploy-action@4.4.3
+        uses: JamesIves/github-pages-deploy-action@dev
         with:
           branch: gh-pages
           folder: gh-pages
