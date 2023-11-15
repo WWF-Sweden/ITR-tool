@@ -12,16 +12,16 @@ import sphinx_rtd_theme
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+sys.path.insert(0, os.path.abspath('.'))
 
 
 # -- Project information -----------------------------------------------------
 
-project = "SBTi Temperature Alignment tool"
-copyright = "2020, Science Based Targets"
-author = "Science Based Targets"
+project = "WWF Finance tool"
+copyright = "2023, WWF"
+author = "WWF Sweden"
 
 
 # -- General configuration ---------------------------------------------------
