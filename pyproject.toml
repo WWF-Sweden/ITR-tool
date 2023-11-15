@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "sbti-finance-tool"
-version = "1.0.9"
+name = "wwf-finance-tool"
+version = "1.0.0"
 description = "This package helps companies and financial institutions to assess the temperature alignment of current targets, commitments, and investment and lending portfolios, and to use this information to develop targets for official validation by the SBTi.'"
-authors = ["sbti <finance@sciencebasedtargets.org>"]
+authors = ["wwf-sweden <ekonomi-finans@wwf.se>"]
 license = "MIT"
 readme = "README.md"
 classifiers = [
@@ -21,13 +21,13 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 
 ]
-keywords = ['Climate', 'SBTi', 'Finance']
+keywords = ['Climate', 'SBTi', 'Finance', 'WWF']
 packages = [{ include = "SBTi" }]
 
 [tool.poetry.urls]
-"Bug Tracker" = "https://github.com/ScienceBasedTargets/SBTi-finance-tool/issues"
-"Documentation" = 'https://sciencebasedtargets.github.io/SBTi-finance-tool'
-"Source Code" = "https://github.com/ScienceBasedTargets/SBTi-finance-tool"
+"Bug Tracker" = "https://github.com/WWF-Sweden/ITR-tool/issues"
+"Documentation" = 'https://WWF-Sweden.github.io/ITR-tool'
+"Source Code" = "https://github.com/WWF-Sweden/ITR-tool"
 
 
 [tool.poetry.dependencies]
