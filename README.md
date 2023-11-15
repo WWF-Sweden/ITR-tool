@@ -1,6 +1,9 @@
+# ITR-tool
+WWF version of the SBTi-Finance-tool, based on the WWF/CDP Temperature rating methodology
+
 > Visit https://sciencebasedtargets.github.io/SBTi-finance-tool/ for the full documentation
 
-> If you have any additional questions or comments send a mail to: finance@sciencebasedtargets.org
+> If you have any additional questions or comments send a mail to: xxx@wwf.se (to be added)
 
 # SBTi Temperature Alignment tool
 
@@ -102,3 +105,4 @@ Update package
 **Initial Setup**
 
 - Create account on [PyPi](https://pypi.org/)
+
