@@ -1,0 +1,271 @@
+:py:mod:`SBTi.temperature_score`
+================================
+
+.. py:module:: SBTi.temperature_score
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   SBTi.temperature_score.ScenarioType
+   SBTi.temperature_score.EngagementType
+   SBTi.temperature_score.Scenario
+   SBTi.temperature_score.TemperatureScore
+
+
+
+
+.. py:class:: ScenarioType
+
+   Bases: :py:obj:`enum.Enum`
+
+   A scenario defines which scenario should be run.
+
+   .. py:attribute:: TARGETS
+      :annotation: = 1
+
+      
+
+   .. py:attribute:: APPROVED_TARGETS
+      :annotation: = 2
+
+      
+
+   .. py:attribute:: HIGHEST_CONTRIBUTORS
+      :annotation: = 3
+
+      
+
+   .. py:attribute:: HIGHEST_CONTRIBUTORS_APPROVED
+      :annotation: = 4
+
+      
+
+   .. py:method:: from_int(value) -> Optional[ScenarioType]
+      :staticmethod:
+
+
+
+.. py:class:: EngagementType
+
+   Bases: :py:obj:`enum.Enum`
+
+   An engagement type defines how the companies will be engaged.
+
+   .. py:attribute:: SET_TARGETS
+      :annotation: = 1
+
+      
+
+   .. py:attribute:: SET_SBTI_TARGETS
+      :annotation: = 2
+
+      
+
+   .. py:method:: from_int(value) -> EngagementType
+      :staticmethod:
+
+      Convert an integer to an engagement type.
+
+      :param value: The value to convert
+      :return:
+
+
+   .. py:method:: from_string(value: Optional[str]) -> EngagementType
+      :staticmethod:
+
+      Convert a string to an engagement type.
+
+      :param value: The value to convert
+      :return:
+
+
+
+.. py:class:: Scenario
+
+   A scenario defines the action the portfolio holder will take to improve its temperature score.
+
+   .. py:attribute:: scenario_type
+      :annotation: :Optional[ScenarioType]
+
+      
+
+   .. py:attribute:: engagement_type
+      :annotation: :EngagementType
+
+      
+
+   .. py:method:: get_score_cap(self) -> float
+
+
+   .. py:method:: get_fallback_score(self, fallback_score: float) -> float
+
+
+   .. py:method:: from_dict(scenario_values: dict) -> Optional[Scenario]
+      :staticmethod:
+
+      Convert a dictionary to a scenario. The dictionary should have the following keys:
+
+      * number: The scenario type as an integer
+      * engagement_type: The engagement type as a string
+
+      :param scenario_values: The dictionary to convert
+      :return: A scenario object matching the input values or None, if no scenario could be matched
+
+
+   .. py:method:: from_interface(scenario_values: Optional[SBTi.interfaces.ScenarioInterface]) -> Optional[Scenario]
+      :staticmethod:
+
+      Convert a scenario interface to a scenario.
+
+      :param scenario_values: The interface model instance to convert
+      :return: A scenario object matching the input values or None, if no scenario could be matched
+
+
+
+.. py:class:: TemperatureScore(time_frames: List[SBTi.interfaces.ETimeFrames], scopes: List[SBTi.interfaces.EScope], fallback_score: float = 3.2, model: int = 4, scenario: Optional[Scenario] = None, aggregation_method: SBTi.portfolio_aggregation.PortfolioAggregationMethod = PortfolioAggregationMethod.WATS, grouping: Optional[List] = None, config: Type[SBTi.configs.TemperatureScoreConfig] = TemperatureScoreConfig)
+
+   Bases: :py:obj:`SBTi.portfolio_aggregation.PortfolioAggregation`
+
+   This class is provides a temperature score based on the climate goals.
+
+   :param fallback_score: The temp score if a company is not found
+   :param model: The regression model to use
+   :param config: A class defining the constants that are used throughout this class. This parameter is only required
+                   if you'd like to overwrite a constant. This can be done by extending the TemperatureScoreConfig
+                   class and overwriting one of the parameters.
+
+   .. py:method:: get_target_mapping(self, target: pandas.Series) -> Optional[str]
+
+      Map the target onto an SR15 target (None if not available).
+
+      :param target: The target as a row of a dataframe
+      :return: The mapped SR15 target
+
+
+   .. py:method:: get_annual_reduction_rate(self, target: pandas.Series) -> Optional[float]
+
+      Get the annual reduction rate (or None if not available).
+
+      :param target: The target as a row of a dataframe
+      :return: The annual reduction
+
+
+   .. py:method:: get_regression(self, target: pandas.Series) -> Tuple[Optional[float], Optional[float]]
+
+      Get the regression parameter and intercept from the model's output.
+
+      :param target: The target as a row of a dataframe
+      :return: The regression parameter and intercept
+
+
+   .. py:method:: _merge_regression(self, data: pandas.DataFrame)
+
+      Merge the data with the regression parameters from the SBTi model.
+
+      :param data: The data to merge
+      :return: The data set, amended with the regression parameters
+
+
+   .. py:method:: get_score(self, target: pandas.Series) -> Tuple[float, float]
+
+      Get the temperature score for a certain target based on the annual reduction rate and the regression parameters.
+
+      :param target: The target as a row of a data frame
+      :return: The temperature score
+
+
+   .. py:method:: get_ghc_temperature_score(self, row: pandas.Series, company_data: pandas.DataFrame) -> Tuple[float, float]
+
+      Get the aggregated temperature score and a temperature result, which indicates how much of the score is based on the default score for a certain company based on the emissions of company.
+
+      :param company_data: The original data, grouped by company, time frame and scope category
+      :param row: The row to calculate the temperature score for (if the scope of the row isn't s1s2s3, it will return the original score
+      :return: The aggregated temperature score for a company
+
+
+   .. py:method:: get_default_score(self, target: pandas.Series) -> int
+
+      Get the temperature score for a certain target based on the annual reduction rate and the regression parameters.
+
+      :param target: The target as a row of a dataframe
+      :return: The temperature score
+
+
+   .. py:method:: _prepare_data(self, data: pandas.DataFrame)
+
+      Prepare the data such that it can be used to calculate the temperature score.
+
+      :param data: The original data set as a pandas data frame
+      :return: The extended data frame
+
+
+   .. py:method:: _calculate_company_score(self, data)
+
+      Calculate the combined s1s2s3 scores for all companies.
+
+      :param data: The original data set as a pandas data frame
+      :return: The data frame, with an updated s1s2s3 temperature score
+
+
+   .. py:method:: calculate(self, data: Optional[pandas.DataFrame] = None, data_providers: Optional[List[TemperatureScore.calculate.data]] = None, portfolio: Optional[List[SBTi.interfaces.PortfolioCompany]] = None)
+
+      Calculate the temperature for a dataframe of company data. The columns in the data frame should be a combination
+      of IDataProviderTarget and IDataProviderCompany.
+
+      :param data: The data set (or None if the data should be retrieved)
+      :param data_providers: A list of DataProvider instances. Optional, only required if data is empty.
+      :param portfolio: A list of PortfolioCompany models. Optional, only required if data is empty.
+      :return: A data frame containing all relevant information for the targets and companies
+
+
+   .. py:method:: _get_aggregations(self, data: pandas.DataFrame, total_companies: int) -> Tuple[SBTi.interfaces.Aggregation, pandas.Series, pandas.Series]
+
+      Get the aggregated score over a certain data set. Also calculate the (relative) contribution of each company
+
+      :param data: A data set, containing one row per company
+      :return: An aggregated score and the relative and absolute contribution of each company
+
+
+   .. py:method:: _get_score_aggregation(self, data: pandas.DataFrame, time_frame: SBTi.interfaces.ETimeFrames, scope: SBTi.interfaces.EScope) -> Optional[SBTi.interfaces.ScoreAggregation]
+
+      Get a score aggregation for a certain time frame and scope, for the data set as a whole and for the different
+      groupings.
+
+      :param data: The whole data set
+      :param time_frame: A time frame
+      :param scope: A scope
+      :return: A score aggregation, containing the aggregations for the whole data set and each individual group
+
+
+   .. py:method:: aggregate_scores(self, data: pandas.DataFrame) -> SBTi.interfaces.ScoreAggregations
+
+      Aggregate scores to create a portfolio score per time_frame (short, mid, long).
+
+      :param data: The results of the calculate method
+      :return: A weighted temperature score for the portfolio
+
+
+   .. py:method:: cap_scores(self, scores: pandas.DataFrame) -> pandas.DataFrame
+
+      Cap the temperature scores in the input data frame to a certain value, based on the scenario that's being used.
+      This can either be for the whole data set, or only for the top X contributors.
+
+      :param scores: The data set with the temperature scores
+      :return: The input data frame, with capped scores
+
+
+   .. py:method:: anonymize_data_dump(self, scores: pandas.DataFrame) -> pandas.DataFrame
+
+      Anonymize the scores by deleting the company IDs, ISIN and renaming the companies.
+
+      :param scores: The data set with the temperature scores
+      :return: The input data frame, anonymized
+
+
+

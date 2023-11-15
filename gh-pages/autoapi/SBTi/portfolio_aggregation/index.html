@@ -1,0 +1,347 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>SBTi.portfolio_aggregation &mdash; WWF Finance tool  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> WWF Finance tool
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Introduction to temperature scoring and portfolio coverage methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started Using Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rest_api.html">Getting Started Using REST API &amp; UI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FunctionalOverview.html">Functional Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../DataRequirements.html">Data Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Legends.html">Data Legends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../links.html">Project Links</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../terms.html">Terms of Use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">WWF Finance tool</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">SBTi.portfolio_aggregation</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../../_sources/autoapi/SBTi/portfolio_aggregation/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-SBTi.portfolio_aggregation">
+<span id="sbti-portfolio-aggregation"></span><h1><a class="reference internal" href="#module-SBTi.portfolio_aggregation" title="SBTi.portfolio_aggregation"><code class="xref py py-mod docutils literal notranslate"><span class="pre">SBTi.portfolio_aggregation</span></code></a><a class="headerlink" href="#module-SBTi.portfolio_aggregation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#SBTi.portfolio_aggregation.PortfolioAggregationMethod" title="SBTi.portfolio_aggregation.PortfolioAggregationMethod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PortfolioAggregationMethod</span></code></a></p></td>
+<td><p>The portfolio aggregation method determines how the temperature scores for the individual companies are aggregated</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#SBTi.portfolio_aggregation.PortfolioAggregation" title="SBTi.portfolio_aggregation.PortfolioAggregation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PortfolioAggregation</span></code></a></p></td>
+<td><p>This class is a base class that provides portfolio aggregation calculation.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="SBTi.portfolio_aggregation.PortfolioAggregationMethod">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SBTi.portfolio_aggregation.</span></span><span class="sig-name descname"><span class="pre">PortfolioAggregationMethod</span></span><a class="headerlink" href="#SBTi.portfolio_aggregation.PortfolioAggregationMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>The portfolio aggregation method determines how the temperature scores for the individual companies are aggregated
+into a single portfolio score.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="SBTi.portfolio_aggregation.PortfolioAggregationMethod.WATS">
+<span class="sig-name descname"><span class="pre">WATS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">WATS</span></em><a class="headerlink" href="#SBTi.portfolio_aggregation.PortfolioAggregationMethod.WATS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="SBTi.portfolio_aggregation.PortfolioAggregationMethod.TETS">
+<span class="sig-name descname"><span class="pre">TETS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">TETS</span></em><a class="headerlink" href="#SBTi.portfolio_aggregation.PortfolioAggregationMethod.TETS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="SBTi.portfolio_aggregation.PortfolioAggregationMethod.MOTS">
+<span class="sig-name descname"><span class="pre">MOTS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">MOTS</span></em><a class="headerlink" href="#SBTi.portfolio_aggregation.PortfolioAggregationMethod.MOTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="SBTi.portfolio_aggregation.PortfolioAggregationMethod.EOTS">
+<span class="sig-name descname"><span class="pre">EOTS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">EOTS</span></em><a class="headerlink" href="#SBTi.portfolio_aggregation.PortfolioAggregationMethod.EOTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="SBTi.portfolio_aggregation.PortfolioAggregationMethod.ECOTS">
+<span class="sig-name descname"><span class="pre">ECOTS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">ECOTS</span></em><a class="headerlink" href="#SBTi.portfolio_aggregation.PortfolioAggregationMethod.ECOTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="SBTi.portfolio_aggregation.PortfolioAggregationMethod.AOTS">
+<span class="sig-name descname"><span class="pre">AOTS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">AOTS</span></em><a class="headerlink" href="#SBTi.portfolio_aggregation.PortfolioAggregationMethod.AOTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="SBTi.portfolio_aggregation.PortfolioAggregationMethod.ROTS">
+<span class="sig-name descname"><span class="pre">ROTS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">ROTS</span></em><a class="headerlink" href="#SBTi.portfolio_aggregation.PortfolioAggregationMethod.ROTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SBTi.portfolio_aggregation.PortfolioAggregationMethod.is_emissions_based">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_emissions_based</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#SBTi.portfolio_aggregation.PortfolioAggregationMethod" title="SBTi.portfolio_aggregation.PortfolioAggregationMethod"><span class="pre">PortfolioAggregationMethod</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#SBTi.portfolio_aggregation.PortfolioAggregationMethod.is_emissions_based" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a given method is emissions-based (i.e. it uses the emissions to calculate the aggregation).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>method</strong> – The method to check</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SBTi.portfolio_aggregation.PortfolioAggregationMethod.get_value_column">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_value_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#SBTi.portfolio_aggregation.PortfolioAggregationMethod" title="SBTi.portfolio_aggregation.PortfolioAggregationMethod"><span class="pre">PortfolioAggregationMethod</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../configs/index.html#SBTi.configs.ColumnsConfig" title="SBTi.configs.ColumnsConfig"><span class="pre">SBTi.configs.ColumnsConfig</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#SBTi.portfolio_aggregation.PortfolioAggregationMethod.get_value_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="SBTi.portfolio_aggregation.PortfolioAggregation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SBTi.portfolio_aggregation.</span></span><span class="sig-name descname"><span class="pre">PortfolioAggregation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../configs/index.html#SBTi.configs.PortfolioAggregationConfig" title="SBTi.configs.PortfolioAggregationConfig"><span class="pre">SBTi.configs.PortfolioAggregationConfig</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">PortfolioAggregationConfig</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBTi.portfolio_aggregation.PortfolioAggregation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>This class is a base class that provides portfolio aggregation calculation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> – A class defining the constants that are used throughout this class. This parameter is only required
+if you’d like to overwrite a constant. This can be done by extending the PortfolioAggregationConfig
+class and overwriting one of the parameters.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="SBTi.portfolio_aggregation.PortfolioAggregation._check_column">
+<span class="sig-name descname"><span class="pre">_check_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBTi.portfolio_aggregation.PortfolioAggregation._check_column" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a certain column is filled for all companies. If not throw an error.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – The data to check</p></li>
+<li><p><strong>column</strong> – The column to check</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SBTi.portfolio_aggregation.PortfolioAggregation._calculate_aggregate_score">
+<span class="sig-name descname"><span class="pre">_calculate_aggregate_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">portfolio_aggregation_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#SBTi.portfolio_aggregation.PortfolioAggregationMethod" title="SBTi.portfolio_aggregation.PortfolioAggregationMethod"><span class="pre">PortfolioAggregationMethod</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.Series</span></span></span><a class="headerlink" href="#SBTi.portfolio_aggregation.PortfolioAggregation._calculate_aggregate_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Aggregate the scores in a given column based on a certain portfolio aggregation method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – The data to run the calculations on</p></li>
+<li><p><strong>input_column</strong> – The input column (containing the scores)</p></li>
+<li><p><strong>portfolio_aggregation_method</strong> – The method to use</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The aggregates score</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2023, WWF.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
