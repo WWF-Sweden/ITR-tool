@@ -19,9 +19,9 @@ import sphinx_rtd_theme
 
 # -- Project information -----------------------------------------------------
 
-project = "SBTi Temperature Alignment tool"
-copyright = "2020, Science Based Targets"
-author = "Science Based Targets"
+project = "WWF Finance tool"
+copyright = "2023, WWF"
+author = "WWF Sweden"
 
 
 # -- General configuration ---------------------------------------------------
