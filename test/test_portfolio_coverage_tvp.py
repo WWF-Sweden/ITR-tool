@@ -3,8 +3,8 @@ import unittest
 
 import pandas as pd
 
-from SBTi.portfolio_aggregation import PortfolioAggregationMethod
-from SBTi.portfolio_coverage_tvp import PortfolioCoverageTVP
+from ITR.portfolio_aggregation import PortfolioAggregationMethod
+from ITR.portfolio_coverage_tvp import PortfolioCoverageTVP
 
 
 class TestPortfolioCoverageTVP(unittest.TestCase):

@@ -1,7 +1,7 @@
 from typing import Type, Optional
 import pandas as pd
-from SBTi.configs import PortfolioCoverageTVPConfig
-from SBTi.portfolio_aggregation import PortfolioAggregation, PortfolioAggregationMethod
+from ITR.configs import PortfolioCoverageTVPConfig
+from ITR.portfolio_aggregation import PortfolioAggregation, PortfolioAggregationMethod
 
 
 class PortfolioCoverageTVP(PortfolioAggregation):

@@ -19,9 +19,9 @@ import sphinx_rtd_theme
 
 # -- Project information -----------------------------------------------------
 
-project = "SBTi Temperature Alignment tool"
-copyright = "2020, Science Based Targets"
-author = "Science Based Targets"
+project = "WWF Finance Tool"
+copyright = "2023, WWF Sweden"
+author = "WWF Sweden"
 
 
 # -- General configuration ---------------------------------------------------
@@ -68,6 +68,6 @@ html_static_path = ["_static"]
 
 # -- Auto API
 extensions.append("autoapi.extension")
-autoapi_dirs = ["../SBTi"]
+autoapi_dirs = ["../ITR"]
 autoapi_type = "python"
 autoapi_template_dir = "_autoapi_templates"

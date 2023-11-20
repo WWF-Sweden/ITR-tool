@@ -1,6 +1,6 @@
-import SBTi.data
-from SBTi import utils
-from SBTi.data.csv import CSVProvider
+import ITR.data
+from ITR import utils
+from ITR.data.csv import CSVProvider
 
 import os
 import unittest

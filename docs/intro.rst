@@ -42,7 +42,7 @@ on the ambition of its targets. Finally, the method defines a series of
 weighting options that can enable financial institutions and others to
 produce portfolio level temperature ratings.
 
-Why has SBTi built this tool?
+Why have we built this tool?
 -----------------------------
 
 There has been a growing interest in methods to measure the alignment of
@@ -53,7 +53,7 @@ the SBTi, and therefore, a growing number of companies claiming
 alignment to the long term temperature goals set out in the Paris
 Agreement.   
 
-The SBTi has developed a codebase to function as a calculator for the
+The SBTi developed the original codebase to function as a calculator for the
 portfolio coverage and temperature scoring methods. This tool is fed
 with the necessary data to generate temperature scores at the company
 and portfolio level, in addition to providing analytics on target
@@ -79,9 +79,13 @@ provides the following outputs:
    what-if scenarios to showcase how this temperature score could be
    reduced.
 
-Why have we built the SBTi-Finance tool in this way?
+Why have we built the  WWF Finance tool in this way?
 ----------------------------------------------------
 
+This WWF version of the tool is an extension of the original SBTi
+version. It is based on the same CDP/WWF Temperature Scoring Methodology,
+but has improved the regression models to better reflect the latest
+climate science, specifically IPCC AR6 scenario data.
 To help financial institutions fight climate change, SBTi wants the tool
 to be accessible, useful, and used by as many finance professionals and
 other users as possible. If it is easy to access, not seen as a
@@ -152,7 +156,7 @@ their portfolios’ and constituents’ temperature scores.
 
 The open-source nature of the codebase means that any user, data- or
 service provider can use the code to build their own applications around
-the SBTi-Finance Tool. It also means that it is available for any user
+the WWF Finance Tool. It also means that it is available for any user
 to integrate into their own infrastructure, without any licensing cost.
 This should also ensure that the code continues to be developed both by
 the SBTi, data and service providers and the open source community.
@@ -183,7 +187,7 @@ emissions reductions in the real economy.
 What can I use the SBTi-Finance tool for?
 -----------------------------------------
 
-The SBTi-Finance Temperature Scoring and Portfolio Coverage tool enables
+The WWF Finance Temperature Scoring and Portfolio Coverage tool enables
 analysis of companies, sectors, countries, investment strategies and
 portfolios to understand how they contribute to climate change. You can
 for example:
@@ -292,7 +296,7 @@ These are described in the table below.
 |                                | f. Revenue                                                                                                                                                                           |
 +--------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
-See `Data Requirements <https://sciencebasedtargets.github.io/SBTi-finance-tool/DataRequirements.html>`__ section for more detailed information.
+See `Data Requirements <https://wwf-sweden.github.io/ITR-tool/DataRequirements.html>`__ section for more detailed information.
 
 Also refer to the full methodology for \ `temperature
 scoring <https://sciencebasedtargets.org/wp-content/uploads/2020/09/Temperature-Rating-Methodology-V1.pdf>`__.
@@ -439,7 +443,7 @@ of the score:
    each region or sector contributes to the total score. 
 
 The table below, taken from a Jupyter Notebook implementation of the
-tool (see ,https://sciencebasedtargets.github.io/SBTi-finance-tool/ for executing your own
+tool (see ,https://wwf-sweden.github.io/ITR-tool/ for executing your own
 rungs of the Jupyter Notebook), highlights the companies with the
 highest contribution to the portfolio temperature score and at the same
 time displays ownership and portfolio weight to give the user an
@@ -486,7 +490,7 @@ the same time, it provides the opportunity to audit the scores during
 the validation process.
 
 For a more detail please see Jupyter notebook examples found
-`here <https://sciencebasedtargets.github.io/SBTi-finance-tool/getting_started.html#google-colab>`__.
+`here <https://wwf-sweden.github.io/ITR-tool/getting_started.html#google-colab>`__.
 
 
 .. |image3| image:: image3.png

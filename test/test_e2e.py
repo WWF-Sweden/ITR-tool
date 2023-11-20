@@ -3,8 +3,8 @@ import datetime
 import unittest
 from typing import List
 
-import SBTi
-from SBTi.interfaces import (
+import ITR
+from ITR.interfaces import (
     EScope,
     ETimeFrames,
     IDataProviderCompany,
@@ -12,14 +12,14 @@ from SBTi.interfaces import (
     PortfolioCompany,
 )
 
-from SBTi.temperature_score import (
+from ITR.temperature_score import (
     EngagementType,
     Scenario,
     ScenarioType,
     TemperatureScore,
 )
-from SBTi.portfolio_aggregation import PortfolioAggregationMethod
-from SBTi.data.data_provider import DataProvider
+from ITR.portfolio_aggregation import PortfolioAggregationMethod
+from ITR.data.data_provider import DataProvider
 
 
 class TestDataProvider(DataProvider):
@@ -123,7 +123,7 @@ class EndToEndTest(unittest.TestCase):
 
         # portfolio data
         pf_company = copy.deepcopy(self.pf_base)
-        portfolio_data = SBTi.utils.get_data([data_provider], [pf_company])
+        portfolio_data = ITR.utils.get_data([data_provider], [pf_company])
 
         # Verify data
         scores = temp_score.calculate(portfolio_data)
@@ -148,7 +148,7 @@ class EndToEndTest(unittest.TestCase):
 
         # portfolio data
         pf_company = copy.deepcopy(self.pf_base)
-        portfolio_data = SBTi.utils.get_data([data_provider], [pf_company])
+        portfolio_data = ITR.utils.get_data([data_provider], [pf_company])
 
         # Verify data
         scores = temp_score.calculate(portfolio_data)
@@ -220,7 +220,7 @@ class EndToEndTest(unittest.TestCase):
             aggregation_method=PortfolioAggregationMethod.WATS,
         )
 
-        portfolio_data = SBTi.utils.get_data([data_provider], pf_companies)
+        portfolio_data = ITR.utils.get_data([data_provider], pf_companies)
         scores = temp_score.calculate(portfolio_data)
         agg_scores = temp_score.aggregate_scores(scores)
 
@@ -322,7 +322,7 @@ class EndToEndTest(unittest.TestCase):
             scopes=[EScope.S1S2, EScope.S1S2S3],
             aggregation_method=PortfolioAggregationMethod.WATS,
         )
-        portfolio_data = SBTi.utils.get_data([data_provider], pf_companies)
+        portfolio_data = ITR.utils.get_data([data_provider], pf_companies)
         scores = temp_score.calculate(portfolio_data)
 
         # then - assert should_use_targets are contained in scores, should_drop_targets are not
@@ -349,7 +349,7 @@ class EndToEndTest(unittest.TestCase):
             aggregation_method=PortfolioAggregationMethod.WATS,
         )
 
-        portfolio_data = SBTi.utils.get_data([data_provider], pf_companies)
+        portfolio_data = ITR.utils.get_data([data_provider], pf_companies)
         scores = temp_score.calculate(portfolio_data)
         agg_scores = temp_score.aggregate_scores(scores)
 
@@ -396,7 +396,7 @@ class EndToEndTest(unittest.TestCase):
             aggregation_method=PortfolioAggregationMethod.WATS,
         )
 
-        portfolio_data = SBTi.utils.get_data([data_provider], pf_companies)
+        portfolio_data = ITR.utils.get_data([data_provider], pf_companies)
         scores = temp_score.calculate(portfolio_data)
         agg_scores = temp_score.aggregate_scores(scores)
 
@@ -437,7 +437,7 @@ class EndToEndTest(unittest.TestCase):
             grouping=["industry_level_1"],
         )
 
-        portfolio_data = SBTi.utils.get_data([data_provider], pf_companies_all)
+        portfolio_data = ITR.utils.get_data([data_provider], pf_companies_all)
         scores = temp_score.calculate(portfolio_data)
         agg_scores = temp_score.aggregate_scores(scores)
 
@@ -462,7 +462,7 @@ class EndToEndTest(unittest.TestCase):
             scenario=scenario,
         )
 
-        portfolio_data = SBTi.utils.get_data([data_provider], pf_companies)
+        portfolio_data = ITR.utils.get_data([data_provider], pf_companies)
         scores = temp_score.calculate(portfolio_data)
         agg_scores = temp_score.aggregate_scores(scores)
 

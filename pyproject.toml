@@ -22,7 +22,7 @@ classifiers = [
 
 ]
 keywords = ['Climate', 'SBTi', 'Finance', 'WWF']
-packages = [{ include = "SBTi" }]
+packages = [{ include = "ITR" }]
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/WWF-Sweden/ITR-tool/issues"

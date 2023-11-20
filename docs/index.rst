@@ -1,4 +1,4 @@
-SBTi-Finance Tool for Temperature Scoring & Portfolio Coverage
+WWF Finance Tool for Temperature Scoring & Portfolio Coverage
 ==============================================================
 
 *Do you want to understand what drives the temperature score of your
@@ -23,21 +23,20 @@ documentation to start using the tool.
 An introduction to the technical documentation
 ----------------------------------------------
 
-The SBTi-Finance tool has been built as an open-source, data-agnostic
+The WWF Finance tool has been built as an open-source, data-agnostic
 tool and works with input data from any data provider and in many
 different IT infrastructures.
 
-As such, the SBTi-Finance Tool for Temperature Scoring & Portfolio
+As such, the WWF Finance Tool for Temperature Scoring & Portfolio
 Coverage can be used in several ways, depending on the specific
 preferences of the user.
 
 +-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | **Quickstart**                                                                                                                                                                                                                                                                                      |
 |                                                                                                                                                                                                                                                                                                     |
-| If you prefer to get up and running quickly, we’ve got a no-code and a Python option:                                                                                                                                                                                                               |
+| The tool is available as a python package on pypi, but the easiest way to test the tool is with notebooks:                                                                                                                                                                                          |
 |                                                                                                                                                                                                                                                                                                     |
-| -  **No-code**: Run the project locally as a \ `web application using Docker <https://sciencebasedtargets.github.io/SBTi-finance-Tool/rest_api.html#locally>`__                                                                                                                                     |
-|                                                                                                                                                                                                                                                                                                     |
+||                                                                                                                                                                                                                                                                                                    |
 | -  **Python**: Run a Jupyter notebook, without any installation in \ `Google Colab <https://sciencebasedtargets.github.io/SBTi-finance-tool/getting_started.html#google-colab>`__ or `locally <https://sciencebasedtargets.github.io/SBTi-finance-tool/getting_started.html#jupyter-notebooks>`__.  |
 |                                                                                                                                                                                                                                                                                                     |
 | .. rubric::                                                                                                                                                                                                                                                                                         |
@@ -47,7 +46,7 @@ preferences of the user.
 If you are unsure whether the tool will be useful for your application
 and workflow, or you would first like to run some examples to get a
 better idea of how the tool works and what types of outputs it
-generates, the `Analysis notebook (with abbreviated methodology) <https://colab.research.google.com/github/sciencebasedtargets/SBTi-finance-tool/blob/master/examples/1_analysis_example.ipynb>`__
+generates, the `Analysis notebook (with abbreviated methodology) <https://colab.research.google.com/github/WWF-Swedensciencebasedtargets/SBTi-finance-tool/blob/main/examples/1_analysis_example.ipynb>`__
 offers a quick and no-code opportunity for such testing. The notebook
 combines text and code to provide a testing environment for your
 research, to give you an understanding for how the tool can help you
@@ -66,7 +65,7 @@ full toolkit and their dependencies: 
 |image2|
 
 As shown above, the Python code forms the core codebase of the
-SBTi-Finance tool. It is recommended to use the Python package if the
+WWF Finance tool. It is recommended to use the Python package if the
 user would like to integrate the tool in their own codebase. In turn,
 the second option is running the tool via the API if the user’s
 preference is to include the tool as a Microservice in their existing IT
@@ -74,7 +73,7 @@ infrastructure in the cloud or on premise. The development project also
 included the creation of a simple user interface (UI), which can be used
 for easier user interaction in combination with the API.
 
-The SBTi tool enables three main ways of installing and/or running the
+The SBTi tool enables two ways of installing and/or running the
 tool:  
 
 1. Users can integrate the **Python package** in their codebase. For
@@ -82,17 +81,7 @@ tool:  
    the Python package, please consult the ‘Getting Started Using Python’
    section.
 
-2. The tool can be included as a Microservice (**containerized REST
-   API**) in any IT infrastructure (in the cloud or on premise). For
-   more detailed and up-to-date information on how to run the tool via
-   the API, please consult the ‘Getting Started Using REST API’ section.
-   Optionally, the API can be run with a frontend (UI). This simple user
-   interface makes testing by non-technical users easier. For more
-   detailed and up-to-date information on how to use the UI as a
-   frontend to the API, please consult the ‘Getting Started Using REST
-   API’ section.
-
-3. During the development of this tool, we have worked with several data
+2. During the development of this tool, we have worked with several data
    and service providers to the financial and ESG markets, some who have
    or are in the process of implementing the tool and methodology into
    their commercial solutions. These providers include Bloomberg, CDP,
@@ -103,7 +92,7 @@ tool:  
 
 
 Given the open source nature of the tool, the community is encouraged to
-make contributions (refer to `Contributing <https://sciencebasedtargets.github.io/SBTi-finance-tool/contributing.html>`__ section to further develop
+make contributions (refer to `Contributing <https://wwf-sweden.github.io/ITR-tool/contributing.html>`__ section to further develop
 and/or update the codebase. Contributions can range from submitting a
 bug report, to submitting a new feature request, all the way to further
 enhancing the tool’s functionalities by contributing code.

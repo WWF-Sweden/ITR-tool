@@ -3,9 +3,9 @@ from pydantic import ValidationError
 import logging
 
 import pandas as pd
-from SBTi.data.data_provider import DataProvider
-from SBTi.configs import ColumnsConfig
-from SBTi.interfaces import IDataProviderCompany, IDataProviderTarget
+from ITR.data.data_provider import DataProvider
+from ITR.configs import ColumnsConfig
+from ITR.interfaces import IDataProviderCompany, IDataProviderTarget
 
 
 class ExcelProvider(DataProvider):

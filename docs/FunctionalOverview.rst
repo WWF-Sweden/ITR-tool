@@ -15,7 +15,7 @@ information, refer to the methodology `here <https://sciencebasedtargets.org/res
 Time Frames
 ~~~~~~~~~~~
 
-By default, the SBTi temperature scoring tool reports temperature scores
+By default, the WWF temperature scoring tool reports temperature scores
 on the mid-term time frames (i.e. based on emissions reduction targets
 aimed at 5-15 years into the future). However, it is also possible to
 inspect short (less than 5 years) and long-term time frames (15 to 30
@@ -24,7 +24,7 @@ years).
 Scopes
 ~~~~~~
 
-SBTi temperature scoring tool reports on the scores for Scope 1+2 and
+WWF temperature scoring tool reports on the scores for Scope 1+2 and
 Scope 1+2+3, however it is also possible to inspect the Scope 3 score
 individually.
 
@@ -70,7 +70,7 @@ portfolio data.
 Choose fields to show
 ~~~~~~~~~~~~~~~~~~~~~
 
-By default, the SBTi temperature scoring tool reports Company name,
+By default, the WWF temperature scoring tool reports Company name,
 Company ID, Scope, Time frame and Temperature score for each individual
 combination. However, using this option allows the user to add
 additional columns to the output. It is possible to add all fields

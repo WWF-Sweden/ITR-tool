@@ -3,10 +3,10 @@ import unittest
 
 import pandas as pd
 
-from SBTi.configs import ColumnsConfig
-from SBTi.interfaces import ETimeFrames, EScope
-from SBTi.temperature_score import TemperatureScore
-from SBTi.portfolio_aggregation import PortfolioAggregationMethod
+from ITR.configs import ColumnsConfig
+from ITR.interfaces import ETimeFrames, EScope
+from ITR.temperature_score import TemperatureScore
+from ITR.portfolio_aggregation import PortfolioAggregationMethod
 
 
 class TestTemperatureScore(unittest.TestCase):

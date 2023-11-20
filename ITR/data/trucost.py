@@ -1,12 +1,12 @@
 from typing import List
 
-from SBTi.data.data_provider import DataProvider
-from SBTi.interfaces import IDataProviderCompany, IDataProviderTarget
+from ITR.data.data_provider import DataProvider
+from ITR.interfaces import IDataProviderCompany, IDataProviderTarget
 
 
-class ISS(DataProvider):
+class Trucost(DataProvider):
     """
-    Data provider skeleton for ISS.
+    Data provider skeleton for Trucost.
     """
 
     def get_targets(self, company_ids: List[str]) -> List[IDataProviderTarget]:
