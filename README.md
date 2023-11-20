@@ -1,47 +1,19 @@
-> Visit https://sciencebasedtargets.github.io/SBTi-finance-tool/ for the full documentation
+> Visit https://wwf-sweden.github.io/ITR-tool/ for the full documentation
 
 > If you have any additional questions or comments send a mail to: finance@sciencebasedtargets.org
 
-# SBTi Temperature Alignment tool
+# WWF Finance Tool
 
 This package helps companies and financial institutions to assess the temperature alignment of current
 targets, commitments, and investment and lending portfolios, and to use this information to develop
 targets for official validation by the SBTi.
 
-This tool can be used either as a standalone Python package, a REST API or as a simple webapp which provides a simple skin on the API.
+This tool can be used either as a standalone Python package, to be run locally or  a REST API or as a simple webapp which provides a simple skin on the API.
 So, the SBTi toolkit caters for three types of usage:
 
 - Users can integrate the Python package in their codebase
-- The tool can be included as a Microservice (containerised REST API) in any IT infrastructure (in the cloud or on premise)
-- As an webapp, exposing the functionality with a simple user interface.
+- The tool can be run using either Jupyter (locally) or Colab notebooks.
 
-To following diagram provides an overview of the different parts of the toolkit:
-
-    +-------------------------------------------------+
-    |   UI     : Simple user interface on top of API  |
-    |   Install: via dockerhub                        |
-    |            docker.io/sbti/ui:latest             |
-    |                                                 |
-    | +-----------------------------------------+     |
-    | | REST API: Dockerized FastAPI/NGINX      |     |
-    | | Source : github.com/OFBDABV/SBTi_api    |     |
-    | | Install: via source or dockerhub        |     |
-    | |          docker.io/sbti/sbti/api:latest |     |
-    | |                                         |     |
-    | | +---------------------------------+     |     |
-    | | |                                 |     |     |
-    | | |Core   : Python Module           |     |     |
-    | | |Source : github.com/ScienceBasedTargets/     |
-    | | |               SBTi-finance-tool |     |     |
-    | | |Install: via source or PyPi      |     |     |
-    | | |                                 |     |     |
-    | | +---------------------------------+     |     |
-    | +-----------------------------------------+     |
-    +-------------------------------------------------+
-
-As shown above the API is dependent on the Python Repo, in the same way the UI requires the API backend. These dependencies are scripted in the Docker files.
-
-> This repository only contains the Python module. If you'd like to use the REST API, please refer to [this repository](https://github.com/ScienceBasedTargets/SBTi-finance-tool-api) or the same repository on [Dockerhub](https://docker.io/sbti/sbti/api:latest).
 
 ## Structure
 
