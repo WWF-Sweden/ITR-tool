@@ -1,6 +1,6 @@
 > Visit https://wwf-sweden.github.io/ITR-tool/ for the full documentation
 
-> If you have any additional questions or comments send a mail to: finance@sciencebasedtargets.org
+> If you have any additional questions or comments send a mail to: ekonomi-finans@wwf.se
 
 # WWF Finance Tool
 
