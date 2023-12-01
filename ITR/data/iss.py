@@ -1,36 +1,13 @@
-from typing import Optional, List
+from typing import List
 
-import requests
-
-from SBTi.data.data_provider import DataProvider
-from SBTi.interfaces import IDataProviderTarget, IDataProviderCompany
+from ITR.data.data_provider import DataProvider
+from ITR.interfaces import IDataProviderCompany, IDataProviderTarget
 
 
-class Bloomberg(DataProvider):
+class ISS(DataProvider):
     """
-    Data provider skeleton for Bloomberg.
+    Data provider skeleton for ISS.
     """
-
-    def _request(self, endpoint: str, data: dict) -> Optional[object]:
-        """
-        Request data from the server.
-        Note: This request does in no way reflect the actual implementation, this is only a stub to show what a
-        potential API request COULD look like.
-
-        :param endpoint: The endpoint of the API
-        :param data: The data to send as a body
-        :return: The returned data, None in case of an error.
-        """
-        try:
-            headers = {"Authorization": "Basic: {}:{}".format("username", "password")}
-            r = requests.post(
-                "{}{}".format("host", endpoint), json=data, headers=headers
-            )
-            if r.status_code == 200:
-                return r.json()
-        except Exception as e:
-            return None
-        return None
 
     def get_targets(self, company_ids: List[str]) -> List[IDataProviderTarget]:
         """

@@ -3,10 +3,10 @@ import itertools
 
 import pandas as pd
 from typing import Type, List, Tuple, Optional
-from SBTi.configs import PortfolioAggregationConfig
+from ITR.configs import PortfolioAggregationConfig
 import logging
 
-from SBTi.interfaces import (
+from ITR.interfaces import (
     IDataProviderTarget,
     IDataProviderCompany,
     EScope,

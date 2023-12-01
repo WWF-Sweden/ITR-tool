@@ -3,8 +3,8 @@ from pydantic import ValidationError
 import logging
 
 import pandas as pd
-from SBTi.data.data_provider import DataProvider
-from SBTi.interfaces import IDataProviderCompany, IDataProviderTarget
+from ITR.data.data_provider import DataProvider
+from ITR.interfaces import IDataProviderCompany, IDataProviderTarget
 
 
 class CSVProvider(DataProvider):

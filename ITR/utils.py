@@ -2,9 +2,9 @@ import logging
 import pandas as pd
 from typing import List, Optional, Tuple, Type, Dict
 
-from SBTi.configs import ColumnsConfig
-from SBTi.data.sbti import SBTi
-from SBTi.interfaces import IDataProviderTarget, IDataProviderCompany
+from ITR.configs import ColumnsConfig
+from ITR.data.sbti import SBTi
+from ITR.interfaces import IDataProviderTarget, IDataProviderCompany
 
 
 from .interfaces import PortfolioCompany, EScope, ETimeFrames, ScoreAggregations

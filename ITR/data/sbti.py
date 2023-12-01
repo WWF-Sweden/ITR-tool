@@ -4,8 +4,8 @@ import pandas as pd
 import warnings
 
 
-from SBTi.configs import PortfolioCoverageTVPConfig
-from SBTi.interfaces import IDataProviderCompany
+from ITR.configs import PortfolioCoverageTVPConfig
+from ITR.interfaces import IDataProviderCompany
 
 
 class SBTi:
