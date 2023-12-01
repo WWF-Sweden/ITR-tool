@@ -23,7 +23,7 @@ requires several types of data.
 Portfolio data
 --------------
 
-When using the SBTi-Finance Tool for Temperature Scoring and Portfolio
+When using the WWF Finance Tool for Temperature Scoring and Portfolio
 Coverage, the user needs to supply information about the portfolio. This
 must be a list of all investee companies on a security level, including
 name, identifiers, ISIN codes, and the value invested in each individual
@@ -108,10 +108,6 @@ each target, information on scope(s), level of coverage, level of
 reduction ambition, and begin and end year of the target must be
 included in the file.
 
-There is also the option to include a target ID for each target. This
-allows to see which targets are included in the calculation of the
-temperature score and which are not. 
-
 The temperature score is calculated for Scopes 1 + 2 and 3. In order to
 convert targets that only cover scope 1 or scope 2, additional
 information is required on GHG emissions per scope at the base year for
@@ -128,12 +124,12 @@ SBTi status
 The SBTi status of a company indicates whether or not the company has
 set a science based target has been approved by the SBTi. This tool uses
 the Excel file that is generated when pressing the download button
-`here <http://ttps://sciencebasedtargets.org/companies-taking-action/>`__.
+`here <https://sciencebasedtargets.org/companies-taking-action/>`__.
 This list is updated weekly, to ensure your list is up to date, the user
 can download the latest list from the SBTi site here:
 https://sciencebasedtargets.org/companies-taking-action/ and replace the
 Excel file in the tool with the downloaded file. To do this go to
-..\\SBTi\\inputs directory and replace the
+..\\ITR\\inputs directory and replace the
 *current-Companies-Taking-Action-xxx.xslx* file with the newer file.
 
 

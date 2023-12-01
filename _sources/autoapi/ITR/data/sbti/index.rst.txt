@@ -1,0 +1,41 @@
+:py:mod:`ITR.data.sbti`
+=======================
+
+.. py:module:: ITR.data.sbti
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   ITR.data.sbti.SBTi
+
+
+
+
+.. py:class:: SBTi(config: Type[ITR.configs.PortfolioCoverageTVPConfig] = PortfolioCoverageTVPConfig)
+
+   Data provider skeleton for SBTi. This class only provides the sbti_validated field for existing companies.
+
+   .. py:method:: filter_cta_file(self, targets)
+
+      Filter the CTA file to create a dataframe that has one row per company
+      with the columns "Action" and "Target".
+      If Action = Target then only keep the rows where Target = Near-term.
+
+
+   .. py:method:: get_sbti_targets(self, companies: List[ITR.interfaces.IDataProviderCompany], id_map: dict) -> List[ITR.interfaces.IDataProviderCompany]
+
+      Check for each company if they have an SBTi validated target, first using the company LEI, 
+      if available, and then using the ISIN.
+
+      :param companies: A list of IDataProviderCompany instances
+      :param id_map: A map from company id to a tuple of (ISIN, LEI)
+      :return: A list of IDataProviderCompany instances, supplemented with the SBTi information
+
+
+
