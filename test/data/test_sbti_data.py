@@ -1,7 +1,7 @@
-import SBTi.data
-from SBTi import utils
-from SBTi.data.excel import ExcelProvider 
-from SBTi.data.sbti import SBTi  
+import ITR.data
+from ITR import utils
+from ITR.data.excel import ExcelProvider 
+from ITR.data.sbti import SBTi  
 
 import os
 import unittest
@@ -54,7 +54,7 @@ class TestSBTiData(unittest.TestCase):
             company_data = utils.get_company_data(self.provider, df_portfolio["company_id"].tolist())
             target_data = utils.get_targets(self.provider, df_portfolio["company_id"].tolist())
             
-            company_data = SBTi().get_sbti_targets(company_data, utils._make_id_map(df_portfolio))
+            company_data = ITR().get_sbti_targets(company_data, utils._make_id_map(df_portfolio))
             # Get SBTi data
             
 

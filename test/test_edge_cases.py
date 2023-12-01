@@ -1,6 +1,6 @@
 import unittest
 from unittest.case import SkipTest
-from SBTi.interfaces import (
+from ITR.interfaces import (
     EScope,
     ETimeFrames,
     IDataProviderCompany,
@@ -8,18 +8,18 @@ from SBTi.interfaces import (
     PortfolioCompany,
 )
 
-from SBTi.temperature_score import (
+from ITR.temperature_score import (
     EngagementType,
     Scenario,
     TemperatureScore,
 )
-from SBTi.portfolio_aggregation import PortfolioAggregationMethod
+from ITR.portfolio_aggregation import PortfolioAggregationMethod
 import copy
-import SBTi
+import ITR
 from typing import List
-from SBTi.data.data_provider import DataProvider
+from ITR.data.data_provider import DataProvider
 from typing import List
-from SBTi.interfaces import IDataProviderCompany, IDataProviderTarget
+from ITR.interfaces import IDataProviderCompany, IDataProviderTarget
 
 
 class TestDataProvider(DataProvider):
@@ -95,7 +95,7 @@ class EdgeCasesTest(unittest.TestCase):
             aggregation_method=PortfolioAggregationMethod.WATS,
         )
 
-        portfolio_data = SBTi.utils.get_data([data_provider], pf_companies)
+        portfolio_data = ITR.utils.get_data([data_provider], pf_companies)
         scores = temp_score.calculate(portfolio_data)
         agg_scores = temp_score.aggregate_scores(scores)
 

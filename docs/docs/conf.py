@@ -12,15 +12,15 @@ import sphinx_rtd_theme
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
-import sys
-sys.path.insert(0, os.path.abspath('.'))
+# import os
+# import sys
+# sys.path.insert(0, os.path.abspath('.'))
 
 
 # -- Project information -----------------------------------------------------
 
-project = "WWF Finance tool"
-copyright = "2023, WWF"
+project = "WWF Finance Tool"
+copyright = "2023, WWF Sweden"
 author = "WWF Sweden"
 
 
@@ -68,6 +68,6 @@ html_static_path = ["_static"]
 
 # -- Auto API
 extensions.append("autoapi.extension")
-autoapi_dirs = ["../SBTi"]
+autoapi_dirs = ["../ITR"]
 autoapi_type = "python"
 autoapi_template_dir = "_autoapi_templates"
