@@ -21,13 +21,13 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 
 ]
-keywords = ['Climate', 'SBTi', 'Finance']
-packages = [{ include = "SBTi" }]
+keywords = ['Climate', 'SBTi', 'Finance', 'WWF']
+packages = [{ include = "ITR" }]
 
 [tool.poetry.urls]
-"Bug Tracker" = "https://github.com/ScienceBasedTargets/SBTi-finance-tool/issues"
-"Documentation" = 'https://sciencebasedtargets.github.io/SBTi-finance-tool'
-"Source Code" = "https://github.com/ScienceBasedTargets/SBTi-finance-tool"
+"Bug Tracker" = "https://github.com/WWF-Sweden/ITR-tool/issues"
+"Documentation" = 'https://wwf-sweden.github.io/ITR-tool'
+"Source Code" = "https://github.com/WWF-Sweden/ITR-tool/issues"
 
 
 [tool.poetry.dependencies]
