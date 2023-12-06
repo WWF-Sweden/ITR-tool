@@ -215,7 +215,7 @@
 </li>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.SortableEnum.__str__">__str__() (ITR.interfaces.SortableEnum method)</a>
 </li>
-      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._boundary_coverage">_boundary_coverage() (ITR.target_validation.TargetProtocol method)</a>
+      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._assign_time_frame">_assign_time_frame() (ITR.target_validation.TargetProtocol static method)</a>
 </li>
       <li><a href="autoapi/ITR/portfolio_aggregation/index.html#ITR.portfolio_aggregation.PortfolioAggregation._calculate_aggregate_score">_calculate_aggregate_score() (ITR.portfolio_aggregation.PortfolioAggregation method)</a>
 </li>
@@ -225,7 +225,7 @@
 </li>
       <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._combine_s1_s2">_combine_s1_s2() (ITR.target_validation.TargetProtocol method)</a>
 </li>
-      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._convert_s1_s2">_convert_s1_s2() (ITR.target_validation.TargetProtocol method)</a>
+      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._convert_s1_s2_into_combined">_convert_s1_s2_into_combined() (ITR.target_validation.TargetProtocol static method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -243,7 +243,7 @@
 </li>
       <li><a href="autoapi/ITR/temperature_score/index.html#ITR.temperature_score.TemperatureScore._prepare_data">_prepare_data() (ITR.temperature_score.TemperatureScore method)</a>
 </li>
-      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._prepare_target">_prepare_target() (ITR.target_validation.TargetProtocol method)</a>
+      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._prepare_targets">_prepare_targets() (ITR.target_validation.TargetProtocol method)</a>
 </li>
       <li><a href="autoapi/ITR/data/index.html#ITR.data.Bloomberg._request">_request() (ITR.data.Bloomberg method)</a>
 
@@ -251,7 +251,9 @@
         <li><a href="autoapi/ITR/data/bloomberg/index.html#ITR.data.bloomberg.Bloomberg._request">(ITR.data.bloomberg.Bloomberg method)</a>
 </li>
       </ul></li>
-      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._split_s1s2s3">_split_s1s2s3() (ITR.target_validation.TargetProtocol method)</a>
+      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._scale_reduction_ambition_by_boundary_coverage">_scale_reduction_ambition_by_boundary_coverage() (ITR.target_validation.TargetProtocol static method)</a>
+</li>
+      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._split_s1s2s3">_split_s1s2s3() (ITR.target_validation.TargetProtocol static method)</a>
 </li>
       <li><a href="autoapi/ITR/data/csv/index.html#ITR.data.csv.CSVProvider._target_df_to_model">_target_df_to_model() (ITR.data.csv.CSVProvider method)</a>
 
@@ -263,7 +265,7 @@
         <li><a href="autoapi/ITR/data/index.html#ITR.data.ExcelProvider._target_df_to_model">(ITR.data.ExcelProvider method)</a>
 </li>
       </ul></li>
-      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._time_frame">_time_frame() (ITR.target_validation.TargetProtocol method)</a>
+      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._validate">_validate() (ITR.target_validation.TargetProtocol method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -389,10 +391,10 @@
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.COMPANY_LEI">COMPANY_LEI (ITR.configs.ColumnsConfig attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.PortfolioCompany.company_lei">company_lei (ITR.interfaces.PortfolioCompany attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.IDataProviderCompany.company_market_cap">company_market_cap (ITR.interfaces.IDataProviderCompany attribute)</a>
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.COMPANY_NAME">COMPANY_NAME (ITR.configs.ColumnsConfig attribute)</a>
@@ -424,6 +426,8 @@
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.AggregationContribution.contribution_relative">contribution_relative (ITR.interfaces.AggregationContribution attribute)</a>
 </li>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.Aggregation.contributions">contributions (ITR.interfaces.Aggregation attribute)</a>
+</li>
+      <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.IDataProviderTarget.convert_to_list">convert_to_list() (ITR.interfaces.IDataProviderTarget method)</a>
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.COUNTRY">COUNTRY (ITR.configs.ColumnsConfig attribute)</a>
 </li>
@@ -910,10 +914,12 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.ETimeFrames.LONG">LONG (ITR.interfaces.ETimeFrames attribute)</a>
+      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.logger">logger (in module ITR.target_validation)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.ETimeFrames.LONG">LONG (ITR.interfaces.ETimeFrames attribute)</a>
+</li>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.ScoreAggregations.long">long (ITR.interfaces.ScoreAggregations attribute)</a>
 </li>
   </ul></td>
@@ -1015,15 +1021,13 @@
 </li>
       <li><a href="autoapi/ITR/portfolio_aggregation/index.html#ITR.portfolio_aggregation.PortfolioAggregationMethod">PortfolioAggregationMethod (class in ITR.portfolio_aggregation)</a>
 </li>
-      <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.PortfolioCompany">PortfolioCompany (class in ITR.interfaces)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.PortfolioCompany">PortfolioCompany (class in ITR.interfaces)</a>
+</li>
       <li><a href="autoapi/ITR/portfolio_coverage_tvp/index.html#ITR.portfolio_coverage_tvp.PortfolioCoverageTVP">PortfolioCoverageTVP (class in ITR.portfolio_coverage_tvp)</a>
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.PortfolioCoverageTVPConfig">PortfolioCoverageTVPConfig (class in ITR.configs)</a>
-</li>
-      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol.prepare_targets">prepare_targets() (ITR.target_validation.TargetProtocol method)</a>
 </li>
       <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol.process">process() (ITR.target_validation.TargetProtocol method)</a>
 </li>
@@ -1147,6 +1151,10 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.TARGET_CLASSIFICATION">TARGET_CLASSIFICATION (ITR.configs.ColumnsConfig attribute)</a>
 </li>
+      <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.TARGET_IDS">TARGET_IDS (ITR.configs.ColumnsConfig attribute)</a>
+</li>
+      <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.IDataProviderTarget.target_ids">target_ids (ITR.interfaces.IDataProviderTarget attribute)</a>
+</li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.TARGET_REFERENCE_NUMBER">TARGET_REFERENCE_NUMBER (ITR.configs.ColumnsConfig attribute)</a>
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.PortfolioCoverageTVPConfig.TARGET_SCORE_MAP">TARGET_SCORE_MAP (ITR.configs.PortfolioCoverageTVPConfig attribute)</a>
@@ -1161,10 +1169,10 @@
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.TemperatureScoreConfig.TEMPERATURE_FLOOR">TEMPERATURE_FLOOR (ITR.configs.TemperatureScoreConfig attribute)</a>
 </li>
-      <li><a href="autoapi/ITR/configs/index.html#ITR.configs.TemperatureScoreConfig.TEMPERATURE_RESULTS">TEMPERATURE_RESULTS (ITR.configs.TemperatureScoreConfig attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/ITR/configs/index.html#ITR.configs.TemperatureScoreConfig.TEMPERATURE_RESULTS">TEMPERATURE_RESULTS (ITR.configs.TemperatureScoreConfig attribute)</a>
+</li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.TEMPERATURE_SCORE">TEMPERATURE_SCORE (ITR.configs.ColumnsConfig attribute)</a>
 </li>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.AggregationContribution.temperature_score">temperature_score (ITR.interfaces.AggregationContribution attribute)</a>
@@ -1207,8 +1215,6 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol.validate">validate() (ITR.target_validation.TargetProtocol method)</a>
-</li>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.IDataProviderTarget.validate_e">validate_e() (ITR.interfaces.IDataProviderTarget method)</a>
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.PortfolioCoverageTVPConfig.VALUE_ACTION_COMMITTED">VALUE_ACTION_COMMITTED (ITR.configs.PortfolioCoverageTVPConfig attribute)</a>

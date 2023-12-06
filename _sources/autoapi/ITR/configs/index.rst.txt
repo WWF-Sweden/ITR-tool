@@ -48,6 +48,11 @@ Classes
 
       
 
+   .. py:attribute:: TARGET_IDS
+      :annotation: = target_ids
+
+      
+
    .. py:attribute:: REGRESSION_PARAM
       :annotation: = param
 

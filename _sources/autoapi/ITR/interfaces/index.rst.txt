@@ -487,7 +487,19 @@ Classes
 
       
 
+   .. py:attribute:: target_ids
+      :annotation: :List[str]
+
+      
+
    .. py:method:: validate_e(cls, val)
+
+
+   .. py:method:: convert_to_list(cls, v)
+
+      targets can be combined so target_ids field must be a list
+      pre=True is used to ensure that the validator is called before the default_factory
+      with pre=True and default_factory the users can supply single strings, e.g. "Target1"
 
 
 

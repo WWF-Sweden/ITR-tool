@@ -17,6 +17,19 @@ Classes
 
 
 
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   ITR.target_validation.logger
+
+
+.. py:data:: logger
+   
+
+   
+
 .. py:class:: TargetProtocol(config: Type[ITR.configs.PortfolioAggregationConfig] = PortfolioAggregationConfig)
 
    This class validates the targets, to make sure that only active, useful targets are considered. It then combines the targets with company-related data into a dataframe where there's one row for each of the nine possible target types (short, mid, long * S1+S2, S3, S1+S2+S3). This class follows the procedures outlined by the target protocol that is a part of the "Temperature Rating Methodology" (2020), which has been created by CDP Worldwide and WWF International.
@@ -32,7 +45,7 @@ Classes
       :return: A data frame that combines the processed data
 
 
-   .. py:method:: validate(self, target: ITR.interfaces.IDataProviderTarget) -> bool
+   .. py:method:: _validate(self, target: ITR.interfaces.IDataProviderTarget) -> bool
 
       Validate a target, meaning it should:
 
@@ -44,7 +57,8 @@ Classes
       :return: True if it's a valid target, false if it isn't
 
 
-   .. py:method:: _split_s1s2s3(self, target: ITR.interfaces.IDataProviderTarget) -> Tuple[ITR.interfaces.IDataProviderTarget, Optional[ITR.interfaces.IDataProviderTarget]]
+   .. py:method:: _split_s1s2s3(target: ITR.interfaces.IDataProviderTarget) -> Tuple[ITR.interfaces.IDataProviderTarget, Optional[ITR.interfaces.IDataProviderTarget]]
+      :staticmethod:
 
       If there is a s1s2s3 scope, split it into two targets with s1s2 and s3
 
@@ -54,21 +68,26 @@ Classes
 
    .. py:method:: _combine_s1_s2(self, target: ITR.interfaces.IDataProviderTarget)
 
-      Check if there is an S2 target that matches this target exactly (if this is a S1 target) and combine them into one target.
+      Check if there is an S2 target that matches this target exactly (if this is a S1 target) 
+      and combine them into one target.
 
       :param target: The input target
       :return: The combined target (or the original if no combining was required)
 
 
-   .. py:method:: _convert_s1_s2(self, target: ITR.interfaces.IDataProviderTarget)
+   .. py:method:: _convert_s1_s2_into_combined(target: ITR.interfaces.IDataProviderTarget) -> ITR.interfaces.IDataProviderTarget
+      :staticmethod:
 
       Convert a S1 or S2 target into a S1+S2 target.
+
+      TODO - what is the incidence of targets where base_year_ghg_s2==0
 
       :param target: The input target
       :return: The converted target (or the original if no conversion was required)
 
 
-   .. py:method:: _boundary_coverage(self, target: ITR.interfaces.IDataProviderTarget) -> ITR.interfaces.IDataProviderTarget
+   .. py:method:: _scale_reduction_ambition_by_boundary_coverage(target: ITR.interfaces.IDataProviderTarget) -> ITR.interfaces.IDataProviderTarget
+      :staticmethod:
 
       Test on boundary coverage:
 
@@ -78,7 +97,7 @@ Classes
       Option 2: weighted coverage
       Thresholds are still 95% and 67%, target is always valid. Below threshold ambition is scaled.*
       New target ambition = input target ambition * coverage
-      *either here or in tem score module
+      *either here or in temperature score module
 
       Option 3: default coverage
       Target is always valid, % uncovered is given default score in temperature score module.
@@ -87,23 +106,29 @@ Classes
       :return: The original target with a weighted reduction ambition, if so required
 
 
-   .. py:method:: _time_frame(self, target: ITR.interfaces.IDataProviderTarget) -> ITR.interfaces.IDataProviderTarget
+   .. py:method:: _assign_time_frame(target: ITR.interfaces.IDataProviderTarget) -> ITR.interfaces.IDataProviderTarget
+      :staticmethod:
 
-      Time frame is forward looking: target year - current year. Less than 5y = short, between 5 and 15 is mid, 15 to 30 is long
+      Time frame is forward looking: target year - current year. 
+          Less than 5y = short, 
+          between 5 and 15 is mid, 
+          15 to 30 is long
 
       :param target: The input target
       :return: The original target with the time_frame field filled out (if so required)
 
 
-   .. py:method:: _prepare_target(self, target: ITR.interfaces.IDataProviderTarget)
+   .. py:method:: _prepare_targets(self, targets: List[ITR.interfaces.IDataProviderTarget])
 
-      Prepare a target for usage later on in the process.
+      logic
+          - drop invalid targets
+          - identifying the pure-S2 targets for later use
+          - splitting s1s2s3 into s1s2 and s3
+          - combining s1 and s2
+          - assign target.reduction_ambition by considering target's boundary coverage
 
-      :param target:
+      :param targets:
       :return:
-
-
-   .. py:method:: prepare_targets(self, targets: List[ITR.interfaces.IDataProviderTarget])
 
 
    .. py:method:: _find_target(self, row: pandas.Series, target_columns: List[str]) -> pandas.Series
@@ -111,14 +136,14 @@ Classes
       Find the target that corresponds to a given row. If there are multiple targets available, filter them.
 
       :param row: The row from the data set that should be looked for
-      :param target_columns: The columns that need to be returned
-      :return: returns records from the input data, which contains company and target information, that meet specific criteria. For example, record of greatest emissions_in_scope
+      :param target_columns: The columns to return
+      :return: records from the input data, which contains company and target information, that meet specific criteria. For example, record of greatest emissions_in_scope
 
 
    .. py:method:: group_targets(self)
 
       Group the targets and create the 9-box grid (short, mid, long * s1s2, s3, s1s2s3).
-      Group valid targets by category & filter multiple targets#
+      Group valid targets by category & filter multiple targets
       Input: a list of valid targets for each company:
       For each company:
 

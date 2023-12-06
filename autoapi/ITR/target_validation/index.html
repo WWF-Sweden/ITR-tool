@@ -182,6 +182,25 @@
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section" id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ITR.target_validation.logger" title="ITR.target_validation.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="ITR.target_validation.logger">
+<span class="sig-prename descclassname"><span class="pre">ITR.target_validation.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#ITR.target_validation.logger" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="ITR.target_validation.TargetProtocol">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ITR.target_validation.</span></span><span class="sig-name descname"><span class="pre">TargetProtocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../configs/index.html#ITR.configs.PortfolioAggregationConfig" title="ITR.configs.PortfolioAggregationConfig"><span class="pre">ITR.configs.PortfolioAggregationConfig</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">PortfolioAggregationConfig</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.target_validation.TargetProtocol" title="Permalink to this definition">¶</a></dt>
@@ -209,8 +228,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ITR.target_validation.TargetProtocol.validate">
-<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ITR.target_validation.TargetProtocol.validate" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ITR.target_validation.TargetProtocol._validate">
+<span class="sig-name descname"><span class="pre">_validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ITR.target_validation.TargetProtocol._validate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate a target, meaning it should:</p>
 <ul class="simple">
 <li><p>Have a valid type</p></li>
@@ -229,7 +248,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ITR.target_validation.TargetProtocol._split_s1s2s3">
-<span class="sig-name descname"><span class="pre">_split_s1s2s3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ITR.target_validation.TargetProtocol._split_s1s2s3" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_split_s1s2s3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ITR.target_validation.TargetProtocol._split_s1s2s3" title="Permalink to this definition">¶</a></dt>
 <dd><p>If there is a s1s2s3 scope, split it into two targets with s1s2 and s3</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -242,7 +261,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="ITR.target_validation.TargetProtocol._combine_s1_s2">
 <span class="sig-name descname"><span class="pre">_combine_s1_s2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.target_validation.TargetProtocol._combine_s1_s2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if there is an S2 target that matches this target exactly (if this is a S1 target) and combine them into one target.</p>
+<dd><p>Check if there is an S2 target that matches this target exactly (if this is a S1 target)
+and combine them into one target.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>target</strong> – The input target</p>
@@ -254,9 +274,10 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ITR.target_validation.TargetProtocol._convert_s1_s2">
-<span class="sig-name descname"><span class="pre">_convert_s1_s2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.target_validation.TargetProtocol._convert_s1_s2" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ITR.target_validation.TargetProtocol._convert_s1_s2_into_combined">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_convert_s1_s2_into_combined</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></span><a class="headerlink" href="#ITR.target_validation.TargetProtocol._convert_s1_s2_into_combined" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a S1 or S2 target into a S1+S2 target.</p>
+<p>TODO - what is the incidence of targets where base_year_ghg_s2==0</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>target</strong> – The input target</p>
@@ -268,15 +289,15 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ITR.target_validation.TargetProtocol._boundary_coverage">
-<span class="sig-name descname"><span class="pre">_boundary_coverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></span><a class="headerlink" href="#ITR.target_validation.TargetProtocol._boundary_coverage" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ITR.target_validation.TargetProtocol._scale_reduction_ambition_by_boundary_coverage">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_scale_reduction_ambition_by_boundary_coverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></span><a class="headerlink" href="#ITR.target_validation.TargetProtocol._scale_reduction_ambition_by_boundary_coverage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test on boundary coverage:</p>
 <p>Option 1: minimal coverage threshold
 For S1+S2 targets: coverage% must be at or above 95%, for S3 targets coverage must be above 67%</p>
 <p>Option 2: weighted coverage
 Thresholds are still 95% and 67%, target is always valid. Below threshold ambition is scaled.*
 New target ambition = input target ambition * coverage
-<a href="#id1"><span class="problematic" id="id2">*</span></a>either here or in tem score module</p>
+<a href="#id1"><span class="problematic" id="id2">*</span></a>either here or in temperature score module</p>
 <p>Option 3: default coverage
 Target is always valid, % uncovered is given default score in temperature score module.</p>
 <dl class="field-list simple">
@@ -290,9 +311,14 @@ Target is always valid, % uncovered is given default score in temperature score 
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ITR.target_validation.TargetProtocol._time_frame">
-<span class="sig-name descname"><span class="pre">_time_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></span><a class="headerlink" href="#ITR.target_validation.TargetProtocol._time_frame" title="Permalink to this definition">¶</a></dt>
-<dd><p>Time frame is forward looking: target year - current year. Less than 5y = short, between 5 and 15 is mid, 15 to 30 is long</p>
+<dt class="sig sig-object py" id="ITR.target_validation.TargetProtocol._assign_time_frame">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_assign_time_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></span><a class="headerlink" href="#ITR.target_validation.TargetProtocol._assign_time_frame" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Time frame is forward looking: target year - current year.</dt><dd><p>Less than 5y = short,
+between 5 and 15 is mid,
+15 to 30 is long</p>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>target</strong> – The input target</p>
@@ -304,23 +330,27 @@ Target is always valid, % uncovered is given default score in temperature score 
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ITR.target_validation.TargetProtocol._prepare_target">
-<span class="sig-name descname"><span class="pre">_prepare_target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.target_validation.TargetProtocol._prepare_target" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prepare a target for usage later on in the process.</p>
+<dt class="sig sig-object py" id="ITR.target_validation.TargetProtocol._prepare_targets">
+<span class="sig-name descname"><span class="pre">_prepare_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.target_validation.TargetProtocol._prepare_targets" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>logic</dt><dd><ul class="simple">
+<li><p>drop invalid targets</p></li>
+<li><p>identifying the pure-S2 targets for later use</p></li>
+<li><p>splitting s1s2s3 into s1s2 and s3</p></li>
+<li><p>combining s1 and s2</p></li>
+<li><p>assign target.reduction_ambition by considering target’s boundary coverage</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>target</strong> – </p>
+<dd class="field-odd"><p><strong>targets</strong> – </p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p></p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ITR.target_validation.TargetProtocol.prepare_targets">
-<span class="sig-name descname"><span class="pre">prepare_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.target_validation.TargetProtocol.prepare_targets" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ITR.target_validation.TargetProtocol._find_target">
@@ -330,11 +360,11 @@ Target is always valid, % uncovered is given default score in temperature score 
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>row</strong> – The row from the data set that should be looked for</p></li>
-<li><p><strong>target_columns</strong> – The columns that need to be returned</p></li>
+<li><p><strong>target_columns</strong> – The columns to return</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>returns records from the input data, which contains company and target information, that meet specific criteria. For example, record of greatest emissions_in_scope</p>
+<dd class="field-even"><p>records from the input data, which contains company and target information, that meet specific criteria. For example, record of greatest emissions_in_scope</p>
 </dd>
 </dl>
 </dd></dl>
@@ -343,7 +373,7 @@ Target is always valid, % uncovered is given default score in temperature score 
 <dt class="sig sig-object py" id="ITR.target_validation.TargetProtocol.group_targets">
 <span class="sig-name descname"><span class="pre">group_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.target_validation.TargetProtocol.group_targets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Group the targets and create the 9-box grid (short, mid, long * s1s2, s3, s1s2s3).
-Group valid targets by category &amp; filter multiple targets#
+Group valid targets by category &amp; filter multiple targets
 Input: a list of valid targets for each company:
 For each company:</p>
 <p>Group all valid targets based on scope (S1+S2 / S3 / S1+S2+S3) and time frame (short / mid / long-term)
