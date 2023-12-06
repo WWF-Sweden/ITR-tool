@@ -45,7 +45,7 @@ class TargetProtocol:
         """
         logger.info(f"started processing {len(targets)=} and {len(companies)=}")
         # Create multiindex on company, timeframe and scope for performance later on
-        targets = self.prepare_targets(targets)
+        targets = self._prepare_targets(targets)
         self.target_data = pd.DataFrame.from_records([c.dict() for c in targets])
 
         # Create an indexed DF for performance purposes
@@ -242,7 +242,7 @@ class TargetProtocol:
         return target
 
     @staticmethod
-    def scale_reduction_ambition_by_boundary_coverage(
+    def _scale_reduction_ambition_by_boundary_coverage(
         target: IDataProviderTarget,
         ) -> IDataProviderTarget:
         """
@@ -275,7 +275,7 @@ class TargetProtocol:
         return target
 
     @staticmethod
-    def assign_time_frame(target: IDataProviderTarget) -> IDataProviderTarget:
+    def _assign_time_frame(target: IDataProviderTarget) -> IDataProviderTarget:
         """
         Time frame is forward looking: target year - current year. 
             Less than 5y = short, 
