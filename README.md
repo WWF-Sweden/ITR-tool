@@ -5,7 +5,7 @@ WWF version of the SBTi-Finance-tool, based on the WWF/CDP Temperature rating me
 
 > If you have any additional questions or comments send a mail to: ekonomi-finans@wwf.se
 
-## This version of the tool is based on the SBTi-finance-tool
+## About the tool
 
 This package helps companies and financial institutions to assess the temperature alignment of current
 targets, commitments, and investment and lending portfolios, and to use this information to develop
