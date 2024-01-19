@@ -149,3 +149,7 @@ docker-compose_aws.yml
 examples/data/BBG*
 
 examples/6_compare_temps_SP.ipynb 
+
+# Used for local testing
+ITR/PN_test.py
+examples/data/local/*
