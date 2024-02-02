@@ -26,27 +26,40 @@ class SBTi:
         else:
             self._download_cta_file()
 
+    def _check_CTA_less_than_one_week_old(self):
+        """
+        Check if the CTA file is older than a week
+        """
+        file_updated_time = os.path.getmtime(self.c.FILE_TARGETS)
+        week_in_seconds = 7 * 24 * 60 * 60
+        # If the file was updated more than a week ago, return False
+        if file_updated_time < pd.Timestamp.now().timestamp() - week_in_seconds:
+            return False
+        else:
+            return True
+
     def _use_local_cta_file(self):
         if self.c.FILE_TARGETS_CUSTOM_PATH is None:
             raise ValueError('Please set FILE_TARGETS_CUSTOM_PATH to the path of the CTA file.')
         self.c.FILE_TARGETS = self.c.FILE_TARGETS_CUSTOM_PATH
 
-        # check that file is not that a week old
+        # check that file is not more than a week old
         if  self._check_if_cta_file_exists():
-            file_age = os.path.getmtime(self.c.FILE_TARGETS)
-            week_in_seconds = 7 * 24 * 60 * 60 # frequency of CTA file updates
+            # file_age = os.path.getmtime(self.c.FILE_TARGETS)
+            # week_in_seconds = 7 * 24 * 60 * 60 # frequency of CTA file updates
 
-            if file_age < pd.Timestamp.now().timestamp() - week_in_seconds: 
+            if not self._check_CTA_less_than_one_week_old(): 
                 print(f'CTA file is older than a week, if you wanna keep your file up-to-date please update the file at {self.c.FILE_TARGETS}.')
         else:
             raise ValueError('CTA file does not exist')
 
     def _download_cta_file(self):
         if self._check_if_cta_file_exists() and self.c.SKIP_CTA_FILE_IF_EXISTS:
-            print(f'CTA file already exists in {self.c.FILE_TARGETS}, skipping download.')
-            return
-        else:
-            self._fetch_and_save_cta_file()
+            if self._check_CTA_less_than_one_week_old():
+                print(f'CTA file already exists in {self.c.FILE_TARGETS}, skipping download.')
+                return
+            else:
+                self._fetch_and_save_cta_file()
 
     def _fetch_and_save_cta_file(self):
         try:

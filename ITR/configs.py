@@ -164,9 +164,14 @@ class PortfolioCoverageTVPConfig(PortfolioAggregationConfig):
     )
     # To avoid CTA file being downloaded every time and use a local file instead, set USE_LOCAL_CTA = True and set the
     # path to the local file in FILE_TARGETS_CUSTOM_PATH
-    FILE_TARGETS_CUSTOM_PATH = None
+    FILE_TARGETS_CUSTOM_PATH = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        "inputs",
+        "current-Companies-Taking-Action.xlsx",
+    )
     USE_LOCAL_CTA = False
-    SKIP_CTA_FILE_IF_EXISTS = False
+    # If the CTA file is older than a week, the file will be downloaded again
+    SKIP_CTA_FILE_IF_EXISTS = True
     # Temporary URL until the SBTi website is updated
     CTA_FILE_URL = "https://sciencebasedtargets.org/download/target-dashboard"
     USE_CUSTOM_FILE_TARGETS_PATH = False

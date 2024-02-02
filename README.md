@@ -25,7 +25,7 @@ The folder structure for this project is as follows:
     ├── app                     # FastAPI app files for the API endpoints
     ├── docs                    # Documentation files (Sphinx)
     ├── config                  # Config files for the Docker container
-    ├── SBTi                    # The main Python package for the temperature alignment tool
+    ├── ITR                     # The main Python package for the temperature alignment tool
     └── test                    # Automated unit tests for the SBTi package (Nose2 tests)
 
 ## Installation

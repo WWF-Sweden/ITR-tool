@@ -225,6 +225,10 @@ class TargetProtocol:
         :return: The modified target (or the original if no modification was required)
         """
         if target.scope == EScope.S1S2 and target.coverage_s1 != target.coverage_s2:
+            if pd.isna(target.coverage_s1):
+                target.coverage_s1 = 0.0
+            if pd.isna(target.coverage_s2):
+                target.coverage_s2 = 0.0
             combined_coverage = (
                 target.coverage_s1 * target.base_year_ghg_s1
                 + target.coverage_s2 * target.base_year_ghg_s2
@@ -377,7 +381,7 @@ class TargetProtocol:
         :param target_columns: The columns to return
         :return: records from the input data, which contains company and target information, that meet specific criteria. For example, record of greatest emissions_in_scope
         """
-
+        self.target_data.sort_index(level=self.target_data.index.names)
         # Find all targets that correspond to the given row
         try:
             target_data = self.target_data.loc[

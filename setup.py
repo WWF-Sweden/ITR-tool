@@ -7,8 +7,8 @@ package_data = {"": ["*"], "ITR": ["inputs/*"]}
 
 install_requires = [
     "openpyxl==3.1.2",
-    "pandas==1.5.3",
-    "pydantic==1.10.7",
+    "pandas==2.2.0",
+    "pydantic==1.10.14",
     "requests==2.31.0",
     "six==1.16.0",
     "xlrd==2.0.1",
@@ -27,7 +27,7 @@ setup_kwargs = {
     "packages": packages,
     "package_data": package_data,
     "install_requires": install_requires,
-    "python_requires": ">=3.7.1,<4",
+    "python_requires": ">=3.9.7,<4",
 }
 
 
