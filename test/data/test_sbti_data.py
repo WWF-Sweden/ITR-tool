@@ -36,7 +36,7 @@ class TestSBTiData(unittest.TestCase):
             os.path.dirname(os.path.realpath(__file__)),
             "../",
             "inputs",
-            "data_test_SBTI_CTA.xlsx",
+            "data_test_local_CTA.xlsx",
             )
         )]
 
@@ -45,11 +45,12 @@ class TestSBTiData(unittest.TestCase):
         Test whether data is retrieved as expected from the local environment.
         """
         PortfolioCoverageTVPConfig.USE_LOCAL_CTA = True
+        # Read a local mini version of the CTA file
         PortfolioCoverageTVPConfig.FILE_TARGETS_CUSTOM_PATH = os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
             "../"
             "inputs",
-            "data_test_local_CTA.xlsx",
+            "test_CTA.xlsx",
         )
 
         for portfolio in self.portfolios:
