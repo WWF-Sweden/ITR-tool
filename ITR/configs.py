@@ -100,7 +100,11 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
         "inputs",
         "regression_model_summary.xlsx",
     )
-
+    JSON_REGRESSION_MODEL = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        "inputs",
+        "SR15_regression_model.json",
+    )
     DEFAULT_INDUSTRY = "Others"
 
     VALUE_TARGET_REFERENCE_ABSOLUTE = "absolute"

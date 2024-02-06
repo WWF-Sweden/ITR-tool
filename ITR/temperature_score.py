@@ -197,12 +197,11 @@ class TemperatureScore(PortfolioAggregation):
 
         # Load the mappings from industry to SR15 goal
         self.mapping = pd.read_excel(self.c.FILE_SR15_MAPPING, header=0)
-        self.regression_model = pd.read_excel(
-            self.c.FILE_REGRESSION_MODEL_SUMMARY, header=0
-        )
-        self.regression_model = self.regression_model[
-            self.regression_model[self.c.COLS.MODEL] == self.model
-        ]
+        self.regression_model = pd.read_json(self.c.JSON_REGRESSION_MODEL)
+        # Save code if we choose to use several models:
+        # self.regression_model = self.regression_model[
+        #     self.regression_model[self.c.COLS.MODEL] == self.model
+        # ]
 
     def get_target_mapping(self, target: pd.Series) -> Optional[str]:
         """
