@@ -32,7 +32,13 @@ Attributes
 
 .. py:class:: TargetProtocol(config: Type[ITR.configs.PortfolioAggregationConfig] = PortfolioAggregationConfig)
 
-   This class validates the targets, to make sure that only active, useful targets are considered. It then combines the targets with company-related data into a dataframe where there's one row for each of the nine possible target types (short, mid, long * S1+S2, S3, S1+S2+S3). This class follows the procedures outlined by the target protocol that is a part of the "Temperature Rating Methodology" (2020), which has been created by CDP Worldwide and WWF International.
+   This class validates the targets, to make sure that only active, useful 
+   targets are considered. It then combines the targets with company-related 
+   data into a dataframe where there's one row for each of the nine possible 
+   target types (short, mid, long * S1+S2, S3, S1+S2+S3). 
+   This class follows the procedures outlined by the target protocol that is 
+   a part of the "Temperature Rating Methodology" (2020), which has been created 
+   by CDP Worldwide and WWF International.
 
    :param config: A Portfolio aggregation config
 
@@ -73,6 +79,13 @@ Attributes
 
       :param target: The input target
       :return: The combined target (or the original if no combining was required)
+
+
+   .. py:method:: _cover_s1_s2(self, target: ITR.interfaces.IDataProviderTarget) -> ITR.interfaces.IDataProviderTarget
+
+      Set the S1 and S2 coverage of a S1+S2 target to the same value.
+      :param target: The input target
+      :return: The modified target (or the original if no modification was required)
 
 
    .. py:method:: _convert_s1_s2_into_combined(target: ITR.interfaces.IDataProviderTarget) -> ITR.interfaces.IDataProviderTarget

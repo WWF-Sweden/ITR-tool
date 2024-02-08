@@ -46,7 +46,7 @@ preferences of the user.
 If you are unsure whether the tool will be useful for your application
 and workflow, or you would first like to run some examples to get a
 better idea of how the tool works and what types of outputs it
-generates, the `Analysis notebook (with abbreviated methodology) <https://colab.research.google.com/github//WWF_Sweden/ITR-tool/blob/main/examples/1_analysis_example.ipynb>`__
+generates, the `Analysis notebook (with abbreviated methodology) <https://colab.research.google.com/github//WWF-Sweden/ITR-tool/blob/main/examples/1_analysis_example.ipynb>`__
 offers a quick and no-code opportunity for such testing. The notebook
 combines text and code to provide a testing environment for your
 research, to give you an understanding for how the tool can help you

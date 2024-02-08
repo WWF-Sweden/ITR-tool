@@ -376,6 +376,11 @@ Classes
 
       
 
+   .. py:attribute:: JSON_REGRESSION_MODEL
+      
+
+      
+
    .. py:attribute:: DEFAULT_INDUSTRY
       :annotation: = Others
 
@@ -431,8 +436,28 @@ Classes
 
       
 
+   .. py:attribute:: FILE_TARGETS_CUSTOM_PATH
+      
+
+      
+
+   .. py:attribute:: USE_LOCAL_CTA
+      :annotation: = False
+
+      
+
+   .. py:attribute:: SKIP_CTA_FILE_IF_EXISTS
+      :annotation: = True
+
+      
+
    .. py:attribute:: CTA_FILE_URL
       :annotation: = https://sciencebasedtargets.org/download/target-dashboard
+
+      
+
+   .. py:attribute:: USE_CUSTOM_FILE_TARGETS_PATH
+      :annotation: = False
 
       
 

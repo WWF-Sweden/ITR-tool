@@ -20,6 +20,7 @@ Submodules
    csv/index.rst
    data_provider/index.rst
    excel/index.rst
+   inmemory/index.rst
    iss/index.rst
    msci/index.rst
    sbti/index.rst

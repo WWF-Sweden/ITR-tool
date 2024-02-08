@@ -187,6 +187,38 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ITR.data.sbti.</span></span><span class="sig-name descname"><span class="pre">SBTi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../configs/index.html#ITR.configs.PortfolioCoverageTVPConfig" title="ITR.configs.PortfolioCoverageTVPConfig"><span class="pre">ITR.configs.PortfolioCoverageTVPConfig</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">PortfolioCoverageTVPConfig</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.data.sbti.SBTi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Data provider skeleton for SBTi. This class only provides the sbti_validated field for existing companies.</p>
 <dl class="py method">
+<dt class="sig sig-object py" id="ITR.data.sbti.SBTi._check_if_cta_file_exists">
+<span class="sig-name descname"><span class="pre">_check_if_cta_file_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.data.sbti.SBTi._check_if_cta_file_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the CTA file exists in the local file system</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ITR.data.sbti.SBTi.handle_cta_file">
+<span class="sig-name descname"><span class="pre">handle_cta_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.data.sbti.SBTi.handle_cta_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ITR.data.sbti.SBTi._check_CTA_less_than_one_week_old">
+<span class="sig-name descname"><span class="pre">_check_CTA_less_than_one_week_old</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.data.sbti.SBTi._check_CTA_less_than_one_week_old" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the CTA file is older than a week</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ITR.data.sbti.SBTi._use_local_cta_file">
+<span class="sig-name descname"><span class="pre">_use_local_cta_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.data.sbti.SBTi._use_local_cta_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ITR.data.sbti.SBTi._download_cta_file">
+<span class="sig-name descname"><span class="pre">_download_cta_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.data.sbti.SBTi._download_cta_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ITR.data.sbti.SBTi._fetch_and_save_cta_file">
+<span class="sig-name descname"><span class="pre">_fetch_and_save_cta_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.data.sbti.SBTi._fetch_and_save_cta_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ITR.data.sbti.SBTi.filter_cta_file">
 <span class="sig-name descname"><span class="pre">filter_cta_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.data.sbti.SBTi.filter_cta_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Filter the CTA file to create a dataframe that has one row per company

@@ -21,6 +21,28 @@ Classes
 
    Data provider skeleton for SBTi. This class only provides the sbti_validated field for existing companies.
 
+   .. py:method:: _check_if_cta_file_exists(self)
+
+      Check if the CTA file exists in the local file system
+
+
+   .. py:method:: handle_cta_file(self)
+
+
+   .. py:method:: _check_CTA_less_than_one_week_old(self)
+
+      Check if the CTA file is older than a week
+
+
+   .. py:method:: _use_local_cta_file(self)
+
+
+   .. py:method:: _download_cta_file(self)
+
+
+   .. py:method:: _fetch_and_save_cta_file(self)
+
+
    .. py:method:: filter_cta_file(self, targets)
 
       Filter the CTA file to create a dataframe that has one row per company

@@ -178,7 +178,7 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ITR.target_validation.TargetProtocol" title="ITR.target_validation.TargetProtocol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TargetProtocol</span></code></a></p></td>
-<td><p>This class validates the targets, to make sure that only active, useful targets are considered. It then combines the targets with company-related data into a dataframe where there's one row for each of the nine possible target types (short, mid, long * S1+S2, S3, S1+S2+S3). This class follows the procedures outlined by the target protocol that is a part of the &quot;Temperature Rating Methodology&quot; (2020), which has been created by CDP Worldwide and WWF International.</p></td>
+<td><p>This class validates the targets, to make sure that only active, useful</p></td>
 </tr>
 </tbody>
 </table>
@@ -204,7 +204,13 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="ITR.target_validation.TargetProtocol">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ITR.target_validation.</span></span><span class="sig-name descname"><span class="pre">TargetProtocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../configs/index.html#ITR.configs.PortfolioAggregationConfig" title="ITR.configs.PortfolioAggregationConfig"><span class="pre">ITR.configs.PortfolioAggregationConfig</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">PortfolioAggregationConfig</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.target_validation.TargetProtocol" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class validates the targets, to make sure that only active, useful targets are considered. It then combines the targets with company-related data into a dataframe where there’s one row for each of the nine possible target types (short, mid, long * S1+S2, S3, S1+S2+S3). This class follows the procedures outlined by the target protocol that is a part of the “Temperature Rating Methodology” (2020), which has been created by CDP Worldwide and WWF International.</p>
+<dd><p>This class validates the targets, to make sure that only active, useful
+targets are considered. It then combines the targets with company-related
+data into a dataframe where there’s one row for each of the nine possible
+target types (short, mid, long * S1+S2, S3, S1+S2+S3).
+This class follows the procedures outlined by the target protocol that is
+a part of the “Temperature Rating Methodology” (2020), which has been created
+by CDP Worldwide and WWF International.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>config</strong> – A Portfolio aggregation config</p>
@@ -271,6 +277,14 @@ and combine them into one target.</p>
 <dd class="field-even"><p>The combined target (or the original if no combining was required)</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ITR.target_validation.TargetProtocol._cover_s1_s2">
+<span class="sig-name descname"><span class="pre">_cover_s1_s2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></span><a class="headerlink" href="#ITR.target_validation.TargetProtocol._cover_s1_s2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the S1 and S2 coverage of a S1+S2 target to the same value.
+:param target: The input target
+:return: The modified target (or the original if no modification was required)</p>
 </dd></dl>
 
 <dl class="py method">
