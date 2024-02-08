@@ -256,7 +256,7 @@ class EndToEndTest(unittest.TestCase):
             company_id="A",
             scope=EScope.S1,
             end_year=self.mid_end_year,
-            coverage_s1=0.75,
+            coverage_s1=1.0,
             target_ids="A_target-1: should be combined with A_target-2",
         )
         should_use_targets.append(target)
@@ -331,6 +331,9 @@ class EndToEndTest(unittest.TestCase):
         actually_used_target_ids = set([target_id for targets in scores["target_ids"].tolist() for target_id in targets or []])
         should_drop_target_ids = set([target for provider in should_drop_targets for target in provider.target_ids])
         should_use_target_ids = set([target for provider in should_use_targets for target in provider.target_ids])
+        # print("should_use_target_ids:", should_use_target_ids)
+        # print("actually_used_target_ids:", actually_used_target_ids)
+        # scores.to_csv("/home/mountainrambler/ITR/ITR-tool/examples/data/local/target_ids_scores.csv")
 
         assert not should_use_target_ids.symmetric_difference(actually_used_target_ids)
         assert not should_drop_target_ids.intersection(actually_used_target_ids)

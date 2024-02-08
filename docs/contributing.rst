@@ -6,7 +6,7 @@ the documentation are also very welcome.
 
 Submitting a bug report or a feature request
 ==============================================
-To keep track of open issues and feature requests, we will use `Github's issue tracker <https://github.com//WWF_Sweden/ITR-tool/issues/>`_.
+To keep track of open issues and feature requests, we will use `Github's issue tracker <https://github.com//WWF-Sweden/ITR-tool/issues/>`_.
 
 If you encounter any bugs or missing features, please do not hesitate to open a ticket. Before submitting a report, please check that the issue has not already been reported.
 For ease of comprehension, please ensure your report includes the following characteristics:

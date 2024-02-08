@@ -1,0 +1,191 @@
+[
+    {
+        "samplesize": 128,
+        "model": 4,
+        "variable": "Emissions|Kyoto Gases",
+        "slope": "slope5",
+        "param": -0.212692102,
+        "intercept": 2.5743030212,
+        "r2": 0.6090393844
+    },
+    {
+        "samplesize": 133,
+        "model": 4,
+        "variable": "Emissions|CO2|Energy and Industrial Processes",
+        "slope": "slope15",
+        "param": -0.3116483264,
+        "intercept": 2.6172783355,
+        "r2": 0.8457405949
+    },
+    {
+        "samplesize": 128,
+        "model": 4,
+        "variable": "Emissions|Kyoto Gases",
+        "slope": "slope30",
+        "param": -0.4833305282,
+        "intercept": 2.8413379465,
+        "r2": 0.9257680213
+    },
+    {
+        "samplesize": 133,
+        "model": 4,
+        "variable": "Emissions|CO2|Energy and Industrial Processes",
+        "slope": "slope5",
+        "param": -0.2599041339,
+        "intercept": 2.5226710109,
+        "r2": 0.7047774167
+    },
+    {
+        "samplesize": 133,
+        "model": 4,
+        "variable": "Emissions|CO2|Energy and Industrial Processes",
+        "slope": "slope30",
+        "param": -0.4439613964,
+        "intercept": 2.7233416709,
+        "r2": 0.9005513256
+    },
+    {
+        "samplesize": 128,
+        "model": 4,
+        "variable": "INT.emKyoto_gdp",
+        "slope": "slope5",
+        "param": -0.2730328634,
+        "intercept": 3.534302686,
+        "r2": 0.5980439184
+    },
+    {
+        "samplesize": 128,
+        "model": 4,
+        "variable": "INT.emKyoto_gdp",
+        "slope": "slope30",
+        "param": -1.1044326369,
+        "intercept": 4.9271158185,
+        "r2": 0.9007060679
+    },
+    {
+        "samplesize": 108,
+        "model": 4,
+        "variable": "INT.emCO2Elec_elecGen",
+        "slope": "slope5",
+        "param": -0.2778475945,
+        "intercept": 3.2137727663,
+        "r2": 0.6211638615
+    },
+    {
+        "samplesize": 108,
+        "model": 4,
+        "variable": "INT.emCO2Elec_elecGen",
+        "slope": "slope30",
+        "param": -0.5746847325,
+        "intercept": 3.7006088499,
+        "r2": 0.7197276059
+    },
+    {
+        "samplesize": 131,
+        "model": 4,
+        "variable": "INT.emCO2EI_PE",
+        "slope": "slope5",
+        "param": -0.6179019176,
+        "intercept": 2.9848426222,
+        "r2": 0.671716475
+    },
+    {
+        "samplesize": 131,
+        "model": 4,
+        "variable": "INT.emCO2EI_PE",
+        "slope": "slope30",
+        "param": -0.6563070393,
+        "intercept": 3.2083615089,
+        "r2": 0.838314119
+    },
+    {
+        "samplesize": 131,
+        "model": 4,
+        "variable": "INT.emCO2EI_elecGen",
+        "slope": "slope5",
+        "param": -0.3662228864,
+        "intercept": 3.3071253727,
+        "r2": 0.6408920067
+    },
+    {
+        "samplesize": 128,
+        "model": 4,
+        "variable": "Emissions|Kyoto Gases",
+        "slope": "slope15",
+        "param": -0.3123287651,
+        "intercept": 2.6972610131,
+        "r2": 0.8295234592
+    },
+    {
+        "samplesize": 131,
+        "model": 4,
+        "variable": "INT.emCO2EI_elecGen",
+        "slope": "slope30",
+        "param": -0.7833406645,
+        "intercept": 3.8993236121,
+        "r2": 0.8852834083
+    },
+    {
+        "samplesize": 77,
+        "model": 4,
+        "variable": "INT.emCO2Transport_gdp",
+        "slope": "slope5",
+        "param": -0.1726421937,
+        "intercept": 2.5940533662,
+        "r2": 0.2589997821
+    },
+    {
+        "samplesize": 77,
+        "model": 4,
+        "variable": "INT.emCO2Transport_gdp",
+        "slope": "slope30",
+        "param": -0.7818414267,
+        "intercept": 3.6281688599,
+        "r2": 0.7111315688
+    },
+    {
+        "samplesize": 128,
+        "model": 4,
+        "variable": "INT.emKyoto_gdp",
+        "slope": "slope15",
+        "param": -0.5338780872,
+        "intercept": 4.1073771512,
+        "r2": 0.8266921487
+    },
+    {
+        "samplesize": 131,
+        "model": 4,
+        "variable": "INT.emCO2EI_PE",
+        "slope": "slope15",
+        "param": -0.5149241425,
+        "intercept": 3.003900208,
+        "r2": 0.7489558544
+    },
+    {
+        "samplesize": 131,
+        "model": 4,
+        "variable": "INT.emCO2EI_elecGen",
+        "slope": "slope15",
+        "param": -0.4114279201,
+        "intercept": 3.3704916919,
+        "r2": 0.7434218085
+    },
+    {
+        "samplesize": 108,
+        "model": 4,
+        "variable": "INT.emCO2Elec_elecGen",
+        "slope": "slope15",
+        "param": -0.3348584339,
+        "intercept": 3.3326495003,
+        "r2": 0.7128386747
+    },
+    {
+        "samplesize": 77,
+        "model": 4,
+        "variable": "INT.emCO2Transport_gdp",
+        "slope": "slope15",
+        "param": -0.3753916798,
+        "intercept": 3.0389577047,
+        "r2": 0.5478334794
+    }
+]

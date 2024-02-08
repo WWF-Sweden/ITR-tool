@@ -18,7 +18,13 @@ logger = logging.getLogger(__name__)
 
 class TargetProtocol:
     """
-    This class validates the targets, to make sure that only active, useful targets are considered. It then combines the targets with company-related data into a dataframe where there's one row for each of the nine possible target types (short, mid, long * S1+S2, S3, S1+S2+S3). This class follows the procedures outlined by the target protocol that is a part of the "Temperature Rating Methodology" (2020), which has been created by CDP Worldwide and WWF International.
+    This class validates the targets, to make sure that only active, useful 
+    targets are considered. It then combines the targets with company-related 
+    data into a dataframe where there's one row for each of the nine possible 
+    target types (short, mid, long * S1+S2, S3, S1+S2+S3). 
+    This class follows the procedures outlined by the target protocol that is 
+    a part of the "Temperature Rating Methodology" (2020), which has been created 
+    by CDP Worldwide and WWF International.
 
     :param config: A Portfolio aggregation config
     """
@@ -112,6 +118,12 @@ class TargetProtocol:
             and not pd.isnull(target.base_year_ghg_s1)
             and not pd.isnull(target.base_year_ghg_s2)
         )
+        s1s2 = target.scope != EScope.S1S2 or (
+            target.coverage_s1 == target.coverage_s2 or (
+            not pd.isnull(target.base_year_ghg_s1)
+            and not pd.isnull(target.base_year_ghg_s2)
+            )
+        )
         return (
             target_type 
             and target_process 
@@ -119,6 +131,7 @@ class TargetProtocol:
             and target_current 
             and s1 
             and s2
+            and s1s2
         )
     
     @staticmethod
@@ -205,7 +218,24 @@ class TargetProtocol:
                 target.target_ids = target.target_ids + s2.target_ids
         return target
 
-    
+    def _cover_s1_s2(self, target: IDataProviderTarget)-> IDataProviderTarget:
+        """
+        Set the S1 and S2 coverage of a S1+S2 target to the same value.
+        :param target: The input target
+        :return: The modified target (or the original if no modification was required)
+        """
+        if target.scope == EScope.S1S2 and target.coverage_s1 != target.coverage_s2:
+            if pd.isna(target.coverage_s1):
+                target.coverage_s1 = 0.0
+            if pd.isna(target.coverage_s2):
+                target.coverage_s2 = 0.0
+            combined_coverage = (
+                target.coverage_s1 * target.base_year_ghg_s1
+                + target.coverage_s2 * target.base_year_ghg_s2
+            ) / (target.base_year_ghg_s1 + target.base_year_ghg_s2)
+            target.coverage_s1 = combined_coverage
+            target.coverage_s2 = combined_coverage
+        return target
     
     @staticmethod
     def _convert_s1_s2_into_combined(
@@ -333,6 +363,7 @@ class TargetProtocol:
         # instead of all running each target through all four APIs.
         # This means that we don't have to call _prepare_target.
         targets = [self._combine_s1_s2(target) for target in targets]
+        targets = [self._cover_s1_s2(target) for target in targets]
         targets = [self._convert_s1_s2_into_combined(target) for target in targets]
         targets = [
             self._scale_reduction_ambition_by_boundary_coverage(target)
@@ -350,7 +381,7 @@ class TargetProtocol:
         :param target_columns: The columns to return
         :return: records from the input data, which contains company and target information, that meet specific criteria. For example, record of greatest emissions_in_scope
         """
-
+        self.target_data.sort_index(level=self.target_data.index.names)
         # Find all targets that correspond to the given row
         try:
             target_data = self.target_data.loc[
