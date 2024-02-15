@@ -18,6 +18,9 @@ class ExcelProvider(DataProvider):
     def __init__(self, path: str, config: Type[ColumnsConfig] = ColumnsConfig):
         super().__init__()
         self.data = pd.read_excel(path, sheet_name=None, skiprows=0)
+        # Set all missing coverage values to 0.0
+        self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3']] = \
+            self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3']].fillna(0.0)
         self.c = config
 
     def get_targets(self, company_ids: List[str]) -> List[IDataProviderTarget]:
