@@ -51,7 +51,8 @@ class EndToEndTest(unittest.TestCase):
 
     def setUp(self):
         company_id = "BaseCompany"
-        self.BASE_COMP_SCORE = 0.43
+        self.BASE_COMP_SCORE = 0.54
+        self.BASE_COMP_SCORE_GROUP = 0.5175
 
         # target end years which align to (short, mid, long) time frames
         # this is a goo idea but needs reflected in refrence scores
@@ -228,7 +229,7 @@ class EndToEndTest(unittest.TestCase):
 
         # verify that results exist
         self.assertAlmostEqual(
-            agg_scores.mid.S1S2.all.score, self.BASE_COMP_SCORE, places=4
+            agg_scores.mid.S1S2.all.score, self.BASE_COMP_SCORE_GROUP, places=4
         )
 
     def test_target_ids(self):

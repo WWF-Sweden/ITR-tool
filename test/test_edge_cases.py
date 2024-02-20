@@ -42,7 +42,7 @@ class TestDataProvider(DataProvider):
 class EdgeCasesTest(unittest.TestCase):
     def setUp(self):
         company_id = "BaseCompany"
-        self.BASE_COMP_SCORE = 0.43
+        self.BASE_COMP_SCORE = 0.54
         self.company_base = IDataProviderCompany(
             company_name=company_id,
             company_id=company_id,

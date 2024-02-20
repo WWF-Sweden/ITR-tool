@@ -296,7 +296,6 @@ class TargetProtocol:
         ** End of old text
         :param target: The input target
         :return: The original target with a weighted reduction ambition, if so required
-        
         if target.scope == EScope.S1S2:
             if target.coverage_s1 < 0.95:
                 target.reduction_ambition = (
@@ -308,11 +307,12 @@ class TargetProtocol:
                     target.reduction_ambition * target.coverage_s3
                 )
         """
+        
         target.reduction_ambition = (
                     target.reduction_ambition * target.coverage_s1
                 )
+    
         return target
-
     @staticmethod
     def _assign_time_frame(target: IDataProviderTarget) -> IDataProviderTarget:
         """
