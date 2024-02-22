@@ -366,7 +366,7 @@ to set (more ambitious) targets. The following what-if analyses are
 included in the tool:
 
 +--------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Scenario 1   | In this scenario all companies in the portfolio that did not yet set a valid target have been persuaded to set 2.0 Celsius (C) targets. This is simulated by changing all scores that used the default score to a score of 2.0C.    |
+| Scenario 1   | In this scenario all companies in the portfolio that did not yet set a valid target have been persuaded to set 1.75 Celsius (C) targets. This is simulated by changing all scores that used the default score to a score of 1.75C.  |
 +--------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Scenario 2   | In this scenario all companies that already set targets are persuaded to set “Well Below 2.0C (WB2C) targets. This is simulated by setting all scores of the companies that have valid targets to at most 1.75C.                    |
 +--------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+

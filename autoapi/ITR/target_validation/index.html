@@ -209,7 +209,7 @@ targets are considered. It then combines the targets with company-related
 data into a dataframe where there’s one row for each of the nine possible
 target types (short, mid, long * S1+S2, S3, S1+S2+S3).
 This class follows the procedures outlined by the target protocol that is
-a part of the “Temperature Rating Methodology” (2020), which has been created
+a part of the “Temperature Rating Methodology” (2024), which has been created
 by CDP Worldwide and WWF International.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -305,7 +305,9 @@ and combine them into one target.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ITR.target_validation.TargetProtocol._scale_reduction_ambition_by_boundary_coverage">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_scale_reduction_ambition_by_boundary_coverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a></span></span><a class="headerlink" href="#ITR.target_validation.TargetProtocol._scale_reduction_ambition_by_boundary_coverage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test on boundary coverage:</p>
+<dd><p>Change in ITR method 1.5: all targets have their ambition scaled by their boundary coverage.
+** Old text follows (remove when confirmed to be correct):
+Test on boundary coverage:</p>
 <p>Option 1: minimal coverage threshold
 For S1+S2 targets: coverage% must be at or above 95%, for S3 targets coverage must be above 67%</p>
 <p>Option 2: weighted coverage
@@ -313,13 +315,30 @@ Thresholds are still 95% and 67%, target is always valid. Below threshold ambiti
 New target ambition = input target ambition * coverage
 <a href="#id1"><span class="problematic" id="id2">*</span></a>either here or in temperature score module</p>
 <p>Option 3: default coverage
-Target is always valid, % uncovered is given default score in temperature score module.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>target</strong> – The input target</p>
+Target is always valid, % uncovered is given default score in temperature score module.
+** End of old text
+:param target: The input target
+:return: The original target with a weighted reduction ambition, if so required
+if target.scope == EScope.S1S2:</p>
+<blockquote>
+<div><dl>
+<dt>if target.coverage_s1 &lt; 0.95:</dt><dd><dl class="simple">
+<dt>target.reduction_ambition = (</dt><dd><p>target.reduction_ambition * target.coverage_s1</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The original target with a weighted reduction ambition, if so required</p>
+</dl>
+<p>)</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl>
+<dt>elif target.scope == EScope.S3:</dt><dd><dl>
+<dt>if target.coverage_s3 &lt; 0.67:</dt><dd><dl class="simple">
+<dt>target.reduction_ambition = (</dt><dd><p>target.reduction_ambition * target.coverage_s3</p>
+</dd>
+</dl>
+<p>)</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
@@ -393,8 +412,9 @@ For each company:</p>
 <p>Group all valid targets based on scope (S1+S2 / S3 / S1+S2+S3) and time frame (short / mid / long-term)
 into 6 categories.</p>
 <p>For each category: if more than 1 target is available, filter based on the following criteria
+– Latest vintage
 – Highest boundary coverage
-– Latest base year
+– Latest end year
 – Target type: Absolute over intensity
 – If all else is equal: average the ambition of targets</p>
 </dd></dl>
@@ -415,7 +435,7 @@ into 6 categories.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2023, WWF Sweden.
+        &#169; Copyright 2024, WWF Sweden.
 
     </p>
   </div>

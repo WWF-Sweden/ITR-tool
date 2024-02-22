@@ -37,7 +37,7 @@ Attributes
    data into a dataframe where there's one row for each of the nine possible 
    target types (short, mid, long * S1+S2, S3, S1+S2+S3). 
    This class follows the procedures outlined by the target protocol that is 
-   a part of the "Temperature Rating Methodology" (2020), which has been created 
+   a part of the "Temperature Rating Methodology" (2024), which has been created 
    by CDP Worldwide and WWF International.
 
    :param config: A Portfolio aggregation config
@@ -102,6 +102,8 @@ Attributes
    .. py:method:: _scale_reduction_ambition_by_boundary_coverage(target: ITR.interfaces.IDataProviderTarget) -> ITR.interfaces.IDataProviderTarget
       :staticmethod:
 
+      Change in ITR method 1.5: all targets have their ambition scaled by their boundary coverage.
+      ** Old text follows (remove when confirmed to be correct):
       Test on boundary coverage:
 
       Option 1: minimal coverage threshold
@@ -114,9 +116,19 @@ Attributes
 
       Option 3: default coverage
       Target is always valid, % uncovered is given default score in temperature score module.
-
+      ** End of old text
       :param target: The input target
       :return: The original target with a weighted reduction ambition, if so required
+      if target.scope == EScope.S1S2:
+          if target.coverage_s1 < 0.95:
+              target.reduction_ambition = (
+                  target.reduction_ambition * target.coverage_s1
+              )
+      elif target.scope == EScope.S3:
+          if target.coverage_s3 < 0.67:
+              target.reduction_ambition = (
+                  target.reduction_ambition * target.coverage_s3
+              )
 
 
    .. py:method:: _assign_time_frame(target: ITR.interfaces.IDataProviderTarget) -> ITR.interfaces.IDataProviderTarget
@@ -164,8 +176,9 @@ Attributes
       into 6 categories.
 
       For each category: if more than 1 target is available, filter based on the following criteria
+      -- Latest vintage
       -- Highest boundary coverage
-      -- Latest base year
+      -- Latest end year
       -- Target type: Absolute over intensity
       -- If all else is equal: average the ambition of targets
 
