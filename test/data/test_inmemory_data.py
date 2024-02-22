@@ -37,7 +37,7 @@ class TestSBTiData(unittest.TestCase):
             os.path.dirname(os.path.realpath(__file__)),
             "../",
             "inputs",
-            "data_test_SBTI_CTA.xlsx",
+            "data_test_local_CTA.xlsx",
         ), sheet_name=None, skiprows=0)
 
         # use the same excel file to execute the same test suites

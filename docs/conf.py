@@ -20,7 +20,7 @@ import sphinx_rtd_theme
 # -- Project information -----------------------------------------------------
 
 project = "WWF Finance Tool"
-copyright = "2023, WWF Sweden"
+copyright = "2024, WWF Sweden"
 author = "WWF Sweden"
 
 

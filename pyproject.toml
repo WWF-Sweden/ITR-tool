@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "wwf-finance-tool"
-version = "0.9.0"
+name = "WWF-ITR"
+version = "v0.9.0"
 description = "This package helps companies and financial institutions to assess the temperature alignment of current targets, commitments, and investment and lending portfolios, and to use this information to develop targets for official validation by the SBTi.'"
 authors = ["wwf <ekonomi-finans@wwf.se>"]
 license = "MIT"
@@ -15,13 +15,13 @@ classifiers = [
     "Intended Audience :: Developers",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3 :: Only",
     "Topic :: Software Development",
     "Topic :: Scientific/Engineering",
 
 ]
-keywords = ['Climate', 'SBTi', 'Finance', 'WWF']
+keywords = ['Climate', 'ITR', 'SBTi', 'Finance', 'WWF']
 packages = [{ include = "ITR" }]
 
 [tool.poetry.urls]

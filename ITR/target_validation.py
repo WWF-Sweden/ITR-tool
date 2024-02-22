@@ -23,7 +23,7 @@ class TargetProtocol:
     data into a dataframe where there's one row for each of the nine possible 
     target types (short, mid, long * S1+S2, S3, S1+S2+S3). 
     This class follows the procedures outlined by the target protocol that is 
-    a part of the "Temperature Rating Methodology" (2020), which has been created 
+    a part of the "Temperature Rating Methodology" (2024), which has been created 
     by CDP Worldwide and WWF International.
 
     :param config: A Portfolio aggregation config
@@ -187,7 +187,10 @@ class TargetProtocol:
                 and t.start_year == target.start_year
                 and t.end_year == target.end_year
                 and t.target_type == target.target_type
-                and t.intensity_metric == target.intensity_metric
+                and (
+                    'abs' in t.target_type.lower() 
+                    or t.intensity_metric == target.intensity_metric
+                )
             ]
             if len(matches) > 0:
                 matches.sort(key=lambda t: t.coverage_s2, reverse=True)
@@ -276,6 +279,8 @@ class TargetProtocol:
         target: IDataProviderTarget,
         ) -> IDataProviderTarget:
         """
+        Change in ITR method 1.5: all targets have their ambition scaled by their boundary coverage.
+        ** Old text follows (remove when confirmed to be correct):
         Test on boundary coverage:
 
         Option 1: minimal coverage threshold
@@ -288,10 +293,9 @@ class TargetProtocol:
 
         Option 3: default coverage
         Target is always valid, % uncovered is given default score in temperature score module.
-
+        ** End of old text
         :param target: The input target
         :return: The original target with a weighted reduction ambition, if so required
-        """
         if target.scope == EScope.S1S2:
             if target.coverage_s1 < 0.95:
                 target.reduction_ambition = (
@@ -302,8 +306,13 @@ class TargetProtocol:
                 target.reduction_ambition = (
                     target.reduction_ambition * target.coverage_s3
                 )
+        """
+        
+        target.reduction_ambition = (
+                    target.reduction_ambition * target.coverage_s1
+                )
+    
         return target
-
     @staticmethod
     def _assign_time_frame(target: IDataProviderTarget) -> IDataProviderTarget:
         """
@@ -425,8 +434,9 @@ class TargetProtocol:
         into 6 categories.
 
         For each category: if more than 1 target is available, filter based on the following criteria
+        -- Latest vintage
         -- Highest boundary coverage
-        -- Latest base year
+        -- Latest end year
         -- Target type: Absolute over intensity
         -- If all else is equal: average the ambition of targets
         """
@@ -438,6 +448,7 @@ class TargetProtocol:
         ]
         companies = self.company_data[self.c.COLS.COMPANY_ID].unique()
         scopes = [EScope.S1S2, EScope.S3, EScope.S1S2S3]
+        #scopes = [EScope.S1, EScope.S2, EScope.S1S2, EScope.S3, EScope.S1S2S3]
         empty_columns = [
             column for column in self.target_data.columns if column not in grid_columns
         ]

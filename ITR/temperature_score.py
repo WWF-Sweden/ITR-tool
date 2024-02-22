@@ -92,18 +92,18 @@ class Scenario:
 
     def get_score_cap(self) -> float:
         if self.engagement_type == EngagementType.SET_TARGETS:
-            return 2.0
+            return 1.75
         elif (
             self.scenario_type == ScenarioType.APPROVED_TARGETS
             or self.engagement_type == EngagementType.SET_SBTI_TARGETS
         ):
-            return 1.75
+            return 1.5
         else:
             return np.NaN
 
     def get_fallback_score(self, fallback_score: float) -> float:
         if self.scenario_type == ScenarioType.TARGETS:
-            return 2.0
+            return 1.75
         else:
             return fallback_score
 
