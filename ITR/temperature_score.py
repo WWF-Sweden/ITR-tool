@@ -229,39 +229,27 @@ class TemperatureScore(PortfolioAggregation):
     def get_annual_reduction_rate(self, target: pd.Series) -> Optional[float]:
         """
         Get the annual reduction rate (or None if not available).
+        From version 1.5 the annual reduction rate is calculated as a 
+        compund annual reduction rate, CAR.
 
         :param target: The target as a row of a dataframe
         :return: The annual reduction
         """
-
-        # 2022-09-01 Bloomberg pointed out need for additional checks in input
-        # Here is the original code:
-        # if pd.isnull(target[self.c.COLS.REDUCTION_AMBITION]):
-        #     return None
-
-        # try:
-        #     return target[self.c.COLS.REDUCTION_AMBITION] / float(
-        #         target[self.c.COLS.END_YEAR] - target[self.c.COLS.BASE_YEAR]
-        #     )
-        # except ZeroDivisionError:
-        #     raise ValueError(
-        #         "Couldn't calculate the annual reduction rate because the start and target year are the "
-        #         "same"
-        #     )
-
-        # Bloombergs proposal - changed 2022-09-01
         check = pd.isnull(target[self.c.COLS.REDUCTION_AMBITION])
         check = check or pd.isnull(target[self.c.COLS.END_YEAR])
         check = check or pd.isnull(target[self.c.COLS.BASE_YEAR])
         check = check or (target[self.c.COLS.END_YEAR] <= target[self.c.COLS.BASE_YEAR])
-        # add check that target is not too old - moved to target_validation Nov22
-        # check = check or (target[self.c.COLS.END_YEAR] < datetime.datetime.now().year)
+        
         if check:
             return None
-        return target[self.c.COLS.REDUCTION_AMBITION] / float(
-            target[self.c.COLS.END_YEAR] - target[self.c.COLS.BASE_YEAR]
-        )
-        # End of BBGs code
+        else:
+            # CAR = (1-target[self.c.COLS.REDUCTION_AMBITION]) ** float(
+            #     1 / (target[self.c.COLS.END_YEAR] - target[self.c.COLS.BASE_YEAR])
+            # ) -1
+
+            LAR = target[self.c.COLS.REDUCTION_AMBITION] / float(
+                target[self.c.COLS.END_YEAR] - target[self.c.COLS.BASE_YEAR])
+            return abs(LAR)
 
     def get_regression(
         self, target: pd.Series
@@ -373,7 +361,10 @@ class TemperatureScore(PortfolioAggregation):
         combined_targets = ((s1s2_targets or []) + (s3[self.c.COLS.TARGET_IDS] or [])) or None
 
         # Bloomberg proposal to return original score (changed 2022-09-01) if ghg scope12 or 3 is empty
-        if pd.isnull(s1s2[self.c.COLS.GHG_SCOPE12]) or pd.isnull(s3[self.c.COLS.GHG_SCOPE3]):
+        if (pd.isnull(s1s2[self.c.COLS.GHG_SCOPE1]) or
+                pd.isnull(s1s2[self.c.COLS.GHG_SCOPE2]) or
+                pd.isnull(s3[self.c.COLS.GHG_SCOPE3])
+            ):
             return (
                 row[self.c.COLS.TEMPERATURE_SCORE],
                 row[self.c.TEMPERATURE_RESULTS],
@@ -381,35 +372,35 @@ class TemperatureScore(PortfolioAggregation):
             )
         
         try:
-            # If the s3 emissions are less than 40 percent, we'll ignore them altogether, if not, we'll weigh them
-            if (
-                s3[self.c.COLS.GHG_SCOPE3]
-                / (s1s2[self.c.COLS.GHG_SCOPE12] + s3[self.c.COLS.GHG_SCOPE3])
-                < 0.4
-            ):
-                return (
-                    s1s2[self.c.COLS.TEMPERATURE_SCORE],
-                    s1s2[self.c.TEMPERATURE_RESULTS],
-                    s1s2_targets,
+            # # If the s3 emissions are less than 40 percent, we'll ignore them altogether, if not, we'll weigh them
+            # if (
+            #     s3[self.c.COLS.GHG_SCOPE3]
+            #     / (s1s2[self.c.COLS.GHG_SCOPE12] + s3[self.c.COLS.GHG_SCOPE3])
+            #     < 0.4
+            # ):
+            #     return (
+            #         s1s2[self.c.COLS.TEMPERATURE_SCORE],
+            #         s1s2[self.c.TEMPERATURE_RESULTS],
+            #         s1s2_targets,
+            #     )
+            # else:
+            company_emissions = (
+                s1s2[self.c.COLS.GHG_SCOPE12] + s3[self.c.COLS.GHG_SCOPE3]
+            )
+            return (
+                (
+                    s1s2[self.c.COLS.TEMPERATURE_SCORE]
+                    * s1s2[self.c.COLS.GHG_SCOPE12]
+                    + s3[self.c.COLS.TEMPERATURE_SCORE] * s3[self.c.COLS.GHG_SCOPE3]
                 )
-            else:
-                company_emissions = (
-                    s1s2[self.c.COLS.GHG_SCOPE12] + s3[self.c.COLS.GHG_SCOPE3]
+                / company_emissions,
+                (
+                    s1s2[self.c.TEMPERATURE_RESULTS] * s1s2[self.c.COLS.GHG_SCOPE12]
+                    + s3[self.c.TEMPERATURE_RESULTS] * s3[self.c.COLS.GHG_SCOPE3]
                 )
-                return (
-                    (
-                        s1s2[self.c.COLS.TEMPERATURE_SCORE]
-                        * s1s2[self.c.COLS.GHG_SCOPE12]
-                        + s3[self.c.COLS.TEMPERATURE_SCORE] * s3[self.c.COLS.GHG_SCOPE3]
-                    )
-                    / company_emissions,
-                    (
-                        s1s2[self.c.TEMPERATURE_RESULTS] * s1s2[self.c.COLS.GHG_SCOPE12]
-                        + s3[self.c.TEMPERATURE_RESULTS] * s3[self.c.COLS.GHG_SCOPE3]
-                    )
-                    / company_emissions,
-                    combined_targets,
-                )
+                / company_emissions,
+                combined_targets,
+            )
 
         # TODO - this doesn't get triggered if denom is np.float64, instead returns an (inf, inf),
         #  which 'ruins' the default score return and end up with NULL values where should have defaults
@@ -488,7 +479,8 @@ class TemperatureScore(PortfolioAggregation):
                     self.c.COLS.COMPANY_ID,
                     self.c.COLS.TIME_FRAME,
                     self.c.COLS.SCOPE,
-                    self.c.COLS.GHG_SCOPE12,
+                    self.c.COLS.GHG_SCOPE1,
+                    self.c.COLS.GHG_SCOPE2,
                     self.c.COLS.GHG_SCOPE3,
                     self.c.COLS.TEMPERATURE_SCORE,
                     self.c.COLS.TARGET_IDS,
@@ -501,7 +493,8 @@ class TemperatureScore(PortfolioAggregation):
             .agg(
                 # take the mean of numeric columns, list-append self.c.COLS.TARGET_IDS
                 {
-                    self.c.COLS.GHG_SCOPE12: "mean",
+                    self.c.COLS.GHG_SCOPE1: "mean",
+                    self.c.COLS.GHG_SCOPE2: "mean",
                     self.c.COLS.GHG_SCOPE3: "mean",
                     self.c.COLS.TEMPERATURE_SCORE: "mean",
                     self.c.TEMPERATURE_RESULTS: "mean",

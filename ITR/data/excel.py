@@ -19,8 +19,8 @@ class ExcelProvider(DataProvider):
         super().__init__()
         self.data = pd.read_excel(path, sheet_name=None, skiprows=0)
         # Set all missing coverage values to 0.0
-        self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3']] = \
-            self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3']].fillna(0.0)
+        self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3', 'reduction_ambition']] = \
+            self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3', 'reduction_ambition']].fillna(0.0)
         self.c = config
 
     def get_targets(self, company_ids: List[str]) -> List[IDataProviderTarget]:
@@ -71,6 +71,10 @@ class ExcelProvider(DataProvider):
         model_companies: List[IDataProviderCompany] = [
             IDataProviderCompany.parse_obj(company) for company in companies
         ]
+        for company in model_companies:
+            if company.ghg_s1 is not None and company.ghg_s2 is not None:
+                company.ghg_s1s2 = company.ghg_s1 + company.ghg_s2
+
         model_companies = [
             target for target in model_companies if target.company_id in company_ids
         ]

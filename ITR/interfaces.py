@@ -1,4 +1,5 @@
 from enum import Enum
+from datetime import date
 from typing import Optional, Dict, List
 
 import pandas as pd
@@ -71,7 +72,9 @@ class IDataProviderCompany(BaseModel):
     company_name: str
     company_id: str
     isic: str
-    ghg_s1s2: Optional[float]
+    ghg_s1: Optional[float]
+    ghg_s2: Optional[float]
+    ghg_s1s2: Optional[float] = None 
     ghg_s3: Optional[float]
 
     country: Optional[str]
@@ -92,7 +95,7 @@ class IDataProviderCompany(BaseModel):
         False,
         description='True if the SBTi target status is "Target set", false otherwise',
     )
-
+    
 
 class SortableEnum(Enum):
     def __str__(self):
@@ -164,6 +167,7 @@ class IDataProviderTarget(BaseModel):
     
     start_year: Optional[int]
     end_year: int
+    statement_date: Optional[date]
     time_frame: Optional[ETimeFrames]
     achieved_reduction: Optional[float] = 0
 
@@ -191,3 +195,18 @@ class IDataProviderTarget(BaseModel):
         if pd.isnull(v):
             return []
         return [v]
+    
+    def equals(self, other: "IDataProviderTarget") -> bool:
+        """
+        Check if two targets are equal.
+        :param other: The other target
+        :return: True if the targets are equal, False otherwise
+        """
+        return (self.company_id == other.company_id 
+                and self.target_type == other.target_type 
+                and self.scope == other.scope 
+                and self.base_year == other.base_year 
+                and self.end_year == other.end_year 
+                and self.time_frame == other.time_frame 
+                and self.target_ids == other.target_ids
+        )

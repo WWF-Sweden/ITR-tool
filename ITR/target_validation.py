@@ -1,6 +1,7 @@
 import datetime
 import itertools
 import logging
+import copy
 
 import pandas as pd
 from typing import Type, List, Tuple, Optional
@@ -90,7 +91,7 @@ class TargetProtocol:
             and target.intensity_metric.lower() != "other"
         )
         # The target should not have achieved its reduction yet.
-        target_process = (
+        target_progress = (
             pd.isnull(target.achieved_reduction)
             or target.achieved_reduction is None
             or target.achieved_reduction < 1
@@ -126,7 +127,7 @@ class TargetProtocol:
         )
         return (
             target_type 
-            and target_process 
+            and target_progress 
             and target_end_year 
             and target_current 
             and s1 
@@ -227,6 +228,7 @@ class TargetProtocol:
         :param target: The input target
         :return: The modified target (or the original if no modification was required)
         """
+        #TODO - is this method required given the new scaling of reduction ambition?
         if target.scope == EScope.S1S2 and target.coverage_s1 != target.coverage_s2:
             if pd.isna(target.coverage_s1):
                 target.coverage_s1 = 0.0
@@ -280,46 +282,49 @@ class TargetProtocol:
         ) -> IDataProviderTarget:
         """
         Change in ITR method 1.5: all targets have their ambition scaled by their boundary coverage.
-        ** Old text follows (remove when confirmed to be correct):
-        Test on boundary coverage:
-
-        Option 1: minimal coverage threshold
-        For S1+S2 targets: coverage% must be at or above 95%, for S3 targets coverage must be above 67%
-
-        Option 2: weighted coverage
-        Thresholds are still 95% and 67%, target is always valid. Below threshold ambition is scaled.*
-        New target ambition = input target ambition * coverage
-        *either here or in temperature score module
-
-        Option 3: default coverage
-        Target is always valid, % uncovered is given default score in temperature score module.
-        ** End of old text
         :param target: The input target
         :return: The original target with a weighted reduction ambition, if so required
-        if target.scope == EScope.S1S2:
-            if target.coverage_s1 < 0.95:
-                target.reduction_ambition = (
-                    target.reduction_ambition * target.coverage_s1
-                )
-        elif target.scope == EScope.S3:
-            if target.coverage_s3 < 0.67:
-                target.reduction_ambition = (
-                    target.reduction_ambition * target.coverage_s3
-                )
         """
-        
-        target.reduction_ambition = (
-                    target.reduction_ambition * target.coverage_s1
-                )
-    
+        if target.scope == EScope.S1:
+            target.reduction_ambition = (
+                target.reduction_ambition * target.coverage_s1
+            )
+        elif target.scope == EScope.S2:
+            target.reduction_ambition = (
+                target.reduction_ambition * target.coverage_s2
+            )
+        elif target.scope == EScope.S3:
+            target.reduction_ambition = (
+                target.reduction_ambition * target.coverage_s3
+            )
+        elif target.scope == EScope.S1S2:
+            if pd.isna(target.coverage_s1):
+                target.coverage_s1 = 0.0
+            if pd.isna(target.coverage_s2):
+                target.coverage_s2 = 0.0
+            if (
+                not pd.isnull(target.base_year_ghg_s1)
+                and not pd.isnull(target.base_year_ghg_s2)
+                and target.base_year_ghg_s1 + target.base_year_ghg_s2 != 0):
+                    combined_coverage = (
+                        target.coverage_s1 * target.base_year_ghg_s1
+                        + target.coverage_s2 * target.base_year_ghg_s2
+                    ) / (target.base_year_ghg_s1 + target.base_year_ghg_s2)
+                #TODO do we need to set these values?
+                #target.coverage_s1 = combined_coverage
+                #target.coverage_s2 = combined_coverage
+                    target.reduction_ambition = (
+                        target.reduction_ambition * combined_coverage
+                    )
+            
         return target
     @staticmethod
     def _assign_time_frame(target: IDataProviderTarget) -> IDataProviderTarget:
         """
         Time frame is forward looking: target year - current year. 
             Less than 5y = short, 
-            between 5 and 15 is mid, 
-            15 to 30 is long
+            between 5 and 10 is mid, 
+            more than 10 is long
 
         :param target: The input target
         :return: The original target with the time_frame field filled out (if so required)
@@ -328,9 +333,9 @@ class TargetProtocol:
         time_frame = target.end_year - now.year
         if time_frame <= 4:
             target.time_frame = ETimeFrames.SHORT
-        elif time_frame <= 15:
+        elif time_frame <= 10:
             target.time_frame = ETimeFrames.MID
-        elif time_frame <= 30:
+        elif time_frame > 10:
             target.time_frame = ETimeFrames.LONG
 
         return target
@@ -366,18 +371,30 @@ class TargetProtocol:
                 None, itertools.chain.from_iterable(map(self._split_s1s2s3, targets))
             )
         )
-        # BBG proposal - changed 2022-09-01
-        # targets = [self._prepare_target(target) for target in targets]
-        # Apply the four APIs on all targets one API at a time
-        # instead of all running each target through all four APIs.
-        # This means that we don't have to call _prepare_target.
-        targets = [self._combine_s1_s2(target) for target in targets]
-        targets = [self._cover_s1_s2(target) for target in targets]
-        targets = [self._convert_s1_s2_into_combined(target) for target in targets]
+        
+        #targets = [self._combine_s1_s2(target) for target in targets]
         targets = [
             self._scale_reduction_ambition_by_boundary_coverage(target)
             for target in targets
         ]
+        # Combine S1 and S2 targets that are identical in all but coverage
+        new_targets = []
+        for target in targets:
+            new_target = self._combine_s1_s2(copy.deepcopy(target))
+            new_targets.append(target) # keep the original target
+            if not target.equals(new_target):
+                new_targets.append(new_target) # add the combined target if it's different
+        targets = new_targets
+        # 
+        targets = [self._cover_s1_s2(target) for target in targets]
+        combined_targets = []
+        for target in targets:
+            combined_targets.append(target)
+            new_target = self._convert_s1_s2_into_combined(copy.deepcopy(target))
+            if not target.equals(new_target):
+                combined_targets.append(new_target)
+        targets = combined_targets
+        #targets = [self._convert_s1_s2_into_combined(target) for target in targets]
         targets = [self._assign_time_frame(target) for target in targets]
 
         return targets
@@ -408,16 +425,19 @@ class TargetProtocol:
                     coverage_column = self.c.COLS.COVERAGE_S3
                 else:
                     coverage_column = self.c.COLS.COVERAGE_S1
-                # In case more than one target is available; we prefer targets with higher coverage,
+                # In case more than one target is available; we prefer targets with 
+                # later confirmation date, 
+                # higher coverage,
                 # later end year, and target type 'absolute'
                 return target_data.sort_values(
                     by=[
+                        self.c.COLS.TARGET_CONFIRM_DATE,
                         coverage_column,
                         self.c.COLS.END_YEAR,
                         self.c.COLS.TARGET_REFERENCE_NUMBER,
                     ],
                     axis=0,
-                    ascending=[False, False, True],
+                    ascending=[False, False, False, True],
                 ).iloc[0][target_columns]
         except KeyError:
             # No target found
@@ -447,8 +467,8 @@ class TargetProtocol:
             self.c.COLS.SCOPE,
         ]
         companies = self.company_data[self.c.COLS.COMPANY_ID].unique()
-        scopes = [EScope.S1S2, EScope.S3, EScope.S1S2S3]
-        #scopes = [EScope.S1, EScope.S2, EScope.S1S2, EScope.S3, EScope.S1S2S3]
+        #scopes = [EScope.S1S2, EScope.S3, EScope.S1S2S3]
+        scopes = [EScope.S1, EScope.S2, EScope.S1S2, EScope.S3, EScope.S1S2S3]
         empty_columns = [
             column for column in self.target_data.columns if column not in grid_columns
         ]
