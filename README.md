@@ -39,7 +39,7 @@ pip install -e .
 For installing the latest stable release in PyPi run:
 
 ```bash
-pip install sbti-finance-tool
+pip install wwf-itr
 ```
 
 ## Development
