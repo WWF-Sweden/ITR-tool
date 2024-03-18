@@ -243,13 +243,13 @@ class TemperatureScore(PortfolioAggregation):
         if check:
             return None
         else:
-            # CAR = (1-target[self.c.COLS.REDUCTION_AMBITION]) ** float(
-            #     1 / (target[self.c.COLS.END_YEAR] - target[self.c.COLS.BASE_YEAR])
-            # ) -1
+            CAR = (1-target[self.c.COLS.REDUCTION_AMBITION]) ** float(
+                1 / (target[self.c.COLS.END_YEAR] - target[self.c.COLS.BASE_YEAR])
+            ) -1
 
-            LAR = target[self.c.COLS.REDUCTION_AMBITION] / float(
-                target[self.c.COLS.END_YEAR] - target[self.c.COLS.BASE_YEAR])
-            return abs(LAR)
+            # LAR = target[self.c.COLS.REDUCTION_AMBITION] / float(
+            #     target[self.c.COLS.END_YEAR] - target[self.c.COLS.BASE_YEAR])
+            return abs(CAR)
 
     def get_regression(
         self, target: pd.Series
@@ -286,7 +286,7 @@ class TemperatureScore(PortfolioAggregation):
     def _merge_regression(self, data: pd.DataFrame):
         """
         Merge the data with the regression parameters from the SBTi model.
-
+        TODO - why call this "SBTi model"?
         :param data: The data to merge
         :return: The data set, amended with the regression parameters
         """
@@ -349,20 +349,24 @@ class TemperatureScore(PortfolioAggregation):
                 row[self.c.TEMPERATURE_RESULTS],
                 row[self.c.COLS.TARGET_IDS],
             )
-        s1s2 = company_data.loc[
-            (row[self.c.COLS.COMPANY_ID], row[self.c.COLS.TIME_FRAME], EScope.S1S2)
+        s1 = company_data.loc[
+            (row[self.c.COLS.COMPANY_ID], row[self.c.COLS.TIME_FRAME], EScope.S1)
+        ]
+        s2 = company_data.loc[
+            (row[self.c.COLS.COMPANY_ID], row[self.c.COLS.TIME_FRAME], EScope.S2)
         ]
         s3 = company_data.loc[
             (row[self.c.COLS.COMPANY_ID], row[self.c.COLS.TIME_FRAME], EScope.S3)
         ]
 
         # returning different sets of target_ids depending on how GHG temperature score is determined
-        s1s2_targets = s1s2[self.c.COLS.TARGET_IDS]
-        combined_targets = ((s1s2_targets or []) + (s3[self.c.COLS.TARGET_IDS] or [])) or None
+        s1_targets = s1[self.c.COLS.TARGET_IDS]
+        s2_targets = s2[self.c.COLS.TARGET_IDS]
+        combined_targets = ((s1_targets or []) + (s2_targets or []) + (s3[self.c.COLS.TARGET_IDS] or [])) or None
 
-        # Bloomberg proposal to return original score (changed 2022-09-01) if ghg scope12 or 3 is empty
-        if (pd.isnull(s1s2[self.c.COLS.GHG_SCOPE1]) or
-                pd.isnull(s1s2[self.c.COLS.GHG_SCOPE2]) or
+        # Return original score ghg scope 1, 2 or 3 is empty
+        if (pd.isnull(s1[self.c.COLS.GHG_SCOPE1]) or
+                pd.isnull(s2[self.c.COLS.GHG_SCOPE2]) or
                 pd.isnull(s3[self.c.COLS.GHG_SCOPE3])
             ):
             return (
@@ -372,30 +376,22 @@ class TemperatureScore(PortfolioAggregation):
             )
         
         try:
-            # # If the s3 emissions are less than 40 percent, we'll ignore them altogether, if not, we'll weigh them
-            # if (
-            #     s3[self.c.COLS.GHG_SCOPE3]
-            #     / (s1s2[self.c.COLS.GHG_SCOPE12] + s3[self.c.COLS.GHG_SCOPE3])
-            #     < 0.4
-            # ):
-            #     return (
-            #         s1s2[self.c.COLS.TEMPERATURE_SCORE],
-            #         s1s2[self.c.TEMPERATURE_RESULTS],
-            #         s1s2_targets,
-            #     )
-            # else:
             company_emissions = (
-                s1s2[self.c.COLS.GHG_SCOPE12] + s3[self.c.COLS.GHG_SCOPE3]
+                s1[self.c.COLS.GHG_SCOPE1] + s2[self.c.COLS.GHG_SCOPE2] + s3[self.c.COLS.GHG_SCOPE3]
             )
             return (
                 (
-                    s1s2[self.c.COLS.TEMPERATURE_SCORE]
-                    * s1s2[self.c.COLS.GHG_SCOPE12]
-                    + s3[self.c.COLS.TEMPERATURE_SCORE] * s3[self.c.COLS.GHG_SCOPE3]
+                    s1[self.c.COLS.TEMPERATURE_SCORE]
+                    * s1[self.c.COLS.GHG_SCOPE1]
+                    + s2[self.c.COLS.TEMPERATURE_SCORE]
+                    * s2[self.c.COLS.GHG_SCOPE2]
+                    + s3[self.c.COLS.TEMPERATURE_SCORE] 
+                    * s3[self.c.COLS.GHG_SCOPE3]
                 )
                 / company_emissions,
                 (
-                    s1s2[self.c.TEMPERATURE_RESULTS] * s1s2[self.c.COLS.GHG_SCOPE12]
+                    s1[self.c.TEMPERATURE_RESULTS] * s1[self.c.COLS.GHG_SCOPE1]
+                    + s2[self.c.TEMPERATURE_RESULTS] * s2[self.c.COLS.GHG_SCOPE2]
                     + s3[self.c.TEMPERATURE_RESULTS] * s3[self.c.COLS.GHG_SCOPE3]
                 )
                 / company_emissions,
@@ -440,6 +436,10 @@ class TemperatureScore(PortfolioAggregation):
             scopes.append(EScope.S1S2)
         if EScope.S1S2S3 in scopes and EScope.S3 not in scopes:
             scopes.append(EScope.S3)
+        # We also need to calculate scope 1 and scope 2 scores as of version 1.5
+        if EScope.S1S2 in scopes and EScope.S1 not in scopes:
+            scopes.append(EScope.S1)
+            scopes.append(EScope.S2)
 
         data = data[
             data[self.c.COLS.SCOPE].isin(scopes)
@@ -719,7 +719,7 @@ class TemperatureScore(PortfolioAggregation):
 
     def anonymize_data_dump(self, scores: pd.DataFrame) -> pd.DataFrame:
         """
-        Anonymize the scores by deleting the company IDs, ISIN and renaming the companies.
+        Anonymize the scores by deleting the company IDs, ISIN and renaming the companies .
 
         :param scores: The data set with the temperature scores
         :return: The input data frame, anonymized

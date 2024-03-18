@@ -35,7 +35,7 @@ class TargetProtocol:
     ):
         self.c = config
         self.logger = logging.getLogger(__name__)
-        self.s2_targets: List[IDataProviderTarget] = [] #TODO do we need this?
+        self.s2_targets: List[IDataProviderTarget] = []
         self.target_data: pd.DataFrame = pd.DataFrame()
         self.company_data: pd.DataFrame = pd.DataFrame()
         self.data: pd.DataFrame = pd.DataFrame()
@@ -109,15 +109,14 @@ class TargetProtocol:
         target_current = target.end_year >= datetime.datetime.now().year
 
         # Delete all S1 or S2 targets we can't combine
-        #TODO Note that all S1S2S3 pass these tests
         s1 = target.scope != EScope.S1 or (
             not pd.isnull(target.coverage_s1)
             and not pd.isnull(target.base_year_ghg_s1)
-            and not pd.isnull(target.base_year_ghg_s2) #TODO - is this correct when looking at individual scopes?
+            and not pd.isnull(target.base_year_ghg_s2)
         )
         s2 = target.scope != EScope.S2 or (
             not pd.isnull(target.coverage_s2)
-            and not pd.isnull(target.base_year_ghg_s1) #TODO - is this correct when looking at individual scopes?
+            and not pd.isnull(target.base_year_ghg_s1)
             and not pd.isnull(target.base_year_ghg_s2)
         )
         s1s2 = target.scope != EScope.S1S2 or (
@@ -355,7 +354,7 @@ class TargetProtocol:
         """
         now = datetime.datetime.now()
         time_frame = target.end_year - now.year
-        if time_frame < 5:
+        if time_frame <= 4:
             target.time_frame = ETimeFrames.SHORT
         elif time_frame <= 10:
             target.time_frame = ETimeFrames.MID
@@ -366,11 +365,12 @@ class TargetProtocol:
 
     def _prepare_targets(self, targets: List[IDataProviderTarget]):
         """
+        from v1.5 we will score each scope separately. Combinng scores is done in score aggregation
         logic
             - drop invalid targets
             - identifying the pure-S2 targets for later use
             - splitting s1s2s3 into s1s2 and s3
-            - combining s1 and s2
+            - splitting s1s2 into s1 and s2
             - assign target.reduction_ambition by considering target's boundary coverage
  
         :param targets:
@@ -381,7 +381,6 @@ class TargetProtocol:
         logger.info(f"dropped {(target_input_count - len(targets))=:,} invalid targets")
 
         # TODO - what about targets with "0" coverage or "0" base_year_ghg_s2 - breaks the 'combine' logic
-        # TODO - this is not needed if we score on separate scopes
         self.s2_targets = list(
             filter(
                 lambda target: target.scope == EScope.S2
@@ -409,23 +408,25 @@ class TargetProtocol:
             for target in targets
         ]
         # Combine S1 and S2 targets that are identical in all but coverage
-        # new_targets = []
-        # for target in targets:
-        #     new_target = self._combine_s1_s2(copy.deepcopy(target))
-        #     new_targets.append(target) # keep the original target
-        #     if not target.equals(new_target):
-        #         new_targets.append(new_target) # add the combined target if it's different
-        # targets = new_targets
-        # # 
-        # targets = [self._cover_s1_s2(target) for target in targets]
-        # combined_targets = []
-        # for target in targets:
-        #     combined_targets.append(target)
-        #     new_target = self._convert_s1_s2_into_combined(copy.deepcopy(target))
-        #     if not target.equals(new_target):
-        #         combined_targets.append(new_target)
-        # targets = combined_targets
+        """
+        new_targets = []
+        for target in targets:
+            new_target = self._combine_s1_s2(copy.deepcopy(target))
+            new_targets.append(target) # keep the original target
+            if not target.equals(new_target):
+                new_targets.append(new_target) # add the combined target if it's different
+        targets = new_targets
+        # 
+        targets = [self._cover_s1_s2(target) for target in targets]
+        combined_targets = []
+        for target in targets:
+            combined_targets.append(target)
+            new_target = self._convert_s1_s2_into_combined(copy.deepcopy(target))
+            if not target.equals(new_target):
+                combined_targets.append(new_target)
+        targets = combined_targets
         #targets = [self._convert_s1_s2_into_combined(target) for target in targets]
+        """
         targets = [self._assign_time_frame(target) for target in targets]
 
         return targets
@@ -454,8 +455,6 @@ class TargetProtocol:
             else:
                 if target_data.scope[0] == EScope.S3:
                     coverage_column = self.c.COLS.COVERAGE_S3
-                elif target_data.scope[0] == EScope.S2:
-                    coverage_column = self.c.COLS.COVERAGE_S2
                 else:
                     coverage_column = self.c.COLS.COVERAGE_S1
                 # In case more than one target is available; we prefer targets with 
@@ -500,8 +499,8 @@ class TargetProtocol:
             self.c.COLS.SCOPE,
         ]
         companies = self.company_data[self.c.COLS.COMPANY_ID].unique()
-        #scopes = [EScope.S1S2, EScope.S3, EScope.S1S2S3]
-        scopes = [EScope.S1, EScope.S2, EScope.S1S2, EScope.S3, EScope.S1S2S3]
+        scopes = [EScope.S1S2, EScope.S3, EScope.S1S2S3]
+        #scopes = [EScope.S1, EScope.S2, EScope.S1S2, EScope.S3, EScope.S1S2S3]
         empty_columns = [
             column for column in self.target_data.columns if column not in grid_columns
         ]
@@ -513,7 +512,7 @@ class TargetProtocol:
             ),
             columns=grid_columns + empty_columns,
         )
-        target_columns = extended_data.columns
+        target_columns = extended_data.columns   # TODO - When calling _find_target, we only want single scope targets
         self.data = extended_data.apply(
             lambda row: self._find_target(row, target_columns), axis=1
         )

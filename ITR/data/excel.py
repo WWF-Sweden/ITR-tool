@@ -1,5 +1,6 @@
 from typing import Type, List
 from pydantic import ValidationError
+from datetime import date
 import logging
 
 import pandas as pd
@@ -49,6 +50,9 @@ class ExcelProvider(DataProvider):
         model_targets: List[IDataProviderTarget] = []
         for target in targets:
             try:
+                 # If statement_date is a year (integer), convert it to a date
+                if isinstance(target['statement_date'], int):
+                    target['statement_date'] = date(target['statement_date'], 1, 1)  # Set to January 1 of the given year
                 model_targets.append(IDataProviderTarget.parse_obj(target))
             except ValidationError as e:
                 logger.warning(
