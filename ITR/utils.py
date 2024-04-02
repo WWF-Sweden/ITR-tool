@@ -193,8 +193,12 @@ def dataframe_to_portfolio(df_portfolio: pd.DataFrame) -> List[PortfolioCompany]
     df_portfolio[ColumnsConfig.ENGAGEMENT_TARGET] = (
         df_portfolio[ColumnsConfig.ENGAGEMENT_TARGET].fillna(False).astype("bool")
     )
+    df_portfolio[ColumnsConfig.COMPANY_LEI] = (
+        df_portfolio[ColumnsConfig.COMPANY_LEI].fillna('LEI')
+    )
+    
     return [
-        PortfolioCompany.parse_obj(company)
+        PortfolioCompany.model_validate(company)
         for company in df_portfolio.to_dict(orient="records")
     ]
 

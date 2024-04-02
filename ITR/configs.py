@@ -23,6 +23,7 @@ class ColumnsConfig:
     COMPANY_TOTAL_ASSETS = "company_total_assets"
     TARGET_REFERENCE_NUMBER = "target_type"
     SCOPE = "scope"
+    S3_CATEGORY = "s3_category"
     SR15 = "sr15"
     REDUCTION_FROM_BASE_YEAR = "reduction_from_base_year"
     START_YEAR = "start_year"

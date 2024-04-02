@@ -45,12 +45,20 @@ class ExcelProvider(DataProvider):
         :return: A list containing the targets
         """
         logger = logging.getLogger(__name__)
+        # Pydantic doesn't accept NaN values in string fields, 
+        # so we need to convert them to empty strings
+        fields_to_convert = ['intensity_metric']
+        df_targets[fields_to_convert] = df_targets[fields_to_convert].fillna('')
         targets = df_targets.to_dict(orient="records")
         model_targets: List[IDataProviderTarget] = []
         for target in targets:
             try:
-                model_targets.append(IDataProviderTarget.parse_obj(target))
+                target = IDataProviderTarget.pre(target)
+                validation_result = IDataProviderTarget.model_validate(target)
+                model_targets.append(validation_result)
+               # model_targets.append(IDataProviderTarget.model_validate(target))
             except ValidationError as e:
+                print(f"Validationerror: {e}")
                 logger.warning(
                     "(one of) the target(s) of company %s is invalid and will be skipped"
                     % target[self.c.COMPANY_NAME]
@@ -67,9 +75,15 @@ class ExcelProvider(DataProvider):
         :return: A list containing the company data
         """
         data_company = self.data["fundamental_data"]
+        # Pydantic doesn't accept NaN values in string fields, 
+        # so we need to convert them to empty strings
+        fields_to_convert = ['isic','country', 'sector', 'industry_level_1', 'industry_level_2', 
+                             'industry_level_3', 'industry_level_4']
+        data_company[fields_to_convert] = data_company[fields_to_convert].fillna('')
+
         companies = data_company.to_dict(orient="records")
         model_companies: List[IDataProviderCompany] = [
-            IDataProviderCompany.parse_obj(company) for company in companies
+            IDataProviderCompany.model_validate(company) for company in companies
         ]
         model_companies = [
             target for target in model_companies if target.company_id in company_ids
