@@ -188,7 +188,7 @@ Classes
       
 
    .. py:attribute:: company_lei
-      :annotation: :Optional[str] = nan
+      :annotation: :Optional[str]
 
       
 
@@ -228,12 +228,12 @@ Classes
       
 
    .. py:attribute:: ghg_s1s2
-      :annotation: :Optional[float]
+      :annotation: :Optional[float] = 0.0
 
       
 
    .. py:attribute:: ghg_s3
-      :annotation: :Optional[float]
+      :annotation: :Optional[float] = 0.0
 
       
 
@@ -273,27 +273,27 @@ Classes
       
 
    .. py:attribute:: company_revenue
-      :annotation: :Optional[float]
+      :annotation: :Optional[float] = 0.0
 
       
 
    .. py:attribute:: company_market_cap
-      :annotation: :Optional[float]
+      :annotation: :Optional[float] = 0.0
 
       
 
    .. py:attribute:: company_enterprise_value
-      :annotation: :Optional[float]
+      :annotation: :Optional[float] = 0.0
 
       
 
    .. py:attribute:: company_total_assets
-      :annotation: :Optional[float]
+      :annotation: :Optional[float] = 0.0
 
       
 
    .. py:attribute:: company_cash_equivalents
-      :annotation: :Optional[float]
+      :annotation: :Optional[float] = 0.0
 
       
 
@@ -427,23 +427,28 @@ Classes
 
       
 
+   .. py:attribute:: s3_category
+      :annotation: :Optional[int]
+
+      
+
    .. py:attribute:: coverage_s1
-      :annotation: :float
+      :annotation: :Optional[float]
 
       
 
    .. py:attribute:: coverage_s2
-      :annotation: :float
+      :annotation: :Optional[float]
 
       
 
    .. py:attribute:: coverage_s3
-      :annotation: :float
+      :annotation: :Optional[float]
 
       
 
    .. py:attribute:: reduction_ambition
-      :annotation: :float
+      :annotation: :Optional[float]
 
       
 
@@ -453,17 +458,17 @@ Classes
       
 
    .. py:attribute:: base_year_ghg_s1
-      :annotation: :float
+      :annotation: :Optional[float]
 
       
 
    .. py:attribute:: base_year_ghg_s2
-      :annotation: :float
+      :annotation: :Optional[float]
 
       
 
    .. py:attribute:: base_year_ghg_s3
-      :annotation: :float
+      :annotation: :Optional[float]
 
       
 
@@ -492,7 +497,14 @@ Classes
 
       
 
+   .. py:method:: pre(cls, values)
+      :classmethod:
+
+
    .. py:method:: validate_e(cls, val)
+
+
+   .. py:method:: validate_f(cls, val)
 
 
    .. py:method:: convert_to_list(cls, v)

@@ -98,6 +98,11 @@ Classes
 
       
 
+   .. py:attribute:: S3_CATEGORY
+      :annotation: = s3_category
+
+      
+
    .. py:attribute:: SR15
       :annotation: = sr15
 
