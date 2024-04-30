@@ -22,6 +22,11 @@ class ExcelProvider(DataProvider):
         # Set all missing coverage values to 0.0
         self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3', 'reduction_ambition']] = \
             self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3', 'reduction_ambition']].fillna(0.0)
+        # Convert s3_category to int
+        try:
+            self.data['target_data']['s3_category'] = self.data['target_data']['s3_category'].fillna(0).astype(int)
+        except:
+            print("Non numeric values in s3_category column")
         self.c = config
 
     def get_targets(self, company_ids: List[str]) -> List[IDataProviderTarget]:
@@ -46,13 +51,22 @@ class ExcelProvider(DataProvider):
         :return: A list containing the targets
         """
         logger = logging.getLogger(__name__)
+         # 1) Check if 'statement_date' looks like a date
+        df_targets['statement_date'] = pd.to_datetime(df_targets['statement_date'], format='%Y', errors='coerce')
+
+        # 2) If 'statement_date' is empty, check 'start_year'
+        df_targets.loc[df_targets['statement_date'].isna(), 'statement_date'] = pd.to_datetime(df_targets['start_year'], format='%Y', errors='coerce')
+
+        # 3) If 'start_year' is empty, use 'base_year'
+        df_targets.loc[df_targets['statement_date'].isna(), 'statement_date'] = pd.to_datetime(df_targets['base_year'], format='%Y', errors='coerce')
         targets = df_targets.to_dict(orient="records")
         model_targets: List[IDataProviderTarget] = []
         for target in targets:
             try:
-                 # If statement_date is a year (integer), convert it to a date
-                if isinstance(target['statement_date'], int):
-                    target['statement_date'] = date(target['statement_date'], 1, 1)  # Set to January 1 of the given year
+                #  # If statement_date is a year (integer), convert it to a date
+                # if isinstance(target['statement_date'], int):
+                #     target['statement_date'] = date(target['statement_date'], 1, 1)  # Set to January 1 of the given year
+                #     target['statement_date'] = pd.to_datetime(target['statement_date'])
                 model_targets.append(IDataProviderTarget.parse_obj(target))
             except ValidationError as e:
                 logger.warning(

@@ -171,8 +171,8 @@ class TemperatureScore(PortfolioAggregation):
         self,
         time_frames: List[ETimeFrames],
         scopes: List[EScope],
-        fallback_score: float = 3.2,
-        model: int = 4,
+        fallback_score: TemperatureScoreConfig = TemperatureScoreConfig.FALLBACK_SCORE,
+        model: TemperatureScoreConfig = TemperatureScoreConfig.MODEL_NUMBER,
         scenario: Optional[Scenario] = None,
         aggregation_method: PortfolioAggregationMethod = PortfolioAggregationMethod.WATS,
         grouping: Optional[List] = None,
@@ -205,11 +205,15 @@ class TemperatureScore(PortfolioAggregation):
 
     def get_target_mapping(self, target: pd.Series) -> Optional[str]:
         """
-        Map the target onto an SR15 target (None if not available).
+        Map the target onto an AR6 target (None if not available).
 
         :param target: The target as a row of a dataframe
-        :return: The mapped SR15 target
+        :return: The mapped AR6 target
         """
+        if target[self.c.COLS.SCOPE] == EScope.S1S2:
+            map_scope = EScope.S1
+        else:
+            map_scope = target[self.c.COLS.SCOPE]
         if (
             target[self.c.COLS.TARGET_REFERENCE_NUMBER]
             .strip()
@@ -217,13 +221,13 @@ class TemperatureScore(PortfolioAggregation):
             .startswith(self.c.VALUE_TARGET_REFERENCE_INTENSITY_BASE)
         ):
             return self.c.INTENSITY_MAPPINGS.get(
-                (target[self.c.COLS.INTENSITY_METRIC], target[self.c.COLS.SCOPE]), None
+                (target[self.c.COLS.INTENSITY_METRIC], map_scope), None
             )
         else:
             # Only first 3 characters of ISIC code are relevant for the absolute mappings
             return self.c.ABSOLUTE_MAPPINGS.get(
-                (target[self.c.COLS.COMPANY_ISIC][:3], target[self.c.COLS.SCOPE]),
-                self.c.ABSOLUTE_MAPPINGS.get(("other", target[self.c.COLS.SCOPE])),
+                (target[self.c.COLS.COMPANY_ISIC][:3], map_scope),
+                self.c.ABSOLUTE_MAPPINGS.get(("other", map_scope)),
             )
 
     def get_annual_reduction_rate(self, target: pd.Series) -> Optional[float]:
@@ -260,11 +264,11 @@ class TemperatureScore(PortfolioAggregation):
         :param target: The target as a row of a dataframe
         :return: The regression parameter and intercept
         """
-        if pd.isnull(target[self.c.COLS.SR15]):
+        if pd.isnull(target[self.c.COLS.AR6]):
             return None, None
 
         regression = self.regression_model[
-            (self.regression_model[self.c.COLS.VARIABLE] == target[self.c.COLS.SR15])
+            (self.regression_model[self.c.COLS.VARIABLE] == target[self.c.COLS.AR6])
             & (
                 self.regression_model[self.c.COLS.SLOPE]
                 == self.c.SLOPE_MAP[target[self.c.COLS.TIME_FRAME]]
@@ -275,7 +279,7 @@ class TemperatureScore(PortfolioAggregation):
         elif len(regression) > 1:
             # There should never be more than one potential mapping
             raise ValueError(
-                "There is more than one potential regression parameter for this SR15 goal."
+                "There is more than one potential regression parameter for this AR6 goal."
             )
         else:
             return (
@@ -296,7 +300,7 @@ class TemperatureScore(PortfolioAggregation):
         return pd.merge(
             left=data,
             right=self.regression_model,
-            left_on=[self.c.COLS.SLOPE, self.c.COLS.SR15],
+            left_on=[self.c.COLS.SLOPE, self.c.COLS.AR6],
             right_on=[self.c.COLS.SLOPE, self.c.COLS.VARIABLE],
             how="left",
         )
@@ -449,7 +453,7 @@ class TemperatureScore(PortfolioAggregation):
         data[self.c.COLS.TARGET_REFERENCE_NUMBER] = data[
             self.c.COLS.TARGET_REFERENCE_NUMBER
         ].replace({np.nan: self.c.VALUE_TARGET_REFERENCE_ABSOLUTE})
-        data[self.c.COLS.SR15] = data.apply(
+        data[self.c.COLS.AR6] = data.apply(
             lambda row: self.get_target_mapping(row), axis=1
         )
         data[self.c.COLS.ANNUAL_REDUCTION_RATE] = data.apply(
@@ -543,6 +547,8 @@ class TemperatureScore(PortfolioAggregation):
                 )
 
         data = self._prepare_data(data)
+
+        data = self._calculate_s3_score(data)
 
         if EScope.S1S2S3 in self.scopes:
             # self._check_column(data, self.c.COLS.GHG_SCOPE12)
@@ -733,3 +739,46 @@ class TemperatureScore(PortfolioAggregation):
                 self.c.COLS.COMPANY_NAME,
             ] = "Company" + str(index + 1)
         return scores
+
+
+    def _calculate_s3_score(self, data: pd.DataFrame) -> pd.DataFrame:
+        """
+        Calculate the combined S3 score each combination of company_id, time_frame and scope.
+        First 
+        :param data: The data to calculate the S3 score for.
+        :return: The S3 score.
+        """
+       
+        # Assuming 'data' is your DataFrame
+        s3_data = data[data['scope'] == EScope.S3]
+
+        # Calculate mean temperature for s3_category = 15 for each time_frame
+        mean_temp_15 = s3_data[s3_data['s3_category'] == 15].groupby('time_frame')['temperature_score'].mean()
+
+        # Calculate mean temperature for s3_category not equal to 15 for each time_frame
+        mean_temp_not_15 = s3_data[s3_data['s3_category'] != 15].groupby('time_frame')['temperature_score'].mean()
+
+        # Create new DataFrame with rows where 'scope' is 'S3'
+        new_data_s3 = s3_data.copy()
+        new_data_s3['temperature_score'] = new_data_s3.apply(
+            lambda row: np.mean([mean_temp_15[row['time_frame']], mean_temp_not_15[row['time_frame']]]) 
+            if row['time_frame'] in mean_temp_15.index 
+            and row['time_frame'] in mean_temp_not_15.index 
+            else row['temperature_score'], axis=1)
+            
+        new_data_s3 = new_data_s3.drop_duplicates(subset=['company_id', 'time_frame'])
+
+        # Get rows where 'scope' is 'S1', 'S2', 'S1S2', or 'S1S2S3'
+        other_scopes_data = data[data['scope'].isin([EScope.S1, EScope.S2, EScope.S1S2, EScope.S1S2S3])]
+
+        # Concatenate the two DataFrames
+        final_data = pd.concat([new_data_s3, other_scopes_data])
+
+        # If you want to keep only one row per company_id and time_frame for 'scope' = 'S3' in the new DataFrame
+
+        final_data.sort_values(by=['company_id', 'time_frame', 'scope'], inplace=True)
+            # pd.Categorical(final_data['time_frame'], categories=ETimeFrames.__members__.values(), ordered=True), 
+            # pd.Categorical(final_data['scope'], categories=EScope.__members__.values(), ordered=True)], 
+            # inplace=True)
+
+        return final_data

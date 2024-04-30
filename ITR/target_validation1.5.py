@@ -1,3 +1,4 @@
+# This is target_validation1.5.py
 import datetime
 import itertools
 import logging
@@ -21,10 +22,10 @@ class TargetProtocol:
     """
     This class validates the targets, to make sure that only active, useful 
     targets are considered. It then combines the targets with company-related 
-    data into a dataframe where there's one row for each of the nine possible 
-    target types (short, mid, long * S1+S2, S3, S1+S2+S3). 
+    data into a dataframe where there's one row for each of the fifteen possible 
+    target types (short, mid, long * S1, S2, S1+S2, S3, S1+S2+S3). 
     This class follows the procedures outlined by the target protocol that is 
-    a part of the "Temperature Rating Methodology" (2024), which has been created 
+    a part of the "Temperature Scoring Methodology" (2024), which has been created 
     by CDP Worldwide and WWF International.
 
     :param config: A Portfolio aggregation config
@@ -35,7 +36,7 @@ class TargetProtocol:
     ):
         self.c = config
         self.logger = logging.getLogger(__name__)
-        self.s2_targets: List[IDataProviderTarget] = []
+        self.s2_targets: List[IDataProviderTarget] = [] #TODO do we need this?
         self.target_data: pd.DataFrame = pd.DataFrame()
         self.company_data: pd.DataFrame = pd.DataFrame()
         self.data: pd.DataFrame = pd.DataFrame()
@@ -52,6 +53,7 @@ class TargetProtocol:
         """
         logger.info(f"started processing {len(targets)=} and {len(companies)=}")
         # Create multiindex on company, timeframe and scope for performance later on
+        self.company_data = pd.DataFrame.from_records([c.dict() for c in companies])
         targets = self._prepare_targets(targets)
         self.target_data = pd.DataFrame.from_records([c.dict() for c in targets])
 
@@ -65,7 +67,7 @@ class TargetProtocol:
         )
         self.target_data = self.target_data.sort_index()
 
-        self.company_data = pd.DataFrame.from_records([c.dict() for c in companies])
+        #self.company_data = pd.DataFrame.from_records([c.dict() for c in companies])
         self.group_targets()
         out =  pd.merge(
             left=self.data, right=self.company_data, how="outer", on=["company_id"]
@@ -109,14 +111,15 @@ class TargetProtocol:
         target_current = target.end_year >= datetime.datetime.now().year
 
         # Delete all S1 or S2 targets we can't combine
+        #TODO Note that all S1S2S3 pass these tests
         s1 = target.scope != EScope.S1 or (
             not pd.isnull(target.coverage_s1)
             and not pd.isnull(target.base_year_ghg_s1)
-            and not pd.isnull(target.base_year_ghg_s2)
+            and not pd.isnull(target.base_year_ghg_s2) #TODO - is this correct when looking at individual scopes?
         )
         s2 = target.scope != EScope.S2 or (
             not pd.isnull(target.coverage_s2)
-            and not pd.isnull(target.base_year_ghg_s1)
+            and not pd.isnull(target.base_year_ghg_s1) #TODO - is this correct when looking at individual scopes?
             and not pd.isnull(target.base_year_ghg_s2)
         )
         s1s2 = target.scope != EScope.S1S2 or (
@@ -135,8 +138,8 @@ class TargetProtocol:
             and s1s2
         )
     
-    @staticmethod
-    def _split_s1s2s3(
+    #@staticmethod
+    def _split_s1s2s3(self,
         target: IDataProviderTarget,
     ) -> Tuple[IDataProviderTarget, Optional[IDataProviderTarget]]:
         """
@@ -171,17 +174,25 @@ class TargetProtocol:
         else:
             return target, None
         
-    @staticmethod
-    def _split_s1s2(
+    #@staticmethod
+    def _split_s1s2(self,
         target: IDataProviderTarget,
-    ) -> Tuple[IDataProviderTarget, Optional[IDataProviderTarget]]:
+    ) -> List[IDataProviderTarget]:
         """
         Split the target into two targets, one for the S1 data and one for the S2 data.
 
-        :param target: The target to split.
-        :return: A tuple containing the S1 target and the S2 target.
+        :param target: The target to potentially split.
+        :return: A list containing (the original S1S2 target and) 
+         the S1 target and the S2 target from the split.
         """
-        if target.scope == EScope.S1S2:
+        targets = [target]
+        # before splitting S1S2 targets we need to verify that there is GHG data to aggregate the scores later
+        # TODO - verify that company is one unique row
+        company = self.company_data[self.company_data[self.c.COLS.COMPANY_ID] == target.company_id]
+        if (not (pd.isnull(company[self.c.COLS.GHG_SCOPE1].item())
+            or pd.isnull(company[self.c.COLS.GHG_SCOPE2].item()))
+            and target.scope == EScope.S1S2
+        ):
             s1 = target.copy()
             s2 = target.copy()
             s1.coverage_s1 = target.coverage_s1
@@ -190,9 +201,12 @@ class TargetProtocol:
             s2.reduction_ambition = target.reduction_ambition
             s1.scope = EScope.S1
             s2.scope = EScope.S2
-            return s1, s2
-        else:
-            return target, None     
+            # Append '_1' and '_2' to the target_ids of s1 and s2, respectively
+            s1.target_ids = [id_ + '_1' for id_ in s1.target_ids]
+            s2.target_ids = [id_ + '_2' for id_ in s2.target_ids]
+            targets = [s1, s2]
+           
+        return targets
 
     def _combine_s1_s2(self, target: IDataProviderTarget):
         """
@@ -354,7 +368,7 @@ class TargetProtocol:
         """
         now = datetime.datetime.now()
         time_frame = target.end_year - now.year
-        if time_frame <= 4:
+        if time_frame < 5:
             target.time_frame = ETimeFrames.SHORT
         elif time_frame <= 10:
             target.time_frame = ETimeFrames.MID
@@ -365,7 +379,11 @@ class TargetProtocol:
 
     def _prepare_targets(self, targets: List[IDataProviderTarget]):
         """
-        from v1.5 we will score each scope separately. Combinng scores is done in score aggregation
+        From v1.5 we will attempt to score each scope separately. 
+        All targets with combined scopes will be split into their individual scopes.
+        S1S2 targets will be kept and used if GHG data is unavailable for one of the scopes,
+        otherwise the S1S2 score will be based on the combined S1 and S2 scores.
+        Combinng scores is done in score aggregation
         logic
             - drop invalid targets
             - identifying the pure-S2 targets for later use
@@ -381,6 +399,7 @@ class TargetProtocol:
         logger.info(f"dropped {(target_input_count - len(targets))=:,} invalid targets")
 
         # TODO - what about targets with "0" coverage or "0" base_year_ghg_s2 - breaks the 'combine' logic
+        # TODO - this is not needed if we score on separate scopes
         self.s2_targets = list(
             filter(
                 lambda target: target.scope == EScope.S2
@@ -397,10 +416,9 @@ class TargetProtocol:
         )
         
         targets = list(
-            filter(
-                None, itertools.chain.from_iterable(map(self._split_s1s2, targets))
+            itertools.chain.from_iterable(map(self._split_s1s2, targets))
             )
-        )
+        
         
         #targets = [self._combine_s1_s2(target) for target in targets]
         targets = [
@@ -408,25 +426,23 @@ class TargetProtocol:
             for target in targets
         ]
         # Combine S1 and S2 targets that are identical in all but coverage
-        """
-        new_targets = []
-        for target in targets:
-            new_target = self._combine_s1_s2(copy.deepcopy(target))
-            new_targets.append(target) # keep the original target
-            if not target.equals(new_target):
-                new_targets.append(new_target) # add the combined target if it's different
-        targets = new_targets
-        # 
-        targets = [self._cover_s1_s2(target) for target in targets]
-        combined_targets = []
-        for target in targets:
-            combined_targets.append(target)
-            new_target = self._convert_s1_s2_into_combined(copy.deepcopy(target))
-            if not target.equals(new_target):
-                combined_targets.append(new_target)
-        targets = combined_targets
+        # new_targets = []
+        # for target in targets:
+        #     new_target = self._combine_s1_s2(copy.deepcopy(target))
+        #     new_targets.append(target) # keep the original target
+        #     if not target.equals(new_target):
+        #         new_targets.append(new_target) # add the combined target if it's different
+        # targets = new_targets
+        # # 
+        # targets = [self._cover_s1_s2(target) for target in targets]
+        # combined_targets = []
+        # for target in targets:
+        #     combined_targets.append(target)
+        #     new_target = self._convert_s1_s2_into_combined(copy.deepcopy(target))
+        #     if not target.equals(new_target):
+        #         combined_targets.append(new_target)
+        # targets = combined_targets
         #targets = [self._convert_s1_s2_into_combined(target) for target in targets]
-        """
         targets = [self._assign_time_frame(target) for target in targets]
 
         return targets
@@ -455,25 +471,64 @@ class TargetProtocol:
             else:
                 if target_data.scope[0] == EScope.S3:
                     coverage_column = self.c.COLS.COVERAGE_S3
+                elif target_data.scope[0] == EScope.S2:
+                    coverage_column = self.c.COLS.COVERAGE_S2
                 else:
                     coverage_column = self.c.COLS.COVERAGE_S1
                 # In case more than one target is available; we prefer targets with 
                 # later confirmation date, 
                 # higher coverage,
                 # later end year, and target type 'absolute'
-                return target_data.sort_values(
-                    by=[
-                        self.c.COLS.TARGET_CONFIRM_DATE,
-                        coverage_column,
-                        self.c.COLS.END_YEAR,
-                        self.c.COLS.TARGET_REFERENCE_NUMBER,
-                    ],
-                    axis=0,
-                    ascending=[False, False, False, True],
-                ).iloc[0][target_columns]
+               
+                # We also prefer longer time spans within the same time frame
+                target_data['END_YEAR_MINUS_BASE_YEAR'] = (
+                    target_data[self.c.COLS.END_YEAR] 
+                  - target_data[self.c.COLS.BASE_YEAR]
+                )
+                if target_data.scope[0] != EScope.S3:
+                    target_data = (
+                        target_data.sort_values(
+                            by=[
+                                self.c.COLS.TARGET_CONFIRM_DATE,
+                                coverage_column,
+                                self.c.COLS.TARGET_REFERENCE_NUMBER,
+                                self.c.COLS.REDUCTION_AMBITION,
+                                'END_YEAR_MINUS_BASE_YEAR',
+                                self.c.COLS.END_YEAR,
+                            ],
+                            axis=0,
+                            ascending=[False, False, True, False,False, False ],
+                        ).iloc[0][target_columns]
+                    )
+                else:
+                    target_data = self._find_s3_targets(target_data, target_columns)
+                
+               
+            return target_data
         except KeyError:
             # No target found
             return row
+        
+    def _find_s3_targets(self, target_data: pd.DataFrame, target_columns: List[str]) -> pd.DataFrame:
+        """
+        Find S3 target that correspond to the given row. Note that there may be more
+        than one S3 target. We first look for the target with the latest confirmation date.
+        Then check if there are more than one target with the same confirmation date.
+        The method then returns all targets with the latest confirmation date.
+
+        :param target_data: The target data
+        :param target_columns: The columns to return
+        :return: The target data that meets the criteria
+        """
+        target_data['year'] = target_data[self.c.COLS.TARGET_CONFIRM_DATE].dt.year
+        target_data = target_data[target_data.scope[0] == EScope.S3]
+        latest_year = target_data['year'].max()
+        target_data = target_data[target_data['year'] == latest_year]
+
+        final = target_data[target_columns]
+
+        return final
+        
 
     def group_targets(self):
         """
@@ -499,8 +554,8 @@ class TargetProtocol:
             self.c.COLS.SCOPE,
         ]
         companies = self.company_data[self.c.COLS.COMPANY_ID].unique()
-        scopes = [EScope.S1S2, EScope.S3, EScope.S1S2S3]
-        #scopes = [EScope.S1, EScope.S2, EScope.S1S2, EScope.S3, EScope.S1S2S3]
+        #scopes = [EScope.S1S2, EScope.S3, EScope.S1S2S3]
+        scopes = [EScope.S1, EScope.S2, EScope.S1S2, EScope.S3, EScope.S1S2S3]
         empty_columns = [
             column for column in self.target_data.columns if column not in grid_columns
         ]

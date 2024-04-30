@@ -1,3 +1,4 @@
+# This is target_validation.py
 import datetime
 import itertools
 import logging
@@ -52,8 +53,10 @@ class TargetProtocol:
         """
         logger.info(f"started processing {len(targets)=} and {len(companies)=}")
         # Create multiindex on company, timeframe and scope for performance later on
+        self.company_data = pd.DataFrame.from_records([c.dict() for c in companies])
         targets = self._prepare_targets(targets)
         self.target_data = pd.DataFrame.from_records([c.dict() for c in targets])
+        self.target_data['statement_date'] = pd.to_datetime(self.target_data['statement_date'])
 
         # Create an indexed DF for performance purposes
         self.target_data.index = (
@@ -65,7 +68,7 @@ class TargetProtocol:
         )
         self.target_data = self.target_data.sort_index()
 
-        self.company_data = pd.DataFrame.from_records([c.dict() for c in companies])
+        #self.company_data = pd.DataFrame.from_records([c.dict() for c in companies])
         self.group_targets()
         out =  pd.merge(
             left=self.data, right=self.company_data, how="outer", on=["company_id"]
@@ -136,8 +139,8 @@ class TargetProtocol:
             and s1s2
         )
     
-    @staticmethod
-    def _split_s1s2s3(
+    #@staticmethod
+    def _split_s1s2s3(self,
         target: IDataProviderTarget,
     ) -> Tuple[IDataProviderTarget, Optional[IDataProviderTarget]]:
         """
@@ -169,20 +172,30 @@ class TargetProtocol:
                 s3 = target.copy()
                 s3.scope = EScope.S3
             return s1s2, s3
+        
+        
         else:
             return target, None
         
-    @staticmethod
-    def _split_s1s2(
+    #@staticmethod
+    def _split_s1s2(self,
         target: IDataProviderTarget,
-    ) -> Tuple[IDataProviderTarget, Optional[IDataProviderTarget]]:
+    ) -> List[IDataProviderTarget]:
         """
         Split the target into two targets, one for the S1 data and one for the S2 data.
 
-        :param target: The target to split.
-        :return: A tuple containing the S1 target and the S2 target.
+        :param target: The target to potentially split.
+        :return: A list containing (the original S1S2 target and) 
+         the S1 target and the S2 target from the split.
         """
-        if target.scope == EScope.S1S2:
+        targets = [target]
+        # before splitting S1S2 targets we need to verify that there is GHG data to aggregate the scores later
+        # TODO - verify that company is one unique row
+        company = self.company_data[self.company_data[self.c.COLS.COMPANY_ID] == target.company_id]
+        if (not (pd.isnull(company[self.c.COLS.GHG_SCOPE1].item())
+            or pd.isnull(company[self.c.COLS.GHG_SCOPE2].item()))
+            and target.scope == EScope.S1S2
+        ):
             s1 = target.copy()
             s2 = target.copy()
             s1.coverage_s1 = target.coverage_s1
@@ -191,9 +204,12 @@ class TargetProtocol:
             s2.reduction_ambition = target.reduction_ambition
             s1.scope = EScope.S1
             s2.scope = EScope.S2
-            return s1, s2
-        else:
-            return target, None     
+            # Append '_1' and '_2' to the target_ids of s1 and s2, respectively
+            s1.target_ids = [id_ + '_1' for id_ in s1.target_ids]
+            s2.target_ids = [id_ + '_2' for id_ in s2.target_ids]
+            targets.extend([s1, s2])
+           
+        return targets
 
     def _combine_s1_s2(self, target: IDataProviderTarget):
         """
@@ -335,8 +351,8 @@ class TargetProtocol:
                         + target.coverage_s2 * target.base_year_ghg_s2
                     ) / (target.base_year_ghg_s1 + target.base_year_ghg_s2)
                 #TODO do we need to set these values?
-                #target.coverage_s1 = combined_coverage
-                #target.coverage_s2 = combined_coverage
+                    target.coverage_s1 = combined_coverage
+                    target.coverage_s2 = combined_coverage
                     target.reduction_ambition = (
                         target.reduction_ambition * combined_coverage
                     )
@@ -398,10 +414,9 @@ class TargetProtocol:
         )
         
         targets = list(
-            filter(
-                None, itertools.chain.from_iterable(map(self._split_s1s2, targets))
+            itertools.chain.from_iterable(map(self._split_s1s2, targets))
             )
-        )
+        
         
         #targets = [self._combine_s1_s2(target) for target in targets]
         targets = [
@@ -430,7 +445,8 @@ class TargetProtocol:
 
         return targets
 
-    def _find_target(self, row: pd.Series, target_columns: List[str]) -> pd.Series:
+    def _find_target(self, row: pd.Series, target_columns: List[str]) -> pd.DataFrame:
+       
         """
         Find the target that corresponds to a given row. If there are multiple targets available, filter them.
 
@@ -450,6 +466,7 @@ class TargetProtocol:
             ].copy()
             if isinstance(target_data, pd.Series):
                 # One match with Target data
+                # TODO: Check if we need to exclicitly convert to DataFrame
                 return target_data[target_columns]
             else:
                 if target_data.scope[0] == EScope.S3:
@@ -462,20 +479,56 @@ class TargetProtocol:
                 # later confirmation date, 
                 # higher coverage,
                 # later end year, and target type 'absolute'
-                return target_data.sort_values(
-                    by=[
-                        self.c.COLS.TARGET_CONFIRM_DATE,
-                        coverage_column,
-                        self.c.COLS.END_YEAR,
-                        self.c.COLS.TARGET_REFERENCE_NUMBER,
-                    ],
-                    axis=0,
-                    ascending=[False, False, False, True],
-                ).iloc[0][target_columns]
+                
+                # We also prefer longer time spans within the same time frame
+                target_data['END_YEAR_MINUS_BASE_YEAR'] = (
+                    target_data[self.c.COLS.END_YEAR] 
+                  - target_data[self.c.COLS.BASE_YEAR]
+                )
+                # Scope 3 targets need to be filtered separately
+                if target_data.scope[0] != EScope.S3:
+                    target_data = (
+                        target_data.sort_values(
+                            by=[
+                                self.c.COLS.TARGET_CONFIRM_DATE,
+                                coverage_column,
+                                self.c.COLS.TARGET_REFERENCE_NUMBER,
+                                self.c.COLS.REDUCTION_AMBITION,
+                                'END_YEAR_MINUS_BASE_YEAR',
+                                self.c.COLS.END_YEAR,
+                            ],
+                            axis=0,
+                            ascending=[False, False, True, False,False, False ],
+                        ).iloc[0][target_columns]
+                    )
+                    result_df = pd.DataFrame([target_data], columns=target_columns)
+                    return result_df
+                else:
+                    target_data = self._find_s3_targets(target_data, target_columns)
+                    return target_data
+                          
         except KeyError:
             # No target found
-            return row
+            return pd.DataFrame([row], columns=target_columns)
+    
+    def _find_s3_targets(self, target_data: pd.DataFrame, target_columns: List[str]) -> pd.DataFrame:
+        """
+        Find S3 target that correspond to the given row. Note that there may be more
+        than one S3 target. We first look for the target with the latest confirmation date.
+        Then check if there is more than one target with the same confirmation date.
+        The method then returns all targets with the latest confirmation date.
 
+        :param target_data: The target data
+        :param target_columns: The columns to return
+        :return: The target data that meets the criteria
+        """
+        target_data['year'] = target_data[self.c.COLS.TARGET_CONFIRM_DATE].dt.year
+        latest_year = target_data['year'].max()
+        target_data = target_data[target_data['year'] == latest_year]
+        final = target_data[target_columns]
+   
+        return final
+    
     def group_targets(self):
         """
         Group the targets and create the 9-box grid (short, mid, long * s1s2, s3, s1s2s3).
@@ -514,6 +567,14 @@ class TargetProtocol:
             columns=grid_columns + empty_columns,
         )
         target_columns = extended_data.columns
-        self.data = extended_data.apply(
-            lambda row: self._find_target(row, target_columns), axis=1
-        )
+       
+        results = []
+        for _, row in extended_data.iterrows():
+            result = self._find_target(row, target_columns)
+            results.append(result)
+
+        self.data = pd.concat(results, ignore_index=True)
+
+        return self.data
+    
+   

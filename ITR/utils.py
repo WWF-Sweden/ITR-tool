@@ -1,5 +1,6 @@
 import logging
 import pandas as pd
+import ast
 from typing import List, Optional, Tuple, Type, Dict
 
 from ITR.configs import ColumnsConfig
@@ -193,6 +194,7 @@ def dataframe_to_portfolio(df_portfolio: pd.DataFrame) -> List[PortfolioCompany]
     df_portfolio[ColumnsConfig.ENGAGEMENT_TARGET] = (
         df_portfolio[ColumnsConfig.ENGAGEMENT_TARGET].fillna(False).astype("bool")
     )
+    df_portfolio['user_fields'] = df_portfolio['user_fields'].apply(ast.literal_eval)
     return [
         PortfolioCompany.parse_obj(company)
         for company in df_portfolio.to_dict(orient="records")

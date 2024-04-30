@@ -152,4 +152,5 @@ examples/6_compare_temps_SP.ipynb
 
 # Used for local testing
 ITR/PN_test.py
+ITR/s3_agg.py
 examples/data/local/*

@@ -69,25 +69,27 @@ class PortfolioAggregation(ABC):
     def _check_column(self, data: pd.DataFrame, column: str):
         """
         Check if a certain column is filled for all companies. If not throw an error.
-
+        TODO - test that the new version with f-strings works as before
         :param data: The data to check
         :param column: The column to check
         :return:
         """
         missing_data = data[pd.isnull(data[column])][self.c.COLS.COMPANY_NAME].unique()
         if len(missing_data):
-            if column == self.c.COLS.GHG_SCOPE12 or column == self.c.COLS.GHG_SCOPE3:
+            if (
+                column == self.c.COLS.GHG_SCOPE1  
+                or column == self.c.COLS.GHG_SCOPE2  
+                or column == self.c.COLS.GHG_SCOPE3
+            ):
                 raise ValueError(
-                    "A value for {} is needed for all aggregation methods except for WATS. \nSo please try to estimate appropriate values or remove these companies from the aggregation calculation: {}".format(
-                        column, ", ".join(missing_data)
-                    )
+                    f"A value for {column} is needed for all aggregation methods except for WATS. \n"
+                    f"So please try to estimate appropriate values or remove these companies from the aggregation calculation: {','.join(missing_data)}"            
                 )
             else:
                 raise ValueError(
-                    "The value for {} is missing for the following companies: {}".format(
-                        column, ", ".join(missing_data)
-                    )
+                    f"The value for {column} is missing for the following companies: {','.join(missing_data)}"                      
                 )
+                
 
     def _calculate_aggregate_score(
         self,

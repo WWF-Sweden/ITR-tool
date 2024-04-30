@@ -77,6 +77,23 @@ class IDataProviderCompany(BaseModel):
     ghg_s1s2: Optional[float] = None 
     ghg_s3: Optional[float]
 
+    # Optional fields for scope 3 categories
+    ghg_s3_1: Optional[float]
+    ghg_s3_2: Optional[float]
+    ghg_s3_3: Optional[float]
+    ghg_s3_4: Optional[float]
+    ghg_s3_5: Optional[float]
+    ghg_s3_6: Optional[float]
+    ghg_s3_7: Optional[float]
+    ghg_s3_8: Optional[float]
+    ghg_s3_9: Optional[float]
+    ghg_s3_10: Optional[float]
+    ghg_s3_11: Optional[float]
+    ghg_s3_12: Optional[float]
+    ghg_s3_13: Optional[float]
+    ghg_s3_14: Optional[float]
+    ghg_s3_15: Optional[float]
+
     country: Optional[str]
     region: Optional[str]
     sector: Optional[str]
@@ -129,8 +146,8 @@ class SortableEnum(Enum):
 class EScope(SortableEnum):
     S1 = "S1"
     S2 = "S2"
-    S3 = "S3"
     S1S2 = "S1+S2"
+    S3 = "S3"
     S1S2S3 = "S1+S2+S3"
 
     @classmethod
@@ -154,6 +171,7 @@ class IDataProviderTarget(BaseModel):
     target_type: str
     intensity_metric: Optional[str]
     scope: EScope
+    s3_category: Optional[int]
     coverage_s1: float
     coverage_s2: float
     coverage_s3: float
