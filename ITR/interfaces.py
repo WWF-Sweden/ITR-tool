@@ -165,13 +165,30 @@ class ETimeFrames(SortableEnum):
     MID = "mid"
     LONG = "long"
 
+class S3Category(SortableEnum):
+    CAT_1 = 1
+    CAT_2 = 2
+    CAT_3 = 3
+    CAT_4 = 4
+    CAT_5 = 5
+    CAT_6 = 6
+    CAT_7 = 7
+    CAT_8 = 8
+    CAT_9 = 9
+    CAT_10 = 10
+    CAT_11 = 11
+    CAT_12 = 12
+    CAT_13 = 13
+    CAT_14 = 14
+    CAT_15 = 15
 
 class IDataProviderTarget(BaseModel):
     company_id: str
     target_type: str
     intensity_metric: Optional[str]
     scope: EScope
-    s3_category: Optional[int]
+    #s3_category: Optional[int]
+    s3_category: Optional[S3Category]
     coverage_s1: float
     coverage_s2: float
     coverage_s3: float

@@ -4,7 +4,7 @@ the module, extend the respective config class and pass it to the class as the "
 """
 import os
 
-from ITR.interfaces import ETimeFrames, EScope
+from ITR.interfaces import ETimeFrames, EScope, S3Category
 
 
 class ColumnsConfig:
@@ -209,7 +209,24 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
 
     TEMPERATURE_RESULTS = "temperature_results"
     INVESTMENT_VALUE = "investment_value"
-
+    
+    S3_CATEGOTY_MAPPINGS = {
+            S3Category.CAT_1: "ghg_s3_1",
+            S3Category.CAT_2: "ghg_s3_2",
+            S3Category.CAT_3: "ghg_s3_3",
+            S3Category.CAT_4: "ghg_s3_4",
+            S3Category.CAT_5: "ghg_s3_5",
+            S3Category.CAT_6: "ghg_s3_6",
+            S3Category.CAT_7: "ghg_s3_7",
+            S3Category.CAT_8: "ghg_s3_8",
+            S3Category.CAT_9: "ghg_s3_9",
+            S3Category.CAT_10: "ghg_s3_10",
+            S3Category.CAT_11: "ghg_s3_11",
+            S3Category.CAT_12: "ghg_s3_12",
+            S3Category.CAT_13: "ghg_s3_13",
+            S3Category.CAT_14: "ghg_s3_14",
+            S3Category.CAT_15: "ghg_s3_15"
+    }
 
 class PortfolioCoverageTVPConfig(PortfolioAggregationConfig):
     FILE_TARGETS = os.path.join(
@@ -224,7 +241,7 @@ class PortfolioCoverageTVPConfig(PortfolioAggregationConfig):
         "inputs",
         "current-Companies-Taking-Action.xlsx",
     )
-    USE_LOCAL_CTA = False
+    USE_LOCAL_CTA = True
     # If the CTA file is older than a week, the file will be downloaded again
     SKIP_CTA_FILE_IF_EXISTS = True
     # Temporary URL until the SBTi website is updated

@@ -15,6 +15,7 @@ from .interfaces import (
     ScoreAggregationScopes,
     ScoreAggregations,
     PortfolioCompany,
+    S3Category,
 )
 from .portfolio_aggregation import PortfolioAggregation, PortfolioAggregationMethod
 from .configs import TemperatureScoreConfig
@@ -748,37 +749,112 @@ class TemperatureScore(PortfolioAggregation):
         :param data: The data to calculate the S3 score for.
         :return: The S3 score.
         """
+        s3_data_columns = data.columns.tolist()
        
-        # Assuming 'data' is your DataFrame
         s3_data = data[data['scope'] == EScope.S3]
+        s3_data.to_csv("/home/mountainrambler/ITR/ITR-tool/examples/data/local/S3results1.csv") 
+
+        # Separate rows with s3_category == CAT_15
+        cat_15_data = s3_data[s3_data['s3_category'] == S3Category.CAT_15].copy()
 
         # Calculate mean temperature for s3_category = 15 for each time_frame
-        mean_temp_15 = s3_data[s3_data['s3_category'] == 15].groupby('time_frame')['temperature_score'].mean()
+        mean_temp_15 = cat_15_data.groupby(['company_id', 'time_frame'], as_index=False).agg({
+            'temperature_score': 'mean',
+            'target_ids': lambda x: list(set().union(*x)),
+            's3_category': lambda x: x.iloc[0],  # Retain original s3_category value
+            'ghg_s3_15': lambda x: x.iloc[0]      # Retain original ghg_s3_15 value
+        })
 
-        # Calculate mean temperature for s3_category not equal to 15 for each time_frame
-        mean_temp_not_15 = s3_data[s3_data['s3_category'] != 15].groupby('time_frame')['temperature_score'].mean()
+        # Remove the original CAT_15 rows from s3_data
+        s3_data = s3_data[s3_data['s3_category'] != S3Category.CAT_15]
 
-        # Create new DataFrame with rows where 'scope' is 'S3'
-        new_data_s3 = s3_data.copy()
-        new_data_s3['temperature_score'] = new_data_s3.apply(
-            lambda row: np.mean([mean_temp_15[row['time_frame']], mean_temp_not_15[row['time_frame']]]) 
-            if row['time_frame'] in mean_temp_15.index 
-            and row['time_frame'] in mean_temp_not_15.index 
-            else row['temperature_score'], axis=1)
-            
-        new_data_s3 = new_data_s3.drop_duplicates(subset=['company_id', 'time_frame'])
+        # Append the new DataFrame to s3_data
+        s3_data = pd.concat([s3_data, mean_temp_15])
 
-        # Get rows where 'scope' is 'S1', 'S2', 'S1S2', or 'S1S2S3'
-        other_scopes_data = data[data['scope'].isin([EScope.S1, EScope.S2, EScope.S1S2, EScope.S1S2S3])]
+        # Sort by company_id and time_frame to ensure data integrity
+        s3_data.sort_values(by=['company_id', 'time_frame'], inplace=True)
 
-        # Concatenate the two DataFrames
-        final_data = pd.concat([new_data_s3, other_scopes_data])
+        # Reset index to ensure continuous index after concatenation
+        s3_data['scope'] = EScope.S3
+        s3_data.reset_index(drop=True, inplace=True)
+        s3_data.to_csv("/home/mountainrambler/ITR/ITR-tool/examples/data/local/S3results2.csv") 
 
-        # If you want to keep only one row per company_id and time_frame for 'scope' = 'S3' in the new DataFrame
+        ghg_columns = self.c.S3_CATEGOTY_MAPPINGS
+                 
+        s3_data['weight'] = s3_data.apply(
+            lambda row: row[ghg_columns.get(row['s3_category'])] 
+                if not pd.isna(row['s3_category']) 
+                else np.nan, 
+            axis=1
+        )
+        valid_groups = s3_data.groupby(['company_id', 'time_frame']).filter(lambda x: not x['weight'].isnull().any())
 
-        final_data.sort_values(by=['company_id', 'time_frame', 'scope'], inplace=True)
-            # pd.Categorical(final_data['time_frame'], categories=ETimeFrames.__members__.values(), ordered=True), 
-            # pd.Categorical(final_data['scope'], categories=EScope.__members__.values(), ordered=True)], 
-            # inplace=True)
+        # Group by 'company_id' and 'time_frame' and compute the sum of 'weight' for each group
+        sum_weights = valid_groups.groupby(['company_id', 'time_frame'])['weight'].transform('sum')
 
-        return final_data
+        # Divide each 'weight' by the sum of 'weight' for its group
+        valid_groups['sum_weights'] = valid_groups['weight'] / sum_weights
+
+        # Fill NaN values with NA
+        valid_groups['sum_weights'] = valid_groups['sum_weights'].fillna(pd.NA)
+
+        # Update 'sum_weights' column in the original DataFrame 's3_data'
+        s3_data['sum_weights'] = valid_groups['sum_weights']
+        
+        # Calculate the weighted sum of 'temperature_score' for each group
+        weighted_sum = s3_data['temperature_score'] * s3_data['sum_weights']
+        s3_data['weighted_sum'] = weighted_sum.fillna(0)  # Fill NaN with 0 to avoid NaN in sum
+
+        # Group by 'company_id' and 'time_frame' and sum the weighted sum for each group
+        s3_data['weighted_sum'] = s3_data.groupby(['company_id', 'time_frame'])['weighted_sum'].transform('sum')
+
+        # Calculate the average of 'temperature_score' for each group
+        average_temperature_score = s3_data.groupby(['company_id', 'time_frame'])['temperature_score'].transform('mean')
+
+        # Update 's3_mean_scores' with the weighted sum if available, otherwise with the average
+        s3_data['s3_mean_scores'] = s3_data['weighted_sum'].where(s3_data['sum_weights'].notnull(), average_temperature_score)
+
+        # Drop the 'weighted_sum' column
+        s3_data.drop(columns=['weighted_sum'], inplace=True)
+
+        # Combine target ids for each company_id and time_frame
+        def combine_target_ids(group):
+            non_empty_lists = [x for x in group if x]
+            if non_empty_lists:
+                return list(set(sum(non_empty_lists, [])))
+            else:
+                return []
+
+        # Group by 'company_id' and 'time_frame' and aggregate the lists of 'target_ids'
+        combined_target_ids = s3_data.groupby(['company_id', 'time_frame'])['target_ids'].agg(combine_target_ids)
+
+        # Reset index to make 'company_id' and 'time_frame' columns again
+        combined_target_ids = combined_target_ids.reset_index()
+
+        # Merge the combined_target_ids DataFrame with the original s3_data DataFrame
+        s3_data = pd.merge(s3_data, combined_target_ids, on=['company_id', 'time_frame'], how='left')
+
+        # Drop the original 'target_ids' column
+        if 'target_ids_x' in s3_data.columns:
+            s3_data.drop(columns=['target_ids_x'], inplace=True)
+
+        # Rename the combined column to 'target_ids'
+        s3_data.rename(columns={'target_ids_y': 'target_ids'}, inplace=True)
+     
+        # Calculate weighted mean temperature for s3_category not equal to 15 for each time_frame
+        columns_to_exclude = ['company_id', 'time_frame', 'scope']
+        for column in columns_to_exclude:
+            s3_data_columns.remove(column)              
+        s3_data = s3_data.groupby(['company_id', 'time_frame', 'scope']).agg({
+            column: 'first' for column in s3_data_columns
+        }).reset_index()
+
+        data.drop_duplicates(subset=['company_id', 'time_frame', 'scope'], keep='last', inplace=True)
+        data.set_index(['company_id', 'time_frame', 'scope'], inplace=True)
+        s3_data.set_index(['company_id', 'time_frame', 'scope'], inplace=True)
+        data.update(s3_data)
+        data.reset_index(inplace=True)
+
+        return data
+
+        
