@@ -194,7 +194,9 @@ def dataframe_to_portfolio(df_portfolio: pd.DataFrame) -> List[PortfolioCompany]
     df_portfolio[ColumnsConfig.ENGAGEMENT_TARGET] = (
         df_portfolio[ColumnsConfig.ENGAGEMENT_TARGET].fillna(False).astype("bool")
     )
-    df_portfolio['user_fields'] = df_portfolio['user_fields'].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else None)
+    if 'user_fields' in df_portfolio:
+        df_portfolio['user_fields'] = df_portfolio['user_fields'].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else None)
+   
     return [
         PortfolioCompany.parse_obj(company)
         for company in df_portfolio.to_dict(orient="records")
