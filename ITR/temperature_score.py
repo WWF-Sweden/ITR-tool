@@ -752,8 +752,7 @@ class TemperatureScore(PortfolioAggregation):
         s3_data_columns = data.columns.tolist()
        
         s3_data = data[data['scope'] == EScope.S3]
-        s3_data.to_csv("/home/mountainrambler/ITR/ITR-tool/examples/data/local/S3results1.csv") 
-
+    
         # Separate rows with s3_category == CAT_15
         cat_15_data = s3_data[s3_data['s3_category'] == S3Category.CAT_15].copy()
 
@@ -777,7 +776,6 @@ class TemperatureScore(PortfolioAggregation):
         # Reset index to ensure continuous index after concatenation
         s3_data['scope'] = EScope.S3
         s3_data.reset_index(drop=True, inplace=True)
-        s3_data.to_csv("/home/mountainrambler/ITR/ITR-tool/examples/data/local/S3results2.csv") 
 
         ghg_columns = self.c.S3_CATEGOTY_MAPPINGS
                  
