@@ -69,6 +69,8 @@ class ColumnsConfig:
     BASEYEAR_GHG_S3 = "base_year_ghg_s3"
     REGION = "region"
     ENGAGEMENT_TARGET = "engagement_target"
+    BASE_YEAR_TS = "base_year_ts"
+    END_YEAR_TS = "end_year_ts"
 
     # Scope 3 categories
     GHG_S3_1 = "ghg_s3_1"
@@ -132,6 +134,7 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
     DEFAULT_INDUSTRY = "Others"
 
     VALUE_TARGET_REFERENCE_ABSOLUTE = "absolute"
+    VALUE_TARGET_REFERENCE_T_SCORE = "t_score"
     VALUE_TARGET_REFERENCE_INTENSITY = "intensity"
     VALUE_TARGET_REFERENCE_INTENSITY_BASE = "int"
 
@@ -210,7 +213,7 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
     TEMPERATURE_RESULTS = "temperature_results"
     INVESTMENT_VALUE = "investment_value"
     
-    S3_CATEGOTY_MAPPINGS = {
+    S3_CATEGORY_MAPPINGS = {
             S3Category.CAT_1: "ghg_s3_1",
             S3Category.CAT_2: "ghg_s3_2",
             S3Category.CAT_3: "ghg_s3_3",
@@ -225,8 +228,10 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
             S3Category.CAT_12: "ghg_s3_12",
             S3Category.CAT_13: "ghg_s3_13",
             S3Category.CAT_14: "ghg_s3_14",
-            S3Category.CAT_15: "ghg_s3_15"
+            S3Category.CAT_15: "ghg_s3_15",
+            S3Category.CAT_NAN: None
     }
+    EPSILON = 1e-6
 
 class PortfolioCoverageTVPConfig(PortfolioAggregationConfig):
     FILE_TARGETS = os.path.join(

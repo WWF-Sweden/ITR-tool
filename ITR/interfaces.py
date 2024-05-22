@@ -3,7 +3,7 @@ from datetime import date
 from typing import Optional, Dict, List
 
 import pandas as pd
-from pydantic import BaseModel, validator, Field
+from pydantic import BaseModel, validator, Field, ValidationError
 
 
 class AggregationContribution(BaseModel):
@@ -36,6 +36,8 @@ class ScoreAggregation(BaseModel):
 
 
 class ScoreAggregationScopes(BaseModel):
+    S1: Optional[ScoreAggregation]
+    S2: Optional[ScoreAggregation]
     S1S2: Optional[ScoreAggregation]
     S3: Optional[ScoreAggregation]
     S1S2S3: Optional[ScoreAggregation]
@@ -181,11 +183,14 @@ class S3Category(SortableEnum):
     CAT_13 = 13
     CAT_14 = 14
     CAT_15 = 15
+    CAT_NAN = 'None'
 
 class IDataProviderTarget(BaseModel):
     company_id: str
     target_type: str
     intensity_metric: Optional[str]
+    base_year_ts: Optional[float]
+    end_year_ts: Optional[float]
     scope: EScope
     #s3_category: Optional[int]
     s3_category: Optional[S3Category]
@@ -217,7 +222,21 @@ class IDataProviderTarget(BaseModel):
         if val == "" or val == "nan" or pd.isnull(val):
             return None
         return val
-
+    
+    # @validator("s3_category", pre=True, always=False)
+    # def validate_f(cls, val):
+    #     if val is None:
+    #         return None
+    #     elif isinstance(val, S3Category):
+    #         return val
+    #     elif isinstance(val, int):
+    #         try:
+    #             return S3Category(val)
+    #         except ValueError:
+    #             raise ValidationError("Invalid value for s3_category")
+    #     else:
+    #         raise ValidationError("Invalid type for s3_category")
+        
     @validator("target_ids", pre=True)
     def convert_to_list(cls, v):
         """

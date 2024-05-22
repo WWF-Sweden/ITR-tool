@@ -87,6 +87,9 @@ class TargetProtocol:
         :param target: The target to validate
         :return: True if it's a valid target, false if it isn't
         """
+        # If the target is set using the CDP_WWF temperature scoring methodology
+        if target.target_type.lower() == "t_score":
+            return self._validate_t_score(target)
         # Only absolute targets or intensity targets with a valid intensity metric are allowed.
         target_type = "abs" in target.target_type.lower() or (
             "int" in target.target_type.lower()
@@ -139,6 +142,28 @@ class TargetProtocol:
             and s1s2
         )
     
+    def _validate_t_score(self, target: IDataProviderTarget) -> bool:
+        """
+        Validate targets set using the CDP_WWF temperature scoing methodology
+        :param target: The target to validate
+        :return: True if it's a valid target, false if it isn't
+        """
+        # The end year should be greater than the start year.
+        if target.start_year is None or pd.isnull(target.start_year):
+            target.start_year = target.base_year
+
+        target_end_year = target.end_year > target.start_year
+
+        # The end year should be greater than or equal to the current year
+        # Added in update Oct 22
+        target_current = target.end_year >= datetime.datetime.now().year
+        
+        return (
+            target_end_year
+            and target_current
+        )
+
+    
     #@staticmethod
     def _split_s1s2s3(self,
         target: IDataProviderTarget,
@@ -149,6 +174,8 @@ class TargetProtocol:
         :param target: The input target
         :return The split targets or the original target and None
         """
+        if target.target_type.lower() == "t_score":
+            return target, None
         if target.scope == EScope.S1S2S3:
             s1s2, s3 = target.copy(), None
             if (
@@ -189,6 +216,8 @@ class TargetProtocol:
          the S1 target and the S2 target from the split.
         """
         targets = [target]
+        if target.target_type.lower() == "t_score":
+            return targets
         # before splitting S1S2 targets we need to verify that there is GHG data to aggregate the scores later
         # TODO - verify that company is one unique row
         company = self.company_data[self.company_data[self.c.COLS.COMPANY_ID] == target.company_id]
@@ -325,7 +354,9 @@ class TargetProtocol:
         :param target: The input target
         :return: The original target with a weighted reduction ambition, if so required
         """
-        if target.scope == EScope.S1:
+        if target.target_type.lower() == "t_score":
+            return target
+        elif target.scope == EScope.S1:
             target.reduction_ambition = (
                 target.reduction_ambition * target.coverage_s1
             )
@@ -467,7 +498,7 @@ class TargetProtocol:
             if isinstance(target_data, pd.Series):
                 # One match with Target data
                 # TODO: Check if we need to exclicitly convert to DataFrame
-                return target_data[target_columns]
+                return pd.DataFrame(target_data[target_columns]).T
             else:
                 if target_data.scope[0] == EScope.S3:
                     coverage_column = self.c.COLS.COVERAGE_S3
@@ -520,7 +551,7 @@ class TargetProtocol:
 
         :param target_data: The target data
         :param target_columns: The columns to return
-        :return: The target data that meets the criteria
+        :return: The target data that meet the criteria
         """
         target_data['year'] = target_data[self.c.COLS.TARGET_CONFIRM_DATE].dt.year
         latest_year = target_data['year'].max()
@@ -531,7 +562,7 @@ class TargetProtocol:
     
     def group_targets(self):
         """
-        Group the targets and create the 9-box grid (short, mid, long * s1s2, s3, s1s2s3).
+        Group the targets and create the target grid (short, mid, long * s1s2, s3, s1s2s3).
         Group valid targets by category & filter multiple targets
         Input: a list of valid targets for each company:
         For each company:

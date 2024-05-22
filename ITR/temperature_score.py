@@ -211,7 +211,9 @@ class TemperatureScore(PortfolioAggregation):
         :param target: The target as a row of a dataframe
         :return: The mapped AR6 target
         """
-        if target[self.c.COLS.SCOPE] == EScope.S1S2:
+        if (target[self.c.COLS.SCOPE] == EScope.S1S2
+            or target[self.c.COLS.SCOPE] == EScope.S1S2S3
+            ):
             map_scope = EScope.S1
         else:
             map_scope = target[self.c.COLS.SCOPE]
@@ -319,14 +321,27 @@ class TemperatureScore(PortfolioAggregation):
             or pd.isnull(target[self.c.COLS.ANNUAL_REDUCTION_RATE])
         ):
             return self.fallback_score, 1
-
-        ts = max(
-            target[self.c.COLS.REGRESSION_PARAM]
-            * target[self.c.COLS.ANNUAL_REDUCTION_RATE]
-            * 100
-            + target[self.c.COLS.REGRESSION_INTERCEPT],
-            self.c.TEMPERATURE_FLOOR,
-        )
+        
+        # CAR formula won't accept reduction of 100%, so assign the floor temperature score
+        if abs(target[self.c.COLS.REDUCTION_AMBITION] - 1.0) < self.c.EPSILON:
+            ts = self.c.TEMPERATURE_FLOOR
+        # If target is set using CDP-WWF method, use the T_score from equation 5 in method doc
+        elif target[self.c.COLS.TARGET_TYPE_AR6].lower() == "t_score":
+            ts = max(
+                target[self.c.COLS.BASE_YEAR_TS] 
+                - (2040 - target[self.c.COLS.BASE_YEAR])
+                * ((target[self.c.COLS.BASE_YEAR_TS] - target[self.c.COLS.END_YEAR_TS])
+                   / (target[self.c.COLS.END_YEAR] - target[self.c.COLS.BASE_YEAR])),
+                self.c.TEMPERATURE_FLOOR
+            )
+        else:           
+            ts = max(
+                target[self.c.COLS.REGRESSION_PARAM]
+                * target[self.c.COLS.ANNUAL_REDUCTION_RATE]
+                * 100
+                + target[self.c.COLS.REGRESSION_INTERCEPT],
+                self.c.TEMPERATURE_FLOOR,
+            )
         if target[self.c.COLS.SBTI_VALIDATED]:
             return ts, 0
         else:
@@ -348,7 +363,10 @@ class TemperatureScore(PortfolioAggregation):
         it will return the original score
         :return: The aggregated temperature score for a company
         """
-        if row[self.c.COLS.SCOPE] != EScope.S1S2S3:
+        if row[self.c.COLS.SCOPE] != EScope.S1S2S3 or (
+            row[self.c.COLS.SCOPE] == EScope.S1S2S3
+            and row[self.c.COLS.TARGET_TYPE_AR6].lower() == "t_score"
+        ):
             return (
                 row[self.c.COLS.TEMPERATURE_SCORE], 
                 row[self.c.TEMPERATURE_RESULTS],
@@ -757,10 +775,11 @@ class TemperatureScore(PortfolioAggregation):
         cat_15_data = s3_data[s3_data['s3_category'] == S3Category.CAT_15].copy()
 
         # Calculate mean temperature for s3_category = 15 for each time_frame
-        mean_temp_15 = cat_15_data.groupby(['company_id', 'time_frame'], as_index=False).agg({
+        mean_temp_15 = cat_15_data.groupby(['company_id', 'time_frame', 'scope'], as_index=False).agg({
             'temperature_score': 'mean',
             'target_ids': lambda x: list(set().union(*x)),
-            's3_category': lambda x: x.iloc[0],  # Retain original s3_category value
+            'target_type': lambda x: x.iloc[0],  # Retain original target_type value
+            's3_category': lambda x: S3Category.CAT_NAN if pd.isnull(x.iloc[0]) else x.iloc[0],  # Retain original s3_category value
             'ghg_s3_15': lambda x: x.iloc[0]      # Retain original ghg_s3_15 value
         })
 
@@ -774,10 +793,9 @@ class TemperatureScore(PortfolioAggregation):
         s3_data.sort_values(by=['company_id', 'time_frame'], inplace=True)
 
         # Reset index to ensure continuous index after concatenation
-        s3_data['scope'] = EScope.S3
         s3_data.reset_index(drop=True, inplace=True)
 
-        ghg_columns = self.c.S3_CATEGOTY_MAPPINGS
+        ghg_columns = self.c.S3_CATEGORY_MAPPINGS
                  
         s3_data['weight'] = s3_data.apply(
             lambda row: row[ghg_columns.get(row['s3_category'])] 
