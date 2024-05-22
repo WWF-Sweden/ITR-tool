@@ -69,6 +69,7 @@ class ExcelProvider(DataProvider):
                 #     target['statement_date'] = pd.to_datetime(target['statement_date'])
                 model_targets.append(IDataProviderTarget.parse_obj(target))
             except ValidationError as e:
+                print(f"Validationerror: {e}")
                 logger.warning(
                     f"(one of) the target(s) {target[self.c.TARGET_IDS]} of company {target[self.c.COMPANY_NAME]} is invalid and will be skipped"
                     
@@ -85,9 +86,15 @@ class ExcelProvider(DataProvider):
         :return: A list containing the company data
         """
         data_company = self.data["fundamental_data"]
+        # Pydantic doesn't accept NaN values in string fields, 
+        # so we need to convert them to empty strings
+        fields_to_convert = ['isic','country', 'sector', 'industry_level_1', 'industry_level_2', 
+                             'industry_level_3', 'industry_level_4']
+        data_company[fields_to_convert] = data_company[fields_to_convert].fillna('')
+
         companies = data_company.to_dict(orient="records")
         model_companies: List[IDataProviderCompany] = [
-            IDataProviderCompany.parse_obj(company) for company in companies
+            IDataProviderCompany.model_validate(company) for company in companies
         ]
         for company in model_companies:
             if company.ghg_s1 is not None and company.ghg_s2 is not None:
