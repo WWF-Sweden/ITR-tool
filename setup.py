@@ -9,7 +9,7 @@ install_requires = [
     "openpyxl==3.1.2",
     "pandas==2.2.0",
     "pydantic==1.10.14",
-    "requests==2.31.0",
+    "requests==2.32.0",
     "six==1.16.0",
     "xlrd==2.0.1",
 ]

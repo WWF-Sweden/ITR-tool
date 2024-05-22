@@ -1,5 +1,5 @@
 # ITR-tool
-WWF version of the SBTi-Finance-tool, based on the WWF/CDP Temperature rating methodology
+WWF version of the SBTi-Finance-tool, based on the CDP-WWF Temperature rating methodology
 
 > Visit https://wwf-sweden.github.io/ITR-tool/ for the full documentation
 
