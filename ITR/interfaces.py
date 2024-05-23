@@ -57,17 +57,17 @@ class ScoreAggregations(BaseModel):
 
 class ScenarioInterface(BaseModel):
     number: int
-    engagement_type: Optional[str]
+    engagement_type: Optional[str] 
 
 
 class PortfolioCompany(BaseModel):
     company_name: str
     company_id: str
     company_isin: Optional[str]
-    company_lei: Optional[str] = 'nan'
+    company_lei: Optional[str] 
     investment_value: float
     engagement_target: Optional[bool] = False
-    user_fields: Optional[dict]
+    user_fields: Optional[dict] = None
 
 
 class IDataProviderCompany(BaseModel):
@@ -97,18 +97,18 @@ class IDataProviderCompany(BaseModel):
     ghg_s3_15: Optional[float]
 
     country: Optional[str]
-    region: Optional[str]
-    sector: Optional[str]
-    industry_level_1: Optional[str]
-    industry_level_2: Optional[str]
-    industry_level_3: Optional[str]
-    industry_level_4: Optional[str]
+    region: Optional[str] 
+    sector: Optional[str] 
+    industry_level_1: Optional[str] 
+    industry_level_2: Optional[str] 
+    industry_level_3: Optional[str] 
+    industry_level_4: Optional[str] 
 
-    company_revenue: Optional[float]
-    company_market_cap: Optional[float]
-    company_enterprise_value: Optional[float]
-    company_total_assets: Optional[float]
-    company_cash_equivalents: Optional[float]
+    company_revenue: Optional[float] = 0.0
+    company_market_cap: Optional[float] = 0.0
+    company_enterprise_value: Optional[float] = 0.0
+    company_total_assets: Optional[float] = 0.0
+    company_cash_equivalents: Optional[float] = 0.0
 
     sbti_validated: bool = Field(
         False,
@@ -198,12 +198,12 @@ class IDataProviderTarget(BaseModel):
     coverage_s2: float
     coverage_s3: float
 
-    reduction_ambition: float
+    reduction_ambition: Optional[float]
     
     base_year: int
-    base_year_ghg_s1: float
-    base_year_ghg_s2: float
-    base_year_ghg_s3: float
+    base_year_ghg_s1: Optional[float]
+    base_year_ghg_s2: Optional[float]
+    base_year_ghg_s3: Optional[float]
     
     start_year: Optional[int]
     end_year: int
@@ -216,6 +216,12 @@ class IDataProviderTarget(BaseModel):
         description="""Some data providers use a unique identifier for each target. This identifier can then be used to 
         link companies targets to scores. E.g. targets MSCI1235 and MSCI4567 drive a score of 2.5° for Company 123""",
     )
+    @classmethod
+    def pre(cls, values):
+        # Set default values if not provided
+        if 'time_frame' not in values:
+            values['time_frame'] = None
+        return values
 
     @validator("start_year", pre=True, always=False)
     def validate_e(cls, val):
