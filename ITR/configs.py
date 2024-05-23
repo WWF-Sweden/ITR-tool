@@ -115,10 +115,7 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
     SBTI_FACTOR = 1
     FALLBACK_SCORE: float = 3.4
     TEMPERATURE_FLOOR: float = 1.5  
-    # TODO - Can we remove this?:
-    FILE_SR15_MAPPING = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)), "inputs", "sr15_mapping.xlsx"
-    )
+  
     # TODO - Delete this as it is replaced by the JSON file:
     FILE_REGRESSION_MODEL_SUMMARY = os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
