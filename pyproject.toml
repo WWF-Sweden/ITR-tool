@@ -39,17 +39,17 @@ xlrd = "2.0.1"
 requests = "2.32.2"
 openpyxl = "3.1.2"
 cleo = "^2.0.3"
-sphinx = "^4.3.2"
-sphinx-rtd-theme = "^0.5.2"
+sphinx = "5.0.2"
+sphinx-rtd-theme = "^1.0.0"
 
 
 [tool.poetry.dev-dependencies]
 black = "21.10b0"
 pylint = "^2.10.2"
 ipykernel = "6.5.0"
-Sphinx = "4.3.2"
+sphinx = "5.0.2"
 sphinx-autoapi = "1.8.4"
-sphinx-rtd-theme = "0.5.2"
+sphinx-rtd-theme = "1.0.0"
 
 [tool.pyright]
 venv = ".venv"
