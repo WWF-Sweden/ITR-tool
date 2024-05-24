@@ -199,7 +199,7 @@ def dataframe_to_portfolio(df_portfolio: pd.DataFrame) -> List[PortfolioCompany]
         df_portfolio['user_fields'] = df_portfolio['user_fields'].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else None)
  
     return [
-        PortfolioCompany.model_validate(company)
+        PortfolioCompany.parse_obj(company)
         for company in df_portfolio.to_dict(orient="records")
     ]
 

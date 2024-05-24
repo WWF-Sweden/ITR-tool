@@ -94,7 +94,7 @@ class ExcelProvider(DataProvider):
 
         companies = data_company.to_dict(orient="records")
         model_companies: List[IDataProviderCompany] = [
-            IDataProviderCompany.model_validate(company) for company in companies
+            IDataProviderCompany.parse_obj(company) for company in companies
         ]
         for company in model_companies:
             if company.ghg_s1 is not None and company.ghg_s2 is not None:
