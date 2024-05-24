@@ -63,13 +63,28 @@ Attributes
       :return: True if it's a valid target, false if it isn't
 
 
-   .. py:method:: _split_s1s2s3(target: ITR.interfaces.IDataProviderTarget) -> Tuple[ITR.interfaces.IDataProviderTarget, Optional[ITR.interfaces.IDataProviderTarget]]
-      :staticmethod:
+   .. py:method:: _validate_t_score(self, target: ITR.interfaces.IDataProviderTarget) -> bool
+
+      Validate targets set using the CDP_WWF temperature scoing methodology
+      :param target: The target to validate
+      :return: True if it's a valid target, false if it isn't
+
+
+   .. py:method:: _split_s1s2s3(self, target: ITR.interfaces.IDataProviderTarget) -> Tuple[ITR.interfaces.IDataProviderTarget, Optional[ITR.interfaces.IDataProviderTarget]]
 
       If there is a s1s2s3 scope, split it into two targets with s1s2 and s3
 
       :param target: The input target
       :return The split targets or the original target and None
+
+
+   .. py:method:: _split_s1s2(self, target: ITR.interfaces.IDataProviderTarget) -> List[ITR.interfaces.IDataProviderTarget]
+
+      Split the target into two targets, one for the S1 data and one for the S2 data.
+
+      :param target: The target to potentially split.
+      :return: A list containing (the original S1S2 target and) 
+       the S1 target and the S2 target from the split.
 
 
    .. py:method:: _combine_s1_s2(self, target: ITR.interfaces.IDataProviderTarget)
@@ -103,32 +118,8 @@ Attributes
       :staticmethod:
 
       Change in ITR method 1.5: all targets have their ambition scaled by their boundary coverage.
-      ** Old text follows (remove when confirmed to be correct):
-      Test on boundary coverage:
-
-      Option 1: minimal coverage threshold
-      For S1+S2 targets: coverage% must be at or above 95%, for S3 targets coverage must be above 67%
-
-      Option 2: weighted coverage
-      Thresholds are still 95% and 67%, target is always valid. Below threshold ambition is scaled.*
-      New target ambition = input target ambition * coverage
-      *either here or in temperature score module
-
-      Option 3: default coverage
-      Target is always valid, % uncovered is given default score in temperature score module.
-      ** End of old text
       :param target: The input target
       :return: The original target with a weighted reduction ambition, if so required
-      if target.scope == EScope.S1S2:
-          if target.coverage_s1 < 0.95:
-              target.reduction_ambition = (
-                  target.reduction_ambition * target.coverage_s1
-              )
-      elif target.scope == EScope.S3:
-          if target.coverage_s3 < 0.67:
-              target.reduction_ambition = (
-                  target.reduction_ambition * target.coverage_s3
-              )
 
 
    .. py:method:: _assign_time_frame(target: ITR.interfaces.IDataProviderTarget) -> ITR.interfaces.IDataProviderTarget
@@ -136,8 +127,8 @@ Attributes
 
       Time frame is forward looking: target year - current year. 
           Less than 5y = short, 
-          between 5 and 15 is mid, 
-          15 to 30 is long
+          between 5 and 10 is mid, 
+          more than 10 is long
 
       :param target: The input target
       :return: The original target with the time_frame field filled out (if so required)
@@ -156,7 +147,7 @@ Attributes
       :return:
 
 
-   .. py:method:: _find_target(self, row: pandas.Series, target_columns: List[str]) -> pandas.Series
+   .. py:method:: _find_target(self, row: pandas.Series, target_columns: List[str]) -> pandas.DataFrame
 
       Find the target that corresponds to a given row. If there are multiple targets available, filter them.
 
@@ -165,9 +156,21 @@ Attributes
       :return: records from the input data, which contains company and target information, that meet specific criteria. For example, record of greatest emissions_in_scope
 
 
+   .. py:method:: _find_s3_targets(self, target_data: pandas.DataFrame, target_columns: List[str]) -> pandas.DataFrame
+
+      Find S3 target that correspond to the given row. Note that there may be more
+      than one S3 target. We first look for the target with the latest confirmation date.
+      Then check if there is more than one target with the same confirmation date.
+      The method then returns all targets with the latest confirmation date.
+
+      :param target_data: The target data
+      :param target_columns: The columns to return
+      :return: The target data that meet the criteria
+
+
    .. py:method:: group_targets(self)
 
-      Group the targets and create the 9-box grid (short, mid, long * s1s2, s3, s1s2s3).
+      Group the targets and create the target grid (short, mid, long * s1s2, s3, s1s2s3).
       Group valid targets by category & filter multiple targets
       Input: a list of valid targets for each company:
       For each company:

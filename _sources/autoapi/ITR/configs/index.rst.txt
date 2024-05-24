@@ -98,13 +98,13 @@ Classes
 
       
 
-   .. py:attribute:: S3_CATEGORY
+   .. py:attribute:: SCOPE3_CATEGORY
       :annotation: = s3_category
 
       
 
-   .. py:attribute:: SR15
-      :annotation: = sr15
+   .. py:attribute:: AR6
+      :annotation: = ar6
 
       
 
@@ -173,6 +173,16 @@ Classes
 
       
 
+   .. py:attribute:: GHG_SCOPE1
+      :annotation: = ghg_s1
+
+      
+
+   .. py:attribute:: GHG_SCOPE2
+      :annotation: = ghg_s2
+
+      
+
    .. py:attribute:: GHG_SCOPE12
       :annotation: = ghg_s1s2
 
@@ -215,6 +225,11 @@ Classes
 
    .. py:attribute:: SBTI_VALIDATED
       :annotation: = sbti_validated
+
+      
+
+   .. py:attribute:: TARGET_CONFIRM_DATE
+      :annotation: = statement_date
 
       
 
@@ -268,18 +283,18 @@ Classes
 
       
 
-   .. py:attribute:: INTENSITY_METRIC_SR15
+   .. py:attribute:: INTENSITY_METRIC_AR6
       :annotation: = intensity_metric
 
       
 
-   .. py:attribute:: TARGET_TYPE_SR15
+   .. py:attribute:: TARGET_TYPE_AR6
       :annotation: = target_type
 
       
 
-   .. py:attribute:: SR15_VARIABLE
-      :annotation: = sr15_variable
+   .. py:attribute:: AR6_VARIABLE
+      :annotation: = ar6_variable
 
       
 
@@ -310,6 +325,91 @@ Classes
 
    .. py:attribute:: ENGAGEMENT_TARGET
       :annotation: = engagement_target
+
+      
+
+   .. py:attribute:: BASE_YEAR_TS
+      :annotation: = base_year_ts
+
+      
+
+   .. py:attribute:: END_YEAR_TS
+      :annotation: = end_year_ts
+
+      
+
+   .. py:attribute:: GHG_S3_1
+      :annotation: = ghg_s3_1
+
+      
+
+   .. py:attribute:: GHG_S3_2
+      :annotation: = ghg_s3_2
+
+      
+
+   .. py:attribute:: GHG_S3_3
+      :annotation: = ghg_s3_3
+
+      
+
+   .. py:attribute:: GHG_S3_4
+      :annotation: = ghg_s3_4
+
+      
+
+   .. py:attribute:: GHG_S3_5
+      :annotation: = ghg_s3_5
+
+      
+
+   .. py:attribute:: GHG_S3_6
+      :annotation: = ghg_s3_6
+
+      
+
+   .. py:attribute:: GHG_S3_7
+      :annotation: = ghg_s3_7
+
+      
+
+   .. py:attribute:: GHG_S3_8
+      :annotation: = ghg_s3_8
+
+      
+
+   .. py:attribute:: GHG_S3_9
+      :annotation: = ghg_s3_9
+
+      
+
+   .. py:attribute:: GHG_S3_10
+      :annotation: = ghg_s3_10
+
+      
+
+   .. py:attribute:: GHG_S3_11
+      :annotation: = ghg_s3_11
+
+      
+
+   .. py:attribute:: GHG_S3_12
+      :annotation: = ghg_s3_12
+
+      
+
+   .. py:attribute:: GHG_S3_13
+      :annotation: = ghg_s3_13
+
+      
+
+   .. py:attribute:: GHG_S3_14
+      :annotation: = ghg_s3_14
+
+      
+
+   .. py:attribute:: GHG_S3_15
+      :annotation: = ghg_s3_15
 
       
 
@@ -362,17 +462,12 @@ Classes
       
 
    .. py:attribute:: FALLBACK_SCORE
-      :annotation: :float = 3.2
+      :annotation: :float = 3.4
 
       
 
    .. py:attribute:: TEMPERATURE_FLOOR
-      :annotation: :float = 0.0
-
-      
-
-   .. py:attribute:: FILE_SR15_MAPPING
-      
+      :annotation: :float = 1.5
 
       
 
@@ -386,6 +481,11 @@ Classes
 
       
 
+   .. py:attribute:: MODEL_NUMBER
+      :annotation: :int = 1
+
+      
+
    .. py:attribute:: DEFAULT_INDUSTRY
       :annotation: = Others
 
@@ -393,6 +493,11 @@ Classes
 
    .. py:attribute:: VALUE_TARGET_REFERENCE_ABSOLUTE
       :annotation: = absolute
+
+      
+
+   .. py:attribute:: VALUE_TARGET_REFERENCE_T_SCORE
+      :annotation: = t_score
 
       
 
@@ -431,6 +536,16 @@ Classes
 
       
 
+   .. py:attribute:: S3_CATEGORY_MAPPINGS
+      
+
+      
+
+   .. py:attribute:: EPSILON
+      :annotation: = 1e-06
+
+      
+
 
 .. py:class:: PortfolioCoverageTVPConfig
 
@@ -447,7 +562,7 @@ Classes
       
 
    .. py:attribute:: USE_LOCAL_CTA
-      :annotation: = False
+      :annotation: = True
 
       
 

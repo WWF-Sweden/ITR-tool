@@ -23,6 +23,7 @@ Classes
    ITR.interfaces.SortableEnum
    ITR.interfaces.EScope
    ITR.interfaces.ETimeFrames
+   ITR.interfaces.S3Category
    ITR.interfaces.IDataProviderTarget
 
 
@@ -110,6 +111,16 @@ Classes
 .. py:class:: ScoreAggregationScopes
 
    Bases: :py:obj:`pydantic.BaseModel`
+
+   .. py:attribute:: S1
+      :annotation: :Optional[ScoreAggregation]
+
+      
+
+   .. py:attribute:: S2
+      :annotation: :Optional[ScoreAggregation]
+
+      
 
    .. py:attribute:: S1S2
       :annotation: :Optional[ScoreAggregation]
@@ -227,13 +238,98 @@ Classes
 
       
 
+   .. py:attribute:: ghg_s1
+      :annotation: :Optional[float]
+
+      
+
+   .. py:attribute:: ghg_s2
+      :annotation: :Optional[float]
+
+      
+
    .. py:attribute:: ghg_s1s2
-      :annotation: :Optional[float] = 0.0
+      :annotation: :Optional[float]
 
       
 
    .. py:attribute:: ghg_s3
-      :annotation: :Optional[float] = 0.0
+      :annotation: :Optional[float]
+
+      
+
+   .. py:attribute:: ghg_s3_1
+      :annotation: :Optional[float]
+
+      
+
+   .. py:attribute:: ghg_s3_2
+      :annotation: :Optional[float]
+
+      
+
+   .. py:attribute:: ghg_s3_3
+      :annotation: :Optional[float]
+
+      
+
+   .. py:attribute:: ghg_s3_4
+      :annotation: :Optional[float]
+
+      
+
+   .. py:attribute:: ghg_s3_5
+      :annotation: :Optional[float]
+
+      
+
+   .. py:attribute:: ghg_s3_6
+      :annotation: :Optional[float]
+
+      
+
+   .. py:attribute:: ghg_s3_7
+      :annotation: :Optional[float]
+
+      
+
+   .. py:attribute:: ghg_s3_8
+      :annotation: :Optional[float]
+
+      
+
+   .. py:attribute:: ghg_s3_9
+      :annotation: :Optional[float]
+
+      
+
+   .. py:attribute:: ghg_s3_10
+      :annotation: :Optional[float]
+
+      
+
+   .. py:attribute:: ghg_s3_11
+      :annotation: :Optional[float]
+
+      
+
+   .. py:attribute:: ghg_s3_12
+      :annotation: :Optional[float]
+
+      
+
+   .. py:attribute:: ghg_s3_13
+      :annotation: :Optional[float]
+
+      
+
+   .. py:attribute:: ghg_s3_14
+      :annotation: :Optional[float]
+
+      
+
+   .. py:attribute:: ghg_s3_15
+      :annotation: :Optional[float]
 
       
 
@@ -355,13 +451,13 @@ Classes
 
       
 
-   .. py:attribute:: S3
-      :annotation: = S3
+   .. py:attribute:: S1S2
+      :annotation: = S1+S2
 
       
 
-   .. py:attribute:: S1S2
-      :annotation: = S1+S2
+   .. py:attribute:: S3
+      :annotation: = S3
 
       
 
@@ -403,6 +499,95 @@ Classes
       
 
 
+.. py:class:: S3Category
+
+   Bases: :py:obj:`SortableEnum`
+
+   Generic enumeration.
+
+   Derive from this class to define new enumerations.
+
+   .. py:attribute:: CAT_1
+      :annotation: = 1
+
+      
+
+   .. py:attribute:: CAT_2
+      :annotation: = 2
+
+      
+
+   .. py:attribute:: CAT_3
+      :annotation: = 3
+
+      
+
+   .. py:attribute:: CAT_4
+      :annotation: = 4
+
+      
+
+   .. py:attribute:: CAT_5
+      :annotation: = 5
+
+      
+
+   .. py:attribute:: CAT_6
+      :annotation: = 6
+
+      
+
+   .. py:attribute:: CAT_7
+      :annotation: = 7
+
+      
+
+   .. py:attribute:: CAT_8
+      :annotation: = 8
+
+      
+
+   .. py:attribute:: CAT_9
+      :annotation: = 9
+
+      
+
+   .. py:attribute:: CAT_10
+      :annotation: = 10
+
+      
+
+   .. py:attribute:: CAT_11
+      :annotation: = 11
+
+      
+
+   .. py:attribute:: CAT_12
+      :annotation: = 12
+
+      
+
+   .. py:attribute:: CAT_13
+      :annotation: = 13
+
+      
+
+   .. py:attribute:: CAT_14
+      :annotation: = 14
+
+      
+
+   .. py:attribute:: CAT_15
+      :annotation: = 15
+
+      
+
+   .. py:attribute:: CAT_NAN
+      :annotation: = None
+
+      
+
+
 .. py:class:: IDataProviderTarget
 
    Bases: :py:obj:`pydantic.BaseModel`
@@ -422,28 +607,38 @@ Classes
 
       
 
+   .. py:attribute:: base_year_ts
+      :annotation: :Optional[float]
+
+      
+
+   .. py:attribute:: end_year_ts
+      :annotation: :Optional[float]
+
+      
+
    .. py:attribute:: scope
       :annotation: :EScope
 
       
 
    .. py:attribute:: s3_category
-      :annotation: :Optional[int]
+      :annotation: :Optional[S3Category]
 
       
 
    .. py:attribute:: coverage_s1
-      :annotation: :Optional[float]
+      :annotation: :float
 
       
 
    .. py:attribute:: coverage_s2
-      :annotation: :Optional[float]
+      :annotation: :float
 
       
 
    .. py:attribute:: coverage_s3
-      :annotation: :Optional[float]
+      :annotation: :float
 
       
 
@@ -482,6 +677,11 @@ Classes
 
       
 
+   .. py:attribute:: statement_date
+      :annotation: :Optional[datetime.date]
+
+      
+
    .. py:attribute:: time_frame
       :annotation: :Optional[ETimeFrames]
 
@@ -504,14 +704,18 @@ Classes
    .. py:method:: validate_e(cls, val)
 
 
-   .. py:method:: validate_f(cls, val)
-
-
    .. py:method:: convert_to_list(cls, v)
 
       targets can be combined so target_ids field must be a list
       pre=True is used to ensure that the validator is called before the default_factory
       with pre=True and default_factory the users can supply single strings, e.g. "Target1"
+
+
+   .. py:method:: equals(self, other: IDataProviderTarget) -> bool
+
+      Check if two targets are equal.
+      :param other: The other target
+      :return: True if the targets are equal, False otherwise
 
 
 
