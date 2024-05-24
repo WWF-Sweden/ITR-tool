@@ -500,9 +500,9 @@ class TargetProtocol:
                 # TODO: Check if we need to exclicitly convert to DataFrame
                 return pd.DataFrame(target_data[target_columns]).T
             else:
-                if target_data.scope[0] == EScope.S3:
+                if target_data.scope.iloc[0] == EScope.S3:
                     coverage_column = self.c.COLS.COVERAGE_S3
-                elif target_data.scope[0] == EScope.S2:
+                elif target_data.scope.iloc[0] == EScope.S2:
                     coverage_column = self.c.COLS.COVERAGE_S2
                 else:
                     coverage_column = self.c.COLS.COVERAGE_S1
@@ -517,7 +517,7 @@ class TargetProtocol:
                   - target_data[self.c.COLS.BASE_YEAR]
                 )
                 # Scope 3 targets need to be filtered separately
-                if target_data.scope[0] != EScope.S3:
+                if target_data.scope.iloc[0] != EScope.S3:
                     target_data = (
                         target_data.sort_values(
                             by=[
