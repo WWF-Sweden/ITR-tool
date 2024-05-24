@@ -1,8 +1,9 @@
 from enum import Enum
+from datetime import date
 from typing import Optional, Dict, List
 
 import pandas as pd
-from pydantic import BaseModel, validator, Field
+from pydantic import BaseModel, validator, Field, ValidationError
 
 
 class AggregationContribution(BaseModel):
@@ -35,6 +36,8 @@ class ScoreAggregation(BaseModel):
 
 
 class ScoreAggregationScopes(BaseModel):
+    S1: Optional[ScoreAggregation]
+    S2: Optional[ScoreAggregation]
     S1S2: Optional[ScoreAggregation]
     S3: Optional[ScoreAggregation]
     S1S2S3: Optional[ScoreAggregation]
@@ -71,8 +74,27 @@ class IDataProviderCompany(BaseModel):
     company_name: str
     company_id: str
     isic: str
-    ghg_s1s2: Optional[float] = 0.0
-    ghg_s3: Optional[float] = 0.0
+    ghg_s1: Optional[float]
+    ghg_s2: Optional[float]
+    ghg_s1s2: Optional[float] = None 
+    ghg_s3: Optional[float]
+
+    # Optional fields for scope 3 categories
+    ghg_s3_1: Optional[float]
+    ghg_s3_2: Optional[float]
+    ghg_s3_3: Optional[float]
+    ghg_s3_4: Optional[float]
+    ghg_s3_5: Optional[float]
+    ghg_s3_6: Optional[float]
+    ghg_s3_7: Optional[float]
+    ghg_s3_8: Optional[float]
+    ghg_s3_9: Optional[float]
+    ghg_s3_10: Optional[float]
+    ghg_s3_11: Optional[float]
+    ghg_s3_12: Optional[float]
+    ghg_s3_13: Optional[float]
+    ghg_s3_14: Optional[float]
+    ghg_s3_15: Optional[float]
 
     country: Optional[str]
     region: Optional[str] 
@@ -92,7 +114,7 @@ class IDataProviderCompany(BaseModel):
         False,
         description='True if the SBTi target status is "Target set", false otherwise',
     )
-
+    
 
 class SortableEnum(Enum):
     def __str__(self):
@@ -126,8 +148,8 @@ class SortableEnum(Enum):
 class EScope(SortableEnum):
     S1 = "S1"
     S2 = "S2"
-    S3 = "S3"
     S1S2 = "S1+S2"
+    S3 = "S3"
     S1S2S3 = "S1+S2+S3"
 
     @classmethod
@@ -145,16 +167,36 @@ class ETimeFrames(SortableEnum):
     MID = "mid"
     LONG = "long"
 
+class S3Category(SortableEnum):
+    CAT_1 = 1
+    CAT_2 = 2
+    CAT_3 = 3
+    CAT_4 = 4
+    CAT_5 = 5
+    CAT_6 = 6
+    CAT_7 = 7
+    CAT_8 = 8
+    CAT_9 = 9
+    CAT_10 = 10
+    CAT_11 = 11
+    CAT_12 = 12
+    CAT_13 = 13
+    CAT_14 = 14
+    CAT_15 = 15
+    CAT_NAN = 'None'
 
 class IDataProviderTarget(BaseModel):
     company_id: str
     target_type: str
     intensity_metric: Optional[str]
+    base_year_ts: Optional[float]
+    end_year_ts: Optional[float]
     scope: EScope
-    s3_category: Optional[int]
-    coverage_s1: Optional[float]
-    coverage_s2: Optional[float]
-    coverage_s3: Optional[float]
+    #s3_category: Optional[int]
+    s3_category: Optional[S3Category]
+    coverage_s1: float
+    coverage_s2: float
+    coverage_s3: float
 
     reduction_ambition: Optional[float]
     
@@ -165,6 +207,7 @@ class IDataProviderTarget(BaseModel):
     
     start_year: Optional[int]
     end_year: int
+    statement_date: Optional[date]
     time_frame: Optional[ETimeFrames]
     achieved_reduction: Optional[float] = 0
 
@@ -186,12 +229,20 @@ class IDataProviderTarget(BaseModel):
             return None
         return val
     
-    @validator("s3_category", pre=True, always=False)
-    def validate_f(cls, val):
-        if val == "" or val == "nan" or pd.isnull(val):
-            return None
-        return val
-
+    # @validator("s3_category", pre=True, always=False)
+    # def validate_f(cls, val):
+    #     if val is None:
+    #         return None
+    #     elif isinstance(val, S3Category):
+    #         return val
+    #     elif isinstance(val, int):
+    #         try:
+    #             return S3Category(val)
+    #         except ValueError:
+    #             raise ValidationError("Invalid value for s3_category")
+    #     else:
+    #         raise ValidationError("Invalid type for s3_category")
+        
     @validator("target_ids", pre=True)
     def convert_to_list(cls, v):
         """
@@ -204,3 +255,18 @@ class IDataProviderTarget(BaseModel):
         if pd.isnull(v):
             return []
         return [v]
+    
+    def equals(self, other: "IDataProviderTarget") -> bool:
+        """
+        Check if two targets are equal.
+        :param other: The other target
+        :return: True if the targets are equal, False otherwise
+        """
+        return (self.company_id == other.company_id 
+                and self.target_type == other.target_type 
+                and self.scope == other.scope 
+                and self.base_year == other.base_year 
+                and self.end_year == other.end_year 
+                and self.time_frame == other.time_frame 
+                and self.target_ids == other.target_ids
+        )

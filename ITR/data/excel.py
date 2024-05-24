@@ -1,5 +1,6 @@
 from typing import Type, List
 from pydantic import ValidationError
+from datetime import date
 import logging
 
 import pandas as pd
@@ -19,8 +20,13 @@ class ExcelProvider(DataProvider):
         super().__init__()
         self.data = pd.read_excel(path, sheet_name=None, skiprows=0)
         # Set all missing coverage values to 0.0
-        self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3']] = \
-            self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3']].fillna(0.0)
+        self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3', 'reduction_ambition']] = \
+            self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3', 'reduction_ambition']].fillna(0.0)
+        # Convert s3_category to int
+        try:
+            self.data['target_data']['s3_category'] = self.data['target_data']['s3_category'].fillna(0).astype(int)
+        except:
+            print("Non numeric values in s3_category column")
         self.c = config
 
     def get_targets(self, company_ids: List[str]) -> List[IDataProviderTarget]:
@@ -45,23 +51,28 @@ class ExcelProvider(DataProvider):
         :return: A list containing the targets
         """
         logger = logging.getLogger(__name__)
-        # Pydantic doesn't accept NaN values in string fields, 
-        # so we need to convert them to empty strings
-        fields_to_convert = ['intensity_metric']
-        df_targets[fields_to_convert] = df_targets[fields_to_convert].fillna('')
+         # 1) Check if 'statement_date' looks like a date
+        df_targets['statement_date'] = pd.to_datetime(df_targets['statement_date'], format='%Y', errors='coerce')
+
+        # 2) If 'statement_date' is empty, check 'start_year'
+        df_targets.loc[df_targets['statement_date'].isna(), 'statement_date'] = pd.to_datetime(df_targets['start_year'], format='%Y', errors='coerce')
+
+        # 3) If 'start_year' is empty, use 'base_year'
+        df_targets.loc[df_targets['statement_date'].isna(), 'statement_date'] = pd.to_datetime(df_targets['base_year'], format='%Y', errors='coerce')
         targets = df_targets.to_dict(orient="records")
         model_targets: List[IDataProviderTarget] = []
         for target in targets:
             try:
-                target = IDataProviderTarget.pre(target)
-                validation_result = IDataProviderTarget.model_validate(target)
-                model_targets.append(validation_result)
-               # model_targets.append(IDataProviderTarget.model_validate(target))
+                #  # If statement_date is a year (integer), convert it to a date
+                # if isinstance(target['statement_date'], int):
+                #     target['statement_date'] = date(target['statement_date'], 1, 1)  # Set to January 1 of the given year
+                #     target['statement_date'] = pd.to_datetime(target['statement_date'])
+                model_targets.append(IDataProviderTarget.parse_obj(target))
             except ValidationError as e:
                 print(f"Validationerror: {e}")
                 logger.warning(
-                    "(one of) the target(s) of company %s is invalid and will be skipped"
-                    % target[self.c.COMPANY_NAME]
+                    f"(one of) the target(s) {target[self.c.TARGET_IDS]} of company {target[self.c.COMPANY_NAME]} is invalid and will be skipped"
+                    
                 )
                 pass
         return model_targets
@@ -85,6 +96,10 @@ class ExcelProvider(DataProvider):
         model_companies: List[IDataProviderCompany] = [
             IDataProviderCompany.model_validate(company) for company in companies
         ]
+        for company in model_companies:
+            if company.ghg_s1 is not None and company.ghg_s2 is not None:
+                company.ghg_s1s2 = company.ghg_s1 + company.ghg_s2
+
         model_companies = [
             target for target in model_companies if target.company_id in company_ids
         ]

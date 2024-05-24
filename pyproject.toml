@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "WWF-ITR"
-version = "v0.9.1"
+version = "v0.9.2"
 description = "This package helps companies and financial institutions to assess the temperature alignment of current targets, commitments, and investment and lending portfolios, and to use this information to develop targets for official validation by the SBTi.'"
 authors = ["wwf <ekonomi-finans@wwf.se>"]
 license = "MIT"
@@ -36,7 +36,7 @@ pydantic = "1.10.8"
 six = "1.16.0"
 pandas = "1.5.3"
 xlrd = "2.0.1"
-requests = "2.31.0"
+requests = "2.32.0"
 openpyxl = "3.1.2"
 cleo = "^2.0.3"
 sphinx = "^4.3.2"

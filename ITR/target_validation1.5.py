@@ -1,4 +1,4 @@
-# This is target_validation.py
+# This is target_validation1.5.py
 import datetime
 import itertools
 import logging
@@ -22,10 +22,10 @@ class TargetProtocol:
     """
     This class validates the targets, to make sure that only active, useful 
     targets are considered. It then combines the targets with company-related 
-    data into a dataframe where there's one row for each of the nine possible 
-    target types (short, mid, long * S1+S2, S3, S1+S2+S3). 
+    data into a dataframe where there's one row for each of the fifteen possible 
+    target types (short, mid, long * S1, S2, S1+S2, S3, S1+S2+S3). 
     This class follows the procedures outlined by the target protocol that is 
-    a part of the "Temperature Rating Methodology" (2024), which has been created 
+    a part of the "Temperature Scoring Methodology" (2024), which has been created 
     by CDP Worldwide and WWF International.
 
     :param config: A Portfolio aggregation config
@@ -56,7 +56,6 @@ class TargetProtocol:
         self.company_data = pd.DataFrame.from_records([c.dict() for c in companies])
         targets = self._prepare_targets(targets)
         self.target_data = pd.DataFrame.from_records([c.dict() for c in targets])
-        self.target_data['statement_date'] = pd.to_datetime(self.target_data['statement_date'])
 
         # Create an indexed DF for performance purposes
         self.target_data.index = (
@@ -87,9 +86,6 @@ class TargetProtocol:
         :param target: The target to validate
         :return: True if it's a valid target, false if it isn't
         """
-        # If the target is set using the CDP_WWF temperature scoring methodology
-        if target.target_type.lower() == "t_score":
-            return self._validate_t_score(target)
         # Only absolute targets or intensity targets with a valid intensity metric are allowed.
         target_type = "abs" in target.target_type.lower() or (
             "int" in target.target_type.lower()
@@ -142,28 +138,6 @@ class TargetProtocol:
             and s1s2
         )
     
-    def _validate_t_score(self, target: IDataProviderTarget) -> bool:
-        """
-        Validate targets set using the CDP_WWF temperature scoing methodology
-        :param target: The target to validate
-        :return: True if it's a valid target, false if it isn't
-        """
-        # The end year should be greater than the start year.
-        if target.start_year is None or pd.isnull(target.start_year):
-            target.start_year = target.base_year
-
-        target_end_year = target.end_year > target.start_year
-
-        # The end year should be greater than or equal to the current year
-        # Added in update Oct 22
-        target_current = target.end_year >= datetime.datetime.now().year
-        
-        return (
-            target_end_year
-            and target_current
-        )
-
-    
     #@staticmethod
     def _split_s1s2s3(self,
         target: IDataProviderTarget,
@@ -174,8 +148,6 @@ class TargetProtocol:
         :param target: The input target
         :return The split targets or the original target and None
         """
-        if target.target_type.lower() == "t_score":
-            return target, None
         if target.scope == EScope.S1S2S3:
             s1s2, s3 = target.copy(), None
             if (
@@ -199,8 +171,6 @@ class TargetProtocol:
                 s3 = target.copy()
                 s3.scope = EScope.S3
             return s1s2, s3
-        
-        
         else:
             return target, None
         
@@ -216,8 +186,6 @@ class TargetProtocol:
          the S1 target and the S2 target from the split.
         """
         targets = [target]
-        if target.target_type.lower() == "t_score":
-            return targets
         # before splitting S1S2 targets we need to verify that there is GHG data to aggregate the scores later
         # TODO - verify that company is one unique row
         company = self.company_data[self.company_data[self.c.COLS.COMPANY_ID] == target.company_id]
@@ -236,7 +204,7 @@ class TargetProtocol:
             # Append '_1' and '_2' to the target_ids of s1 and s2, respectively
             s1.target_ids = [id_ + '_1' for id_ in s1.target_ids]
             s2.target_ids = [id_ + '_2' for id_ in s2.target_ids]
-            targets.extend([s1, s2])
+            targets = [s1, s2]
            
         return targets
 
@@ -354,9 +322,7 @@ class TargetProtocol:
         :param target: The input target
         :return: The original target with a weighted reduction ambition, if so required
         """
-        if target.target_type.lower() == "t_score":
-            return target
-        elif target.scope == EScope.S1:
+        if target.scope == EScope.S1:
             target.reduction_ambition = (
                 target.reduction_ambition * target.coverage_s1
             )
@@ -382,8 +348,8 @@ class TargetProtocol:
                         + target.coverage_s2 * target.base_year_ghg_s2
                     ) / (target.base_year_ghg_s1 + target.base_year_ghg_s2)
                 #TODO do we need to set these values?
-                    target.coverage_s1 = combined_coverage
-                    target.coverage_s2 = combined_coverage
+                #target.coverage_s1 = combined_coverage
+                #target.coverage_s2 = combined_coverage
                     target.reduction_ambition = (
                         target.reduction_ambition * combined_coverage
                     )
@@ -413,11 +379,16 @@ class TargetProtocol:
 
     def _prepare_targets(self, targets: List[IDataProviderTarget]):
         """
+        From v1.5 we will attempt to score each scope separately. 
+        All targets with combined scopes will be split into their individual scopes.
+        S1S2 targets will be kept and used if GHG data is unavailable for one of the scopes,
+        otherwise the S1S2 score will be based on the combined S1 and S2 scores.
+        Combinng scores is done in score aggregation
         logic
             - drop invalid targets
             - identifying the pure-S2 targets for later use
             - splitting s1s2s3 into s1s2 and s3
-            - combining s1 and s2
+            - splitting s1s2 into s1 and s2
             - assign target.reduction_ambition by considering target's boundary coverage
  
         :param targets:
@@ -476,8 +447,7 @@ class TargetProtocol:
 
         return targets
 
-    def _find_target(self, row: pd.Series, target_columns: List[str]) -> pd.DataFrame:
-       
+    def _find_target(self, row: pd.Series, target_columns: List[str]) -> pd.Series:
         """
         Find the target that corresponds to a given row. If there are multiple targets available, filter them.
 
@@ -497,8 +467,7 @@ class TargetProtocol:
             ].copy()
             if isinstance(target_data, pd.Series):
                 # One match with Target data
-                # TODO: Check if we need to exclicitly convert to DataFrame
-                return pd.DataFrame(target_data[target_columns]).T
+                return target_data[target_columns]
             else:
                 if target_data.scope[0] == EScope.S3:
                     coverage_column = self.c.COLS.COVERAGE_S3
@@ -510,13 +479,12 @@ class TargetProtocol:
                 # later confirmation date, 
                 # higher coverage,
                 # later end year, and target type 'absolute'
-                
+               
                 # We also prefer longer time spans within the same time frame
                 target_data['END_YEAR_MINUS_BASE_YEAR'] = (
                     target_data[self.c.COLS.END_YEAR] 
                   - target_data[self.c.COLS.BASE_YEAR]
                 )
-                # Scope 3 targets need to be filtered separately
                 if target_data.scope[0] != EScope.S3:
                     target_data = (
                         target_data.sort_values(
@@ -532,37 +500,39 @@ class TargetProtocol:
                             ascending=[False, False, True, False,False, False ],
                         ).iloc[0][target_columns]
                     )
-                    result_df = pd.DataFrame([target_data], columns=target_columns)
-                    return result_df
                 else:
                     target_data = self._find_s3_targets(target_data, target_columns)
-                    return target_data
-                          
+                
+               
+            return target_data
         except KeyError:
             # No target found
-            return pd.DataFrame([row], columns=target_columns)
-    
+            return row
+        
     def _find_s3_targets(self, target_data: pd.DataFrame, target_columns: List[str]) -> pd.DataFrame:
         """
         Find S3 target that correspond to the given row. Note that there may be more
         than one S3 target. We first look for the target with the latest confirmation date.
-        Then check if there is more than one target with the same confirmation date.
+        Then check if there are more than one target with the same confirmation date.
         The method then returns all targets with the latest confirmation date.
 
         :param target_data: The target data
         :param target_columns: The columns to return
-        :return: The target data that meet the criteria
+        :return: The target data that meets the criteria
         """
         target_data['year'] = target_data[self.c.COLS.TARGET_CONFIRM_DATE].dt.year
+        target_data = target_data[target_data.scope[0] == EScope.S3]
         latest_year = target_data['year'].max()
         target_data = target_data[target_data['year'] == latest_year]
+
         final = target_data[target_columns]
-   
+
         return final
-    
+        
+
     def group_targets(self):
         """
-        Group the targets and create the target grid (short, mid, long * s1s2, s3, s1s2s3).
+        Group the targets and create the 9-box grid (short, mid, long * s1s2, s3, s1s2s3).
         Group valid targets by category & filter multiple targets
         Input: a list of valid targets for each company:
         For each company:
@@ -597,15 +567,7 @@ class TargetProtocol:
             ),
             columns=grid_columns + empty_columns,
         )
-        target_columns = extended_data.columns
-       
-        results = []
-        for _, row in extended_data.iterrows():
-            result = self._find_target(row, target_columns)
-            results.append(result)
-
-        self.data = pd.concat(results, ignore_index=True)
-
-        return self.data
-    
-   
+        target_columns = extended_data.columns   # TODO - When calling _find_target, we only want single scope targets
+        self.data = extended_data.apply(
+            lambda row: self._find_target(row, target_columns), axis=1
+        )

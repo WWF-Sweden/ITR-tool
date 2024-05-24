@@ -49,7 +49,7 @@ class SBTi:
             # week_in_seconds = 7 * 24 * 60 * 60 # frequency of CTA file updates
 
             if not self._check_CTA_less_than_one_week_old(): 
-                print(f'CTA file is older than a week, if you wanna keep your file up-to-date please update the file at {self.c.FILE_TARGETS}.')
+                print(f'CTA file is older than a week, if you want to keep your file up-to-date please update the file at {self.c.FILE_TARGETS}.')
         else:
             raise ValueError('CTA file does not exist')
 
@@ -59,12 +59,22 @@ class SBTi:
                 print(f'CTA file already exists in {self.c.FILE_TARGETS}, skipping download.')
                 return
             else:
-                self._fetch_and_save_cta_file()
-
+                try:
+                    self._fetch_and_save_cta_file()
+                
+                except requests.HTTPError as err:
+                    if err.response.status_code == 403:
+                        print(f'403 Error fetching the CTA file: {err}')
+                    else:
+                        print(f'Error fetching the CTA file: {err}')
+              
     def _fetch_and_save_cta_file(self):
         try:
+            headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+            }
             # read from the remote CTA file url
-            response = requests.get(self.c.CTA_FILE_URL)
+            response = requests.get(self.c.CTA_FILE_URL, headers=headers)
 
             # raise if the status code is not 200
             response.raise_for_status()

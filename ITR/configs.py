@@ -4,7 +4,7 @@ the module, extend the respective config class and pass it to the class as the "
 """
 import os
 
-from ITR.interfaces import ETimeFrames, EScope
+from ITR.interfaces import ETimeFrames, EScope, S3Category
 
 
 class ColumnsConfig:
@@ -23,8 +23,8 @@ class ColumnsConfig:
     COMPANY_TOTAL_ASSETS = "company_total_assets"
     TARGET_REFERENCE_NUMBER = "target_type"
     SCOPE = "scope"
-    S3_CATEGORY = "s3_category"
-    SR15 = "sr15"
+    SCOPE3_CATEGORY = "s3_category"
+    AR6 = "ar6"
     REDUCTION_FROM_BASE_YEAR = "reduction_from_base_year"
     START_YEAR = "start_year"
     VARIABLE = "variable"
@@ -38,6 +38,8 @@ class ColumnsConfig:
     OWNED_EMISSIONS = "owned_emissions"
     COUNTRY = "country"
     SECTOR = "sector"
+    GHG_SCOPE1 = "ghg_s1"
+    GHG_SCOPE2 = "ghg_s2"
     GHG_SCOPE12 = "ghg_s1s2"
     GHG_SCOPE3 = "ghg_s3"
     COMPANY_REVENUE = "company_revenue"
@@ -47,6 +49,7 @@ class ColumnsConfig:
     BASE_YEAR = "base_year"
     END_YEAR = "end_year"
     SBTI_VALIDATED = "sbti_validated"
+    TARGET_CONFIRM_DATE = "statement_date"
     ACHIEVED_EMISSIONS = "achieved_reduction"
     ISIC = "isic"
     INDUSTRY_LVL1 = "industry_level_1"
@@ -57,17 +60,36 @@ class ColumnsConfig:
     COVERAGE_S2 = "coverage_s2"
     COVERAGE_S3 = "coverage_s3"
     INTENSITY_METRIC = "intensity_metric"
-    INTENSITY_METRIC_SR15 = "intensity_metric"
-    TARGET_TYPE_SR15 = "target_type"
-    SR15_VARIABLE = "sr15_variable"
+    INTENSITY_METRIC_AR6 = "intensity_metric"
+    TARGET_TYPE_AR6 = "target_type"
+    AR6_VARIABLE = "ar6_variable"
     REGRESSION_MODEL = "Regression_model"
     BASEYEAR_GHG_S1 = "base_year_ghg_s1"
     BASEYEAR_GHG_S2 = "base_year_ghg_s2"
     BASEYEAR_GHG_S3 = "base_year_ghg_s3"
     REGION = "region"
     ENGAGEMENT_TARGET = "engagement_target"
+    BASE_YEAR_TS = "base_year_ts"
+    END_YEAR_TS = "end_year_ts"
 
-    # SR15 mapping columns
+    # Scope 3 categories
+    GHG_S3_1 = "ghg_s3_1"
+    GHG_S3_2 = "ghg_s3_2"
+    GHG_S3_3 = "ghg_s3_3"
+    GHG_S3_4 = "ghg_s3_4"
+    GHG_S3_5 = "ghg_s3_5"
+    GHG_S3_6 = "ghg_s3_6"
+    GHG_S3_7 = "ghg_s3_7"
+    GHG_S3_8 = "ghg_s3_8"
+    GHG_S3_9 = "ghg_s3_9"
+    GHG_S3_10 = "ghg_s3_10"
+    GHG_S3_11 = "ghg_s3_11"
+    GHG_S3_12 = "ghg_s3_12"
+    GHG_S3_13 = "ghg_s3_13"
+    GHG_S3_14 = "ghg_s3_14"
+    GHG_S3_15 = "ghg_s3_15"
+
+    # AR6 mapping columns
     PARAM = "param"
     INTERCEPT = "intercept"
 
@@ -91,11 +113,10 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
     """
 
     SBTI_FACTOR = 1
-    FALLBACK_SCORE: float = 3.2
-    TEMPERATURE_FLOOR: float = 0.0  # Set to 1.3 once the method paper has been updated
-    FILE_SR15_MAPPING = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)), "inputs", "sr15_mapping.xlsx"
-    )
+    FALLBACK_SCORE: float = 3.4
+    TEMPERATURE_FLOOR: float = 1.5  
+  
+    # TODO - Delete this as it is replaced by the JSON file:
     FILE_REGRESSION_MODEL_SUMMARY = os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
         "inputs",
@@ -104,62 +125,110 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
     JSON_REGRESSION_MODEL = os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
         "inputs",
-        "SR15_regression_model.json",
+        "AR6_regression_model.json",
     )
+    MODEL_NUMBER: int = 1
     DEFAULT_INDUSTRY = "Others"
 
     VALUE_TARGET_REFERENCE_ABSOLUTE = "absolute"
+    VALUE_TARGET_REFERENCE_T_SCORE = "t_score"
     VALUE_TARGET_REFERENCE_INTENSITY = "intensity"
     VALUE_TARGET_REFERENCE_INTENSITY_BASE = "int"
 
     SLOPE_MAP = {
-        ETimeFrames.SHORT: "slope5",
-        ETimeFrames.MID: "slope15",
-        ETimeFrames.LONG: "slope30",
+        ETimeFrames.SHORT: "slopeCA5",
+        ETimeFrames.MID: "slopeCA10",
+        ETimeFrames.LONG: "slopeCA30",
     }
 
     INTENSITY_MAPPINGS = {
-        ("Revenue", EScope.S1S2): "INT.emKyoto_gdp",
+        ("Revenue", EScope.S1): "INT.emKyoto_gdp",
+        ("Revenue", EScope.S2): "INT.emCO2energysupply_SE",
         ("Revenue", EScope.S3): "INT.emKyoto_gdp",
-        ("Product", EScope.S1S2): "INT.emKyoto_gdp",
+        ("Product", EScope.S1): "INT.emKyoto_gdp",
+        ("Product", EScope.S2): "INT.emCO2energysupply_SE",
         ("Product", EScope.S3): "INT.emKyoto_gdp",
-        ("Cement", EScope.S1S2): "INT.emKyoto_gdp",
+        ("Cement", EScope.S1): "INT.emKyoto_gdp",
+        ("Cement", EScope.S2): "INT.emCO2energysupply_SE",
         ("Cement", EScope.S3): "INT.emKyoto_gdp",
-        ("Oil", EScope.S1S2): "INT.emCO2EI_PE",
-        ("Oil", EScope.S3): "INT.emCO2EI_PE",
-        ("Steel", EScope.S1S2): "INT.emKyoto_gdp",
+        # TODO - Check if this is correct:
+        ("Oil", EScope.S1): "INT.emKyoto_gdp",
+        ("Oil", EScope.S2): "INT.emCO2energysupply_SE",
+        ("Oil", EScope.S3): "INT.emKyoto_gdp",
+        ("Steel", EScope.S1): "INT.emKyoto_gdp",
+        ("Steel", EScope.S2): "INT.emCO2energysupply_SE",
         ("Steel", EScope.S3): "INT.emKyoto_gdp",
-        ("Aluminum", EScope.S1S2): "INT.emKyoto_gdp",
+        ("Aluminum", EScope.S1): "INT.emKyoto_gdp",
+        ("Aluminum", EScope.S2): "INT.emCO2energysupply_SE",
         ("Aluminum", EScope.S3): "INT.emKyoto_gdp",
-        ("Power", EScope.S1S2): "INT.emCO2EI_elecGen",
-        ("Power", EScope.S3): "INT.emCO2EI_elecGen",
+        ("Power", EScope.S2): "INT.emCO2energysupply_SE",
+        ("Power", EScope.S1): "INT.emCO2energysupply_SE",
+        ("Power", EScope.S3): "INT.emKyoto_gdp",
     }
     ABSOLUTE_MAPPINGS = {
-        ("B06", EScope.S1S2): "Emissions|Kyoto Gases",
+        # B06: Extraction Of Crude Petroleum And Natural Gas
+        ("B06", EScope.S1): "Emissions|Kyoto Gases", 
+        ("B06", EScope.S2): "Emissions|CO2|Energy|Supply",
         ("B06", EScope.S3): "Emissions|Kyoto Gases",
-        ("C23", EScope.S1S2): "Emissions|CO2|Energy and Industrial Processes",
+        # C23: Manufacture Of Other Non-Metallic Mineral Products ie Cement
+        ("C23", EScope.S1): "Emissions|CO2|Energy and Industrial Processes",
+        ("C23", EScope.S2): "Emissions|CO2|Energy|Supply",
         ("C23", EScope.S3): "Emissions|Kyoto Gases",
-        ("C24", EScope.S1S2): "Emissions|CO2|Energy and Industrial Processes",
+        # C24: Manufacture Of Basic Metals ie Steel, Aluminum
+        ("C24", EScope.S1): "Emissions|CO2|Energy and Industrial Processes",
+        ("C24", EScope.S2): "Emissions|CO2|Energy|Supply",
         ("C24", EScope.S3): "Emissions|Kyoto Gases",
-        ("D35", EScope.S1S2): "Emissions|CO2|Energy and Industrial Processes",
+        # D35: Electricity, Gas, Steam And Air Conditioning Supply
+        ("D35", EScope.S1): "Emissions|CO2|Energy|Supply",
+        ("D35", EScope.S2): "Emissions|CO2|Energy|Supply",
         ("D35", EScope.S3): "Emissions|Kyoto Gases",
-        ("H49", EScope.S1S2): "Emissions|Kyoto Gases",
+        # H49: Land Transport And Transport Via Pipelines
+        ("H49", EScope.S1): "Emissions|Kyoto Gases",
+        ("H49", EScope.S2): "Emissions|CO2|Energy|Supply",
         ("H49", EScope.S3): "Emissions|Kyoto Gases",
-        ("H50", EScope.S1S2): "Emissions|Kyoto Gases",
+        # H50: Water Transport
+        ("H50", EScope.S1): "Emissions|Kyoto Gases",
+        ("H50", EScope.S2): "Emissions|CO2|Energy|Supply",
         ("H50", EScope.S3): "Emissions|Kyoto Gases",
-        ("H51", EScope.S1S2): "Emissions|Kyoto Gases",
+        # H51: Air Transport
+        ("H51", EScope.S1): "Emissions|Kyoto Gases",
+        ("H51", EScope.S2): "Emissions|CO2|Energy|Supply",
         ("H51", EScope.S3): "Emissions|Kyoto Gases",
-        ("H52", EScope.S1S2): "Emissions|Kyoto Gases",
+        # H52: Warehousing And Support Activities For Transportation
+        ("H52", EScope.S1): "Emissions|Kyoto Gases",
+        ("H52", EScope.S2): "Emissions|CO2|Energy|Supply",
         ("H52", EScope.S3): "Emissions|Kyoto Gases",
-        ("H53", EScope.S1S2): "Emissions|Kyoto Gases",
+        # H53: Postal And Courier Activities
+        ("H53", EScope.S1): "Emissions|Kyoto Gases",
+        ("H53", EScope.S2): "Emissions|CO2|Energy|Supply",
         ("H53", EScope.S3): "Emissions|Kyoto Gases",
-        ("other", EScope.S1S2): "Emissions|Kyoto Gases",
+        ("other", EScope.S1): "Emissions|Kyoto Gases",
+        ("other", EScope.S2): "Emissions|CO2|Energy|Supply",
         ("other", EScope.S3): "Emissions|Kyoto Gases",
     }
 
     TEMPERATURE_RESULTS = "temperature_results"
     INVESTMENT_VALUE = "investment_value"
-
+    
+    S3_CATEGORY_MAPPINGS = {
+            S3Category.CAT_1: "ghg_s3_1",
+            S3Category.CAT_2: "ghg_s3_2",
+            S3Category.CAT_3: "ghg_s3_3",
+            S3Category.CAT_4: "ghg_s3_4",
+            S3Category.CAT_5: "ghg_s3_5",
+            S3Category.CAT_6: "ghg_s3_6",
+            S3Category.CAT_7: "ghg_s3_7",
+            S3Category.CAT_8: "ghg_s3_8",
+            S3Category.CAT_9: "ghg_s3_9",
+            S3Category.CAT_10: "ghg_s3_10",
+            S3Category.CAT_11: "ghg_s3_11",
+            S3Category.CAT_12: "ghg_s3_12",
+            S3Category.CAT_13: "ghg_s3_13",
+            S3Category.CAT_14: "ghg_s3_14",
+            S3Category.CAT_15: "ghg_s3_15",
+            S3Category.CAT_NAN: None
+    }
+    EPSILON = 1e-6
 
 class PortfolioCoverageTVPConfig(PortfolioAggregationConfig):
     FILE_TARGETS = os.path.join(
@@ -174,7 +243,7 @@ class PortfolioCoverageTVPConfig(PortfolioAggregationConfig):
         "inputs",
         "current-Companies-Taking-Action.xlsx",
     )
-    USE_LOCAL_CTA = False
+    USE_LOCAL_CTA = True
     # If the CTA file is older than a week, the file will be downloaded again
     SKIP_CTA_FILE_IF_EXISTS = True
     # Temporary URL until the SBTi website is updated
