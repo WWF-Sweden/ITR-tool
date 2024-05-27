@@ -290,8 +290,7 @@ class TemperatureScore(PortfolioAggregation):
 
     def _merge_regression(self, data: pd.DataFrame):
         """
-        Merge the data with the regression parameters from the SBTi model.
-        TODO - why call this "SBTi model"?
+        Merge the data with the regression parameters from the CDP-WWF Warming Function.
         :param data: The data to merge
         :return: The data set, amended with the regression parameters
         """
@@ -470,6 +469,11 @@ class TemperatureScore(PortfolioAggregation):
         data[self.c.COLS.TARGET_REFERENCE_NUMBER] = data[
             self.c.COLS.TARGET_REFERENCE_NUMBER
         ].replace({np.nan: self.c.VALUE_TARGET_REFERENCE_ABSOLUTE})
+       
+        # Replacing NaN with empty list in column target_ids
+        data[self.c.COLS.TARGET_IDS] = data[self.c.COLS.TARGET_IDS].apply(
+            lambda x: x if isinstance(x, list) else []
+        )
         data[self.c.COLS.AR6] = data.apply(
             lambda row: self.get_target_mapping(row), axis=1
         )
@@ -478,7 +482,6 @@ class TemperatureScore(PortfolioAggregation):
         )
         data = self._merge_regression(data)
 
-        # TODO: Move temperature result to cols
         data[self.c.COLS.TEMPERATURE_SCORE], data[self.c.TEMPERATURE_RESULTS] = zip(
             *data.apply(lambda row: self.get_score(row), axis=1)
         )
@@ -826,7 +829,8 @@ class TemperatureScore(PortfolioAggregation):
         average_temperature_score = s3_data.groupby(['company_id', 'time_frame'])['temperature_score'].transform('mean')
 
         # Update 's3_mean_scores' with the weighted sum if available, otherwise with the average
-        s3_data['s3_mean_scores'] = s3_data['weighted_sum'].where(s3_data['sum_weights'].notnull(), average_temperature_score)
+        s3_data['s3_mean_scores'] = s3_data['weighted_sum'].where(s3_data['sum_weights']
+                                        .notnull(), average_temperature_score).infer_objects()
 
         # Drop the 'weighted_sum' column
         s3_data.drop(columns=['weighted_sum'], inplace=True)

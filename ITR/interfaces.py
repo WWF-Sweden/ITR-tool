@@ -183,7 +183,7 @@ class S3Category(SortableEnum):
     CAT_13 = 13
     CAT_14 = 14
     CAT_15 = 15
-    CAT_NAN = 'None'
+    CAT_NAN = None
 
 class IDataProviderTarget(BaseModel):
     company_id: str
