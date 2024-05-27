@@ -36,7 +36,7 @@ class TargetProtocol:
     ):
         self.c = config
         self.logger = logging.getLogger(__name__)
-        self.s2_targets: List[IDataProviderTarget] = [] #TODO do we need this?
+        self.s2_targets: List[IDataProviderTarget] = [] #TODO to be removed in production
         self.target_data: pd.DataFrame = pd.DataFrame()
         self.company_data: pd.DataFrame = pd.DataFrame()
         self.data: pd.DataFrame = pd.DataFrame()
@@ -115,7 +115,7 @@ class TargetProtocol:
         target_current = target.end_year >= datetime.datetime.now().year
 
         # Delete all S1 or S2 targets we can't combine
-        #TODO Note that all S1S2S3 pass these tests
+        # Note that all S1S2S3 pass these tests
         s1 = target.scope != EScope.S1 or (
             not pd.isnull(target.coverage_s1)
             and not pd.isnull(target.base_year_ghg_s1)
@@ -497,7 +497,6 @@ class TargetProtocol:
             ].copy()
             if isinstance(target_data, pd.Series):
                 # One match with Target data
-                # TODO: Check if we need to exclicitly convert to DataFrame
                 return pd.DataFrame(target_data[target_columns]).T
             else:
                 if target_data.scope.iloc[0] == EScope.S3:
@@ -603,7 +602,8 @@ class TargetProtocol:
         for _, row in extended_data.iterrows():
             result = self._find_target(row, target_columns)
             results.append(result)
-
+        # Remove empty or all-NA columns from each DataFrame in results (pandas futureproofing)
+        results = [df.dropna(how='all', axis=1) for df in results]
         self.data = pd.concat(results, ignore_index=True)
 
         return self.data

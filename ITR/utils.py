@@ -192,7 +192,7 @@ def dataframe_to_portfolio(df_portfolio: pd.DataFrame) -> List[PortfolioCompany]
     :return: A list of portfolio companies
     """
     df_portfolio[ColumnsConfig.ENGAGEMENT_TARGET] = (
-        df_portfolio[ColumnsConfig.ENGAGEMENT_TARGET].fillna(False).astype("bool")
+        df_portfolio[ColumnsConfig.ENGAGEMENT_TARGET].fillna(False).infer_objects().astype("bool")
     )
 
     if 'user_fields' in df_portfolio:

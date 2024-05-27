@@ -69,7 +69,6 @@ class PortfolioAggregation(ABC):
     def _check_column(self, data: pd.DataFrame, column: str):
         """
         Check if a certain column is filled for all companies. If not throw an error.
-        TODO - test that the new version with f-strings works as before
         :param data: The data to check
         :param column: The column to check
         :return:

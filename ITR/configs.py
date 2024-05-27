@@ -116,12 +116,6 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
     FALLBACK_SCORE: float = 3.4
     TEMPERATURE_FLOOR: float = 1.5  
   
-    # TODO - Delete this as it is replaced by the JSON file:
-    FILE_REGRESSION_MODEL_SUMMARY = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        "inputs",
-        "regression_model_summary.xlsx",
-    )
     JSON_REGRESSION_MODEL = os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
         "inputs",
@@ -151,7 +145,6 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
         ("Cement", EScope.S1): "INT.emKyoto_gdp",
         ("Cement", EScope.S2): "INT.emCO2energysupply_SE",
         ("Cement", EScope.S3): "INT.emKyoto_gdp",
-        # TODO - Check if this is correct:
         ("Oil", EScope.S1): "INT.emKyoto_gdp",
         ("Oil", EScope.S2): "INT.emCO2energysupply_SE",
         ("Oil", EScope.S3): "INT.emKyoto_gdp",
@@ -243,7 +236,7 @@ class PortfolioCoverageTVPConfig(PortfolioAggregationConfig):
         "inputs",
         "current-Companies-Taking-Action.xlsx",
     )
-    USE_LOCAL_CTA = True
+    USE_LOCAL_CTA = False
     # If the CTA file is older than a week, the file will be downloaded again
     SKIP_CTA_FILE_IF_EXISTS = True
     # Temporary URL until the SBTi website is updated
