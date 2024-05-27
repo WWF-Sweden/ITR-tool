@@ -168,8 +168,7 @@ Classes
 
    .. py:method:: _merge_regression(self, data: pandas.DataFrame)
 
-      Merge the data with the regression parameters from the SBTi model.
-      TODO - why call this "SBTi model"?
+      Merge the data with the regression parameters from the CDP-WWF Warming Function.
       :param data: The data to merge
       :return: The data set, amended with the regression parameters
 

@@ -471,11 +471,6 @@ Classes
 
       
 
-   .. py:attribute:: FILE_REGRESSION_MODEL_SUMMARY
-      
-
-      
-
    .. py:attribute:: JSON_REGRESSION_MODEL
       
 
@@ -562,7 +557,7 @@ Classes
       
 
    .. py:attribute:: USE_LOCAL_CTA
-      :annotation: = True
+      :annotation: = False
 
       
 
