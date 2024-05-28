@@ -3,6 +3,7 @@ from datetime import date
 from typing import Optional, Dict, List
 
 import pandas as pd
+import numpy as np
 from pydantic import BaseModel, validator, Field, ValidationError
 
 
@@ -183,7 +184,7 @@ class S3Category(SortableEnum):
     CAT_13 = 13
     CAT_14 = 14
     CAT_15 = 15
-    CAT_NAN = None
+    CAT_NAN = 0
 
 class IDataProviderTarget(BaseModel):
     company_id: str

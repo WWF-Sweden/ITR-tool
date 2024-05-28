@@ -6,7 +6,7 @@ import logging
 import pandas as pd
 from ITR.data.data_provider import DataProvider
 from ITR.configs import ColumnsConfig
-from ITR.interfaces import IDataProviderCompany, IDataProviderTarget
+from ITR.interfaces import IDataProviderCompany, IDataProviderTarget, S3Category
 
 
 class ExcelProvider(DataProvider):
@@ -22,11 +22,12 @@ class ExcelProvider(DataProvider):
         # Set all missing coverage values to 0.0
         self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3', 'reduction_ambition']] = \
             self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3', 'reduction_ambition']].fillna(0.0)
-        # Convert s3_category to int
+       
         try:
-            self.data['target_data']['s3_category'] = self.data['target_data']['s3_category'].fillna(0).astype(int)
-        except:
-            print("Non numeric values in s3_category column")
+            self.data['target_data']['s3_category'] = self.data['target_data']['s3_category'].apply(lambda x: int(x) if str(x).isdigit() and 1 <= int(x) <= 15 else 0)
+        except Exception as e:
+            print(f"An error occurred: {e}")
+       
         self.c = config
 
     def get_targets(self, company_ids: List[str]) -> List[IDataProviderTarget]:
@@ -63,12 +64,8 @@ class ExcelProvider(DataProvider):
         model_targets: List[IDataProviderTarget] = []
         for target in targets:
             try:
-                #  # If statement_date is a year (integer), convert it to a date
-                # if isinstance(target['statement_date'], int):
-                #     target['statement_date'] = date(target['statement_date'], 1, 1)  # Set to January 1 of the given year
-                #     target['statement_date'] = pd.to_datetime(target['statement_date'])
-                if target['s3_category'] in ['None', '']:
-                    target['s3_category'] = None
+                # Map the s3_category values to the S3Category enum
+                target['s3_category'] = S3Category(target['s3_category']) 
                 model_targets.append(IDataProviderTarget.parse_obj(target))
             except ValidationError as e:
                 print(f"Validationerror: {e}")

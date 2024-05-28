@@ -219,7 +219,7 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
             S3Category.CAT_13: "ghg_s3_13",
             S3Category.CAT_14: "ghg_s3_14",
             S3Category.CAT_15: "ghg_s3_15",
-            S3Category.CAT_NAN: None
+            S3Category.CAT_NAN: "ghg_s3"
     }
     EPSILON = 1e-6
 
