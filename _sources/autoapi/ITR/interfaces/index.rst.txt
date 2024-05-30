@@ -583,7 +583,7 @@ Classes
       
 
    .. py:attribute:: CAT_NAN
-      
+      :annotation: = 0
 
       
 

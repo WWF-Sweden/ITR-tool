@@ -36,8 +36,8 @@ preferences of the user.
 |                                                                                                                                                                                                                                                                                                     |
 | The tool is available as a python package on pypi, but the easiest way to test the tool is with notebooks:                                                                                                                                                                                          |
 |                                                                                                                                                                                                                                                                                                     |
-||                                                                                                                                                                                                                                                                                                    |
-| -  **Python**: Run a Jupyter notebook, without any installation in \ `Google Colab <https://wwf-sweden.github.io/ITR-tool/getting_started.html#google-colab>`__ or `locally <https://wwf-sweden.github.io/ITR-tool/getting_started.html#jupyter-notebooks>`__.  |
+|                                                                                                                                                                                                                                                                                                     |
+| -  **Python**: Run a Jupyter notebook, without any installation in \ `Google Colab <https://wwf-sweden.github.io/ITR-tool/getting_started.html#google-colab>`__ or `locally <https://wwf-sweden.github.io/ITR-tool/getting_started.html#jupyter-notebooks>`__.                                      |
 |                                                                                                                                                                                                                                                                                                     |
 | .. rubric::                                                                                                                                                                                                                                                                                         |
 |    :name: section                                                                                                                                                                                                                                                                                   |
@@ -66,14 +66,14 @@ full toolkit and their dependencies: 
 
 As shown above, the Python code forms the core codebase of the
 WWF Finance tool. It is recommended to use the Python package if the
-user would like to integrate the tool in their own codebase. In turn,
-the second option is running the tool via the API if the user’s
+user would like to integrate the tool in their own codebase. We are considering
+providing an option to run the tool via an API if the user’s
 preference is to include the tool as a Microservice in their existing IT
-infrastructure in the cloud or on premise. The development project also
-included the creation of a simple user interface (UI), which can be used
+infrastructure in the cloud or on premise. This development project may also
+include the creation of a simple user interface (UI), which can be used
 for easier user interaction in combination with the API.
 
-The SBTi tool enables two ways of installing and/or running the
+The ITR tool enables two ways of installing and/or running the
 tool:  
 
 1. Users can integrate the **Python package** in their codebase. For
