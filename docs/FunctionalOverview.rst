@@ -20,18 +20,17 @@ and 104.
 Time Frames
 ~~~~~~~~~~~
 
-By default, the SBTi temperature scoring tool reports temperature scores
+By default, the WWF ITR-tool reports temperature scores
 on the mid-term time frames (i.e. based on emissions reduction targets
-aimed at 5-15 years into the future). However, it is also possible to
-inspect short (less than 5 years) and long-term time frames (15 to 30
+aimed at 5-10 years into the future). However, it is also possible to
+inspect short (less than 5 years) and long-term time frames (10 to 30
 years).
 
 Scopes
 ~~~~~~
 
-SBTi temperature scoring tool reports on the scores for Scope 1+2 and
-Scope 1+2+3, however it is also possible to inspect the Scope 3 score
-individually.
+The WWF ITR-tool reports on the scores for Scope 1, 2 and 3 as well as
+the combined Scope 1+2 and Scope 1+2+3. 
 
 Aggregation methods
 ~~~~~~~~~~~~~~~~~~~
@@ -62,7 +61,7 @@ Grouping data
 
 This functionality enables the user to analyze (for examples see Jupyter
 notebook
-`analysis_example <https://github.com//WWF-Sweden/ITR-tool/blob/master/examples/1_analysis_example.ipynb>`__\ **)**
+`analysis_example <https://github.com/WWF-Sweden/ITR-tool/blob/master/examples/1_analysis_example.ipynb>`__\ **)**
 the temperature score of the portfolio in depth by slicing and dicing
 through the portfolio. By choosing to “group by” a certain field (for
 example region or sector), the user receives output of temperature
@@ -94,14 +93,14 @@ ambitious) targets.
 The possible scenarios are:
 
 -  Scenario 1: In this scenario, all companies in the portfolio that did
-   not yet set a valid target have been persuaded to set 2.0\ :sup:`o`
+   not yet set a valid target have been persuaded to set 1.75\ :sup:`o`
    Celsius (C) targets. This is simulated by changing all scores that
-   used the default score to a score of 2.0\ :sup:`o` C.
+   used the default score to a score of 1.75\ :sup:`o` C.
 
 -  Scenario 2: In this scenario, all companies that already set targets
-   are persuaded to set “Well Below 2.0\ :sup:`o` C (WB2C) targets. This
+   are persuaded to set 1.5\ :sup:`o` C targets. This
    is simulated by setting all scores of the companies that have valid
-   targets to at most 1.75\ :sup:`o` C.
+   targets to at most 1.5\ :sup:`o` C.
 
 -  Scenario 3: In these scenarios, the top 10 contributors to the
    portfolio temperature score are persuaded to set 2.0\ :sup:`o` C
