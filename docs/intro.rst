@@ -367,7 +367,7 @@ scoring and how to aggregate multiple targets to produce company-level scores.
 aggregation of companies, such as a financial portfolio or a company value chain.
 .
 
-**Analysus:** **Run what-if analysis via the scenario generator**. After
+**Analysis:** **Run what-if analysis via the scenario generator**. After
 the initial score calculations, a scenario generator can be used to
 determine how certain actions, e.g. engagement, can change the portfolio
 temperature score over time. When running these what-if scenarios, the
