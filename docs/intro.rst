@@ -4,8 +4,8 @@ Introduction to temperature scoring and portfolio coverage methods
 Three methods are currently supported by
 the \ `SBTi <https://sciencebasedtargets.org/financial-institutions>`__ for
 setting targets on scope 3 portfolio emissions: the Sectoral
-Decarbonization Approach (SDA), the SBT Portfolio Coverage, and the SBT
-Temperature Scoring. The latter two methods, Portfolio Coverage and
+Decarbonization Approach (SDA), the SBT Portfolio Coverage, and the 
+Temperature Scoring Method. The latter two methods, Portfolio Coverage and
 Temperature Scoring, require assessing the targets disclosed by the
 companies within a financial institution’s portfolio.
 
@@ -322,7 +322,7 @@ can provide target data for these companies.
 Overview of how the tool works
 ------------------------------
 
-The calculation methodology consists of four key steps, each requiring
+The calculation methodology consists of three key steps, each requiring
 specific data points that are inputted at the beginning of the process.
 These data points are then used to convert the corporate GHG emission
 reduction targets into temperature scores at the company and the
@@ -330,10 +330,14 @@ portfolio level.
 
 |image3|
 
-**Step 1:** **Converting publicly stated targets to temperature
-scores**. The targets are first filtered and are - if valid - translated
-to a specific temperature score, based on the relevant regression model
-[Section 1.3 in the
+**Step 1:** **Create benchmarks from IPCC scenarios**. 
+The benchmark creation step (Step 1, Chapter 4) consists in running 
+linear regression models. The outputs of these models are based on a 
+warming function, derived from all vetted model-based scenarios in the 
+IPCC Sixth Assessment Report (AR6) Scenario Explorer and Database
+hosted by the International Institute for Applied Systems Analysis (IIASA)
+(Byers et al., 2022).
+[Section 4 in the
 `methodology <https://sciencebasedtargets.org/wp-content/uploads/2020/09/Temperature-Rating-Methodology-V1.pdf>`__].
 The sector classification of the company is used to ensure that the
 target is correctly mapped to the appropriate regression model e.g. a
@@ -347,16 +351,23 @@ a default temperature score [Section 1.4 in the
 `methodology <https://sciencebasedtargets.org/wp-content/uploads/2020/09/Temperature-Rating-Methodology-V1.pdf>`__],
 rather than being excluded from the analysis.
 
-**Step 2:** **Aggregate across targets (if applicable) to a company
-level temperature score**. Reported corporate GHG emission data is
-employed to aggregate company level temperature scores.
+**Step 2:** **Company-level assessment**. As companies often have multiple 
+climate targets, covering different emission scopes and 
+timeframes, and users may receive data from several sources, Step 2a (Chapter 5) defines the 
+process and criteria for validating the various company’s GHG reduction targets. This step can be 
+seen as an eligibility screening of targets allowed as input for temperature score computation. In 
+Step 2b (Chapter 6), scope-level targets are selected using the selection hierarchy (“waterfall”), 
+and scope-level temperature scores are calculated. Finally, these TS are then aggregated into 
+combined company-level scores. The target validation step (Step 2a) defines the minimum quality 
+criteria for determining the acceptability of a GHG emissions reduction target to be scored. The 
+company scoring step (Step 2b) specifies the process required to select target data to be used for 
+scoring and how to aggregate multiple targets to produce company-level scores.
 
-**Step 3:** **Aggregate individual company temperature scores to
-portfolio level scores.** All the individual temperature scores per
-company in a portfolio are then combined with portfolio financial data
-to generate scores at the portfolio level.
+**Step 3:** **Portfolio scoring** The final step (Step 3, Chapter 7) is used to weight company scores when assessing an 
+aggregation of companies, such as a financial portfolio or a company value chain.
+.
 
-**Step 4:** **Run what-if analysis via the scenario generator**. After
+**Analysus:** **Run what-if analysis via the scenario generator**. After
 the initial score calculations, a scenario generator can be used to
 determine how certain actions, e.g. engagement, can change the portfolio
 temperature score over time. When running these what-if scenarios, the
@@ -368,19 +379,19 @@ included in the tool:
 +--------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Scenario 1   | In this scenario all companies in the portfolio that did not yet set a valid target have been persuaded to set 1.75 Celsius (C) targets. This is simulated by changing all scores that used the default score to a score of 1.75C.  |
 +--------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Scenario 2   | In this scenario all companies that already set targets are persuaded to set “Well Below 2.0C (WB2C) targets. This is simulated by setting all scores of the companies that have valid targets to at most 1.75C.                    |
+| Scenario 2   | In this scenario all companies that already set targets are persuaded to set SBTi approved targets. This is simulated by setting all scores of the companies that have valid targets to at most 1.5C.                               |
 +--------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Scenario 3   | In these scenarios the top 10 contributors to the portfolio temperature score are persuaded to set 2.0C targets.                                                                                                                    |
 |              |                                                                                                                                                                                                                                     |
-|              | -  Scenario 3a: All top 10 contributors set 2.0C targets.                                                                                                                                                                           |
+|              | -  Scenario 3a: All top 10 contributors set 1.75C targets.                                                                                                                                                                          |
 |              |                                                                                                                                                                                                                                     |
-|              | -  Scenario 3b: All top 10 contributors set WB2C, i.e. 1.75C targets.                                                                                                                                                               |
+|              | -  Scenario 3b: All top 10 contributors set SBTi approved targets, i.e. 1.5C targets.                                                                                                                                               |
 +--------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Scenario 4   | In this scenario the user can specify (by adding “TRUE” in the engagement\_targets-column in the portfolio data file) which companies it wants to engage with to set 2.0C or WB2C targets.                                          |
+| Scenario 4   | In this scenario the user can specify (by adding “TRUE” in the engagement\_targets-column in the portfolio data file) which companies it wants to engage with to set 1.75C or SBTi approved targets.                                |
 |              |                                                                                                                                                                                                                                     |
-|              | -  Scenario 4a: All companies that are marked as engagement targets set 2.0C targets                                                                                                                                                |
+|              | -  Scenario 4a: All companies that are marked as engagement targets set 1.75C targets.                                                                                                                                              |
 |              |                                                                                                                                                                                                                                     |
-|              | -  Scenario 4b: All companies that are marked as engagement targets set WB2C targets.                                                                                                                                               |
+|              | -  Scenario 4b: All companies that are marked as engagement targets set SBTi approved (1.5C) targets.                                                                                                                               |
 +--------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 What are the outputs the tool generates?

@@ -16,7 +16,7 @@ There are five (+1) notebooks that go through the process step-by-step:
 
 We recommend that you start with notebook 1 analysis example, especially
 if you are new to Python and/or the `temperature scoring
-methodology <https://sciencebasedtargets.org/wp-content/uploads/2020/09/Temperature-Rating-Methodology-V1.pdf>`__.
+methodology <https://wwfint.awsassets.panda.org/downloads/cdp-wwf-temperature-scoring-methodology-for-public-consultation---may-2024.pdf>`__.
 
 1. `Analysis example (with abbreviated methodology) <https://colab.research.google.com/github/WWF-Sweden/ITR-tool/blob/main/examples/1_analysis_example.ipynb>`__
 2. `Quick temperature calculation <https://colab.research.google.com/github/WWF-Sweden/ITR-tool/blob/main/examples/2_quick_temp_score_calculation.ipynb>`__
@@ -37,7 +37,7 @@ Alternatively, you can also run the notebooks locally. To do so, you first need 
 In this example, we assume you use `Anaconda <https://www.anaconda.com/>`__ to manage your environments. 
 To do this, run the following command::
 
-    cd examples conda env create -f environment.yml activate sbti_getting_started jupyter notebook
+    cd examples conda env create -f environment.yml activate ITR_getting_started jupyter notebook
 
 A tab should now open in your web browser. If you are using a virtual environment, you can install the required packages using the requirements.txt file in the examples directory. 
 Make sure that your Python version is at least 3.9.
