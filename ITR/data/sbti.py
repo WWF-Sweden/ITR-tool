@@ -58,25 +58,25 @@ class SBTi:
             if self._check_CTA_less_than_one_week_old():
                 print(f'CTA file already exists in {self.c.FILE_TARGETS}, skipping download.')
                 return
-            else:
-                try:
-                    self._fetch_and_save_cta_file()
-                
-                except requests.HTTPError as err:
-                    if err.response.status_code == 403:
-                        print(f'403 Error fetching the CTA file: {err}')
-                    else:
-                        print(f'Error fetching the CTA file: {err}')
+        else:
+            try:
+                self._fetch_and_save_cta_file()
+            
+            except requests.HTTPError as err:
+                if err.response.status_code == 403:
+                    print(f'403 Error fetching the CTA file: {err}')
+                else:
+                    print(f'Error fetching the CTA file: {err}')
               
     def _fetch_and_save_cta_file(self):
         try:
             headers = {
-            'User-Agent': 'ITR-tool/0.9.2 (Python; ekonomi-finans@wwf.se)',
-            'From': 'ekonomi-finans@wwf.se'
+                'x-request': 'download',
+                'User-Agent': 'ITR-tool/0.9.2 (Python; ekonomi-finans@wwf.se)',
+                'From': 'ekonomi-finans@wwf.se'
             }
             # read from the remote CTA file url
             response = requests.get(self.c.CTA_FILE_URL, headers=headers)
-
             # raise if the status code is not 200
             response.raise_for_status()
 
