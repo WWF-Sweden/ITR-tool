@@ -71,7 +71,8 @@ class SBTi:
     def _fetch_and_save_cta_file(self):
         try:
             headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+            'User-Agent': 'ITR-tool/0.9.2 (Python; ekonomi-finans@wwf.se)',
+            'From': 'ekonomi-finans@wwf.se'
             }
             # read from the remote CTA file url
             response = requests.get(self.c.CTA_FILE_URL, headers=headers)
