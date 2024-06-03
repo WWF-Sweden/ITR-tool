@@ -870,6 +870,7 @@ class TemperatureScore(PortfolioAggregation):
         data.drop_duplicates(subset=['company_id', 'time_frame', 'scope'], keep='last', inplace=True)
         data.set_index(['company_id', 'time_frame', 'scope'], inplace=True)
         s3_data.set_index(['company_id', 'time_frame', 'scope'], inplace=True)
+        s3_data.infer_objects()
         data.update(s3_data)
         data.reset_index(inplace=True)
 
