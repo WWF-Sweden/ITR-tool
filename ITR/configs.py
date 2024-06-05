@@ -240,7 +240,7 @@ class PortfolioCoverageTVPConfig(PortfolioAggregationConfig):
     # If the CTA file is older than a week, the file will be downloaded again
     SKIP_CTA_FILE_IF_EXISTS = True
     # Temporary URL until the SBTi website is updated
-    CTA_FILE_URL = "https://sciencebasedtargets.org/download/target-dashboard"
+    CTA_FILE_URL = "https://cdn.sciencebasedtargets.org/download/target-dashboard"
     USE_CUSTOM_FILE_TARGETS_PATH = False
     OUTPUT_TARGET_STATUS = "sbti_target_status"
     OUTPUT_WEIGHTED_TARGET_STATUS = "weighted_sbti_target_status"
