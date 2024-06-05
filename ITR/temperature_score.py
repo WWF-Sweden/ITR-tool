@@ -317,7 +317,7 @@ class TemperatureScore(PortfolioAggregation):
             or pd.isnull(target[self.c.COLS.REGRESSION_INTERCEPT])
             or pd.isnull(target[self.c.COLS.ANNUAL_REDUCTION_RATE])
         ):
-            return self.fallback_score, 1
+            return self.fallback_score, 1.0
         
         # CAR formula won't accept reduction of 100%, so assign the floor temperature score
         if abs(target[self.c.COLS.REDUCTION_AMBITION] - 1.0) < self.c.EPSILON:
@@ -866,14 +866,14 @@ class TemperatureScore(PortfolioAggregation):
         s3_data = s3_data.groupby(['company_id', 'time_frame', 'scope']).agg({
             column: 'first' for column in s3_data_columns
         }).reset_index()
-
+        
+        
         data.drop_duplicates(subset=['company_id', 'time_frame', 'scope'], keep='last', inplace=True)
         data.set_index(['company_id', 'time_frame', 'scope'], inplace=True)
         s3_data.set_index(['company_id', 'time_frame', 'scope'], inplace=True)
-        s3_data.infer_objects()
         data.update(s3_data)
         data.reset_index(inplace=True)
-
+    
         return data
 
         
