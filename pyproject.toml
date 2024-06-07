@@ -32,9 +32,9 @@ packages = [{ include = "ITR" }]
 
 [tool.poetry.dependencies]
 python = "^3.9,<4"
-pydantic = "1.10.8"
+pydantic = "1.10.14"
 six = "1.16.0"
-pandas = "1.5.3"
+pandas = "2.2.0"
 xlrd = "2.0.1"
 requests = "2.32.2"
 openpyxl = "3.1.2"
