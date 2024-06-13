@@ -787,6 +787,17 @@ class TemperatureScore(PortfolioAggregation):
         # Remove the original CAT_15 rows from s3_data
         s3_data = s3_data[s3_data['s3_category'] != S3Category.CAT_15]
 
+        # Identify the columns that are present in s3_data but not in mean_temp_15
+        missing_columns = set(s3_data.columns) - set(mean_temp_15.columns)
+
+        # Add missing columns to mean_temp_15 with appropriate data types
+        for column in missing_columns:
+            mean_temp_15[column] = None
+            mean_temp_15[column] = mean_temp_15[column].astype(s3_data[column].dtype)
+
+        # Reorder columns in mean_temp_15 to match the order in s3_data
+        mean_temp_15 = mean_temp_15[s3_data.columns]
+
         # Append the new DataFrame to s3_data
         s3_data = pd.concat([s3_data, mean_temp_15])
 
@@ -871,7 +882,26 @@ class TemperatureScore(PortfolioAggregation):
         data.drop_duplicates(subset=['company_id', 'time_frame', 'scope'], keep='last', inplace=True)
         data.set_index(['company_id', 'time_frame', 'scope'], inplace=True)
         s3_data.set_index(['company_id', 'time_frame', 'scope'], inplace=True)
-        data.update(s3_data)
+        # Make a deep copy of the data
+        temp_data = data.copy(deep=True)
+
+        # Loop over each column
+        for col in temp_data.columns:
+            # Check if the column exists in s3_data
+            if col in s3_data.columns:
+                # Make a copy of the column in s3_data
+                temp_s3_data = s3_data[col].copy()
+                
+                # Cast the values in temp_s3_data to the data type of the column in temp_data
+                temp_s3_data = temp_s3_data.astype(temp_data[col].dtype)
+                
+                # Update the column in temp_data
+                temp_data.loc[:, col] = temp_data.loc[:, col].combine_first(temp_s3_data)
+
+        # Update the original data DataFrame
+        data = data.combine_first(temp_data)
+
+        #data.update(s3_data)
         data.reset_index(inplace=True)
     
         return data
