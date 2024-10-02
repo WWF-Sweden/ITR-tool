@@ -4,11 +4,11 @@ the module, extend the respective config class and pass it to the class as the "
 """
 import os
 
-from ITR.interfaces import ETimeFrames, EScope, S3Category
+from ITR.interfaces import ETimeFrames, EScope, S3Category, ETargetReference
 
 
 class ColumnsConfig:
-    # Define a constant for each column used in the
+    # Define a constant for each column used in the input data
     COMPANY_ID = "company_id"
     COMPANY_ISIN = "company_isin"
     COMPANY_LEI = "company_lei"
@@ -72,7 +72,7 @@ class ColumnsConfig:
     BASE_YEAR_TS = "base_year_ts"
     END_YEAR_TS = "end_year_ts"
 
-    # Scope 3 categories
+    # Scope 3 categories - from fundamental data
     GHG_S3_1 = "ghg_s3_1"
     GHG_S3_2 = "ghg_s3_2"
     GHG_S3_3 = "ghg_s3_3"
@@ -124,9 +124,9 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
     MODEL_NUMBER: int = 1
     DEFAULT_INDUSTRY = "Others"
 
-    VALUE_TARGET_REFERENCE_ABSOLUTE = "absolute"
-    VALUE_TARGET_REFERENCE_T_SCORE = "t_score"
-    VALUE_TARGET_REFERENCE_INTENSITY = "intensity"
+    # VALUE_TARGET_REFERENCE_ABSOLUTE = "absolute"
+    # VALUE_TARGET_REFERENCE_T_SCORE = "t_score"
+    # VALUE_TARGET_REFERENCE_INTENSITY = "intensity"
     VALUE_TARGET_REFERENCE_INTENSITY_BASE = "int"
 
     SLOPE_MAP = {
@@ -134,6 +134,8 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
         ETimeFrames.MID: "slopeCA10",
         ETimeFrames.LONG: "slopeCA30",
     }
+    #test this
+    VALUE_TARGET_REFERENCE = ETargetReference
 
     INTENSITY_MAPPINGS = {
         ("Revenue", EScope.S1): "INT.emKyoto_gdp",
@@ -219,7 +221,7 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
             S3Category.CAT_13: "ghg_s3_13",
             S3Category.CAT_14: "ghg_s3_14",
             S3Category.CAT_15: "ghg_s3_15",
-            S3Category.CAT_NAN: "ghg_s3"
+            S3Category.CAT_H_LINE: "ghg_s3"
     }
     EPSILON = 1e-6
 

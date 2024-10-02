@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Optional, Tuple, Type, List
+from typing import Optional, Tuple, Type, List, Any, cast
 
 import pandas as pd
 import numpy as np
@@ -9,6 +9,7 @@ from .interfaces import (
     ScenarioInterface,
     EScope,
     ETimeFrames,
+    ETargetReference,
     Aggregation,
     AggregationContribution,
     ScoreAggregation,
@@ -172,8 +173,8 @@ class TemperatureScore(PortfolioAggregation):
         self,
         time_frames: List[ETimeFrames],
         scopes: List[EScope],
-        fallback_score: TemperatureScoreConfig = TemperatureScoreConfig.FALLBACK_SCORE,
-        model: TemperatureScoreConfig = TemperatureScoreConfig.MODEL_NUMBER,
+        fallback_score: float = TemperatureScoreConfig.FALLBACK_SCORE,
+        model: int = TemperatureScoreConfig.MODEL_NUMBER,
         scenario: Optional[Scenario] = None,
         aggregation_method: PortfolioAggregationMethod = PortfolioAggregationMethod.WATS,
         grouping: Optional[List] = None,
@@ -293,10 +294,12 @@ class TemperatureScore(PortfolioAggregation):
         Merge the data with the regression parameters from the CDP-WWF Warming Function.
         :param data: The data to merge
         :return: The data set, amended with the regression parameters
-        """
-        data[self.c.COLS.SLOPE] = data.apply(
-            lambda row: self.c.SLOPE_MAP.get(row[self.c.COLS.TIME_FRAME], None), axis=1
-        )
+        """     
+        def get_slope(row: pd.Series) -> Optional[str]:
+            return self.c.SLOPE_MAP.get(row[self.c.COLS.TIME_FRAME], None)
+
+        data[self.c.COLS.SLOPE] = data.apply(lambda row: get_slope(row), axis=1) # type: ignore
+
         return pd.merge(
             left=data,
             right=self.regression_model,
@@ -369,21 +372,32 @@ class TemperatureScore(PortfolioAggregation):
                 row[self.c.TEMPERATURE_RESULTS],
                 row[self.c.COLS.TARGET_IDS],
             )
-        s1 = company_data.loc[
+        # company_data.set_index([self.c.COLS.COMPANY_ID, self.c.COLS.TIME_FRAME, self.c.COLS.SCOPE], inplace=True)
+        
+        # s1 = company_data.loc[
+        #     (row[self.c.COLS.COMPANY_ID], row[self.c.COLS.TIME_FRAME], EScope.S1)
+        # ]
+        # s2 = company_data.loc[
+        #     (row[self.c.COLS.COMPANY_ID], row[self.c.COLS.TIME_FRAME], EScope.S2)
+        # ]
+        # s3 = company_data.loc[
+        #     (row[self.c.COLS.COMPANY_ID], row[self.c.COLS.TIME_FRAME], EScope.S3)
+        # ]
+        s1 = company_data.xs(
             (row[self.c.COLS.COMPANY_ID], row[self.c.COLS.TIME_FRAME], EScope.S1)
-        ]
-        s2 = company_data.loc[
+        )
+        s2 = company_data.xs(
             (row[self.c.COLS.COMPANY_ID], row[self.c.COLS.TIME_FRAME], EScope.S2)
-        ]
-        s3 = company_data.loc[
+        )
+        s3 = company_data.xs(
             (row[self.c.COLS.COMPANY_ID], row[self.c.COLS.TIME_FRAME], EScope.S3)
-        ]
+        )
 
         # returning different sets of target_ids depending on how GHG temperature score is determined
         s1_targets = s1[self.c.COLS.TARGET_IDS]
         s2_targets = s2[self.c.COLS.TARGET_IDS]
-        combined_targets = ((s1_targets or []) + (s2_targets or []) + (s3[self.c.COLS.TARGET_IDS] or [])) or None
-
+        # combined_targets = ((s1_targets or []) + (s2_targets or []) + (s3[self.c.COLS.TARGET_IDS] or [])) or None
+        combined_targets = list((s1_targets or []) + (s2_targets or []) + (s3[self.c.COLS.TARGET_IDS] or [])) or []
         # Return original score ghg scope 1, 2 or 3 is empty
         if (pd.isnull(s1[self.c.COLS.GHG_SCOPE1]) or
                 pd.isnull(s2[self.c.COLS.GHG_SCOPE2]) or
@@ -399,24 +413,48 @@ class TemperatureScore(PortfolioAggregation):
             company_emissions = (
                 s1[self.c.COLS.GHG_SCOPE1] + s2[self.c.COLS.GHG_SCOPE2] + s3[self.c.COLS.GHG_SCOPE3]
             )
-            return (
+            temp_score_1 = (
                 (
-                    s1[self.c.COLS.TEMPERATURE_SCORE]
-                    * s1[self.c.COLS.GHG_SCOPE1]
-                    + s2[self.c.COLS.TEMPERATURE_SCORE]
-                    * s2[self.c.COLS.GHG_SCOPE2]
-                    + s3[self.c.COLS.TEMPERATURE_SCORE] 
-                    * s3[self.c.COLS.GHG_SCOPE3]
-                )
-                / company_emissions,
+                    s1[self.c.COLS.TEMPERATURE_SCORE] * s1[self.c.COLS.GHG_SCOPE1]
+                    + s2[self.c.COLS.TEMPERATURE_SCORE] * s2[self.c.COLS.GHG_SCOPE2]
+                    + s3[self.c.COLS.TEMPERATURE_SCORE] * s3[self.c.COLS.GHG_SCOPE3]
+                ).sum() # add .sum() to convince Pylance this is a number and not a Series
+            / company_emissions
+            )
+
+            temp_score_2 = (
                 (
                     s1[self.c.TEMPERATURE_RESULTS] * s1[self.c.COLS.GHG_SCOPE1]
                     + s2[self.c.TEMPERATURE_RESULTS] * s2[self.c.COLS.GHG_SCOPE2]
                     + s3[self.c.TEMPERATURE_RESULTS] * s3[self.c.COLS.GHG_SCOPE3]
-                )
-                / company_emissions,
-                combined_targets,
+                ).sum() # add .sum() to convince Pylance this is a number and not a Series
+            / company_emissions
             )
+
+            return (
+                float(temp_score_1),
+                float(temp_score_2),
+                combined_targets
+            )
+        
+            # return (
+            #     (
+            #         s1[self.c.COLS.TEMPERATURE_SCORE]
+            #         * s1[self.c.COLS.GHG_SCOPE1]
+            #         + s2[self.c.COLS.TEMPERATURE_SCORE]
+            #         * s2[self.c.COLS.GHG_SCOPE2]
+            #         + s3[self.c.COLS.TEMPERATURE_SCORE] 
+            #         * s3[self.c.COLS.GHG_SCOPE3]
+            #     )
+            #     / company_emissions,
+            #     (
+            #         s1[self.c.TEMPERATURE_RESULTS] * s1[self.c.COLS.GHG_SCOPE1]
+            #         + s2[self.c.TEMPERATURE_RESULTS] * s2[self.c.COLS.GHG_SCOPE2]
+            #         + s3[self.c.TEMPERATURE_RESULTS] * s3[self.c.COLS.GHG_SCOPE3]
+            #     )
+            #     / company_emissions,
+            #     combined_targets,
+            # )
 
         # TODO - this doesn't get triggered if denom is np.float64, instead returns an (inf, inf),
         #  which 'ruins' the default score return and end up with NULL values where should have defaults
@@ -468,18 +506,19 @@ class TemperatureScore(PortfolioAggregation):
 
         data[self.c.COLS.TARGET_REFERENCE_NUMBER] = data[
             self.c.COLS.TARGET_REFERENCE_NUMBER
-        ].replace({np.nan: self.c.VALUE_TARGET_REFERENCE_ABSOLUTE})
+        #].replace({np.nan: self.c.VALUE_TARGET_REFERENCE_ABSOLUTE})
+        ].replace({np.nan: ETargetReference.ABSOLUTE.value})
        
         # Replacing NaN with empty list in column target_ids
         data[self.c.COLS.TARGET_IDS] = data[self.c.COLS.TARGET_IDS].apply(
             lambda x: x if isinstance(x, list) else []
         )
         data[self.c.COLS.AR6] = data.apply(
-            lambda row: self.get_target_mapping(row), axis=1
-        )
+            lambda row: self.get_target_mapping(row), axis=1 # type: ignore
+        )  # type: ignore
         data[self.c.COLS.ANNUAL_REDUCTION_RATE] = data.apply(
-            lambda row: self.get_annual_reduction_rate(row), axis=1
-        )
+            lambda row: self.get_annual_reduction_rate(row), axis=1 # type: ignore
+        ) # type: ignore
         data = self._merge_regression(data)
 
         data[self.c.COLS.TEMPERATURE_SCORE], data[self.c.TEMPERATURE_RESULTS] = zip(
@@ -676,9 +715,9 @@ class TemperatureScore(PortfolioAggregation):
         :return: A weighted temperature score for the portfolio
         """
 
-        score_aggregations = ScoreAggregations()
+        score_aggregations = ScoreAggregations() # type: ignore
         for time_frame in self.time_frames:
-            score_aggregation_scopes = ScoreAggregationScopes()
+            score_aggregation_scopes = ScoreAggregationScopes() # type: ignore
             for scope in self.scopes:
                 score_aggregation_scopes.__setattr__(
                     scope.name, self._get_score_aggregation(data, time_frame, scope)
@@ -697,6 +736,7 @@ class TemperatureScore(PortfolioAggregation):
         """
         if self.scenario is None:
             return scores
+              
         if self.scenario.scenario_type == ScenarioType.APPROVED_TARGETS:
             score_based_on_target = ~pd.isnull(
                 scores[self.c.COLS.TARGET_REFERENCE_NUMBER]
@@ -704,7 +744,7 @@ class TemperatureScore(PortfolioAggregation):
             scores.loc[
                 score_based_on_target, self.c.COLS.TEMPERATURE_SCORE
             ] = scores.loc[score_based_on_target, self.c.COLS.TEMPERATURE_SCORE].apply(
-                lambda x: min(x, self.scenario.get_score_cap())
+                lambda x: min(x, self.scenario.get_score_cap()) # type: ignore
             )
         elif self.scenario.scenario_type == ScenarioType.HIGHEST_CONTRIBUTORS:
             # Cap scores of 10 highest contributors per time frame-scope combination
@@ -731,15 +771,15 @@ class TemperatureScore(PortfolioAggregation):
                             company_mask, self.c.COLS.TEMPERATURE_SCORE
                         ] = scores.loc[
                             company_mask, self.c.COLS.TEMPERATURE_SCORE
-                        ].apply(
-                            lambda x: min(x, self.scenario.get_score_cap())
+                        ].apply( # type: ignore
+                            lambda x: min(x, self.scenario.get_score_cap()) # type: ignore
                         )
         elif self.scenario.scenario_type == ScenarioType.HIGHEST_CONTRIBUTORS_APPROVED:
             score_based_on_target = scores[self.c.COLS.ENGAGEMENT_TARGET]
             scores.loc[
                 score_based_on_target, self.c.COLS.TEMPERATURE_SCORE
             ] = scores.loc[score_based_on_target, self.c.COLS.TEMPERATURE_SCORE].apply(
-                lambda x: min(x, self.scenario.get_score_cap())
+                lambda x: min(x, self.scenario.get_score_cap()) # type: ignore
             )
         return scores
 
@@ -780,7 +820,7 @@ class TemperatureScore(PortfolioAggregation):
             'temperature_score': 'mean',
             'target_ids': lambda x: list(set().union(*x)),
             'target_type': lambda x: x.iloc[0],  # Retain original target_type value
-            's3_category': lambda x: S3Category.CAT_NAN if pd.isnull(x.iloc[0]) else x.iloc[0],  # Retain original s3_category value
+            's3_category': lambda x: S3Category.N_A if pd.isnull(x.iloc[0]) else x.iloc[0],  # Retain original s3_category value
             'ghg_s3_15': lambda x: x.iloc[0]      # Retain original ghg_s3_15 value
         })
 

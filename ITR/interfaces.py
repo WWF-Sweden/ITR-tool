@@ -168,6 +168,13 @@ class ETimeFrames(SortableEnum):
     MID = "mid"
     LONG = "long"
 
+#test this
+class ETargetReference(SortableEnum):
+    ABSOLUTE = "absolute"
+    INT_TO_ABS = "int_to_abs"
+    INTENSITY = "intensity"
+    T_SCORE = "t_score"
+
 class S3Category(SortableEnum):
     CAT_1 = 1
     CAT_2 = 2
@@ -184,7 +191,8 @@ class S3Category(SortableEnum):
     CAT_13 = 13
     CAT_14 = 14
     CAT_15 = 15
-    CAT_NAN = 0
+    CAT_H_LINE = 0
+    N_A = -1
 
 class IDataProviderTarget(BaseModel):
     company_id: str

@@ -13,6 +13,7 @@ from ITR.interfaces import (
     IDataProviderCompany,
     EScope,
     ETimeFrames,
+    S3Category
 )
 
 logger = logging.getLogger(__name__)
@@ -114,16 +115,14 @@ class TargetProtocol:
         # Added in update Oct 22
         target_current = target.end_year >= datetime.datetime.now().year
 
-        # Delete all S1 or S2 targets we can't combine
+        # Check that base year ghg data is available for the scope of the target
         # Note that all S1S2S3 pass these tests
         s1 = target.scope != EScope.S1 or (
             not pd.isnull(target.coverage_s1)
             and not pd.isnull(target.base_year_ghg_s1)
-            and not pd.isnull(target.base_year_ghg_s2) #TODO - is this correct when looking at individual scopes?
         )
         s2 = target.scope != EScope.S2 or (
             not pd.isnull(target.coverage_s2)
-            and not pd.isnull(target.base_year_ghg_s1) #TODO - is this correct when looking at individual scopes?
             and not pd.isnull(target.base_year_ghg_s2)
         )
         s1s2 = target.scope != EScope.S1S2 or (
@@ -170,7 +169,7 @@ class TargetProtocol:
     ) -> Tuple[IDataProviderTarget, Optional[IDataProviderTarget]]:
         """
         If there is a s1s2s3 scope, split it into two targets with s1s2 and s3
-
+        This S3 target becomes a headline target
         :param target: The input target
         :return The split targets or the original target and None
         """
@@ -178,15 +177,18 @@ class TargetProtocol:
             return target, None
         if target.scope == EScope.S1S2S3:
             s1s2, s3 = target.copy(), None
+            s1s2.s3_category = S3Category.N_A
             if (
                 not pd.isnull(target.base_year_ghg_s1)
                 and not pd.isnull(target.base_year_ghg_s2)
             ) or target.coverage_s1 == target.coverage_s2:
                 s1s2.scope = EScope.S1S2
                 if (
-                    not pd.isnull(target.base_year_ghg_s1)
-                    and not pd.isnull(target.base_year_ghg_s2)
-                    and target.base_year_ghg_s1 + target.base_year_ghg_s2 != 0
+                    not pd.isnull(s1s2.coverage_s1)
+                    and not pd.isnull(s1s2.coverage_s2)
+                    and not pd.isnull(s1s2.base_year_ghg_s1)
+                    and not pd.isnull(s1s2.base_year_ghg_s2)
+                    and s1s2.base_year_ghg_s1 + s1s2.base_year_ghg_s2 != 0
                 ):
                     coverage_percentage = (
                         s1s2.coverage_s1 * s1s2.base_year_ghg_s1
@@ -198,6 +200,8 @@ class TargetProtocol:
             if not pd.isnull(target.coverage_s3):
                 s3 = target.copy()
                 s3.scope = EScope.S3
+                if s3.s3_category == S3Category.N_A:
+                    s3.s3_category = S3Category.CAT_H_LINE
             return s1s2, s3
         
         
@@ -236,10 +240,11 @@ class TargetProtocol:
             # Append '_1' and '_2' to the target_ids of s1 and s2, respectively
             s1.target_ids = [id_ + '_1' for id_ in s1.target_ids]
             s2.target_ids = [id_ + '_2' for id_ in s2.target_ids]
-            targets.extend([s1, s2])
+            targets = [s1, s2]
            
         return targets
-
+    
+    # TODO - this method is not needed if we score on separate scopes
     def _combine_s1_s2(self, target: IDataProviderTarget):
         """
         Check if there is an S2 target that matches this target exactly (if this is a S1 target) 
@@ -248,6 +253,7 @@ class TargetProtocol:
         :param target: The input target
         :return: The combined target (or the original if no combining was required)
         """
+        raise RuntimeError("This method is not needed if we score on separate scopes")
         if target.scope == EScope.S1 and not pd.isnull(target.base_year_ghg_s1):
             matches = [
                 t
@@ -299,16 +305,17 @@ class TargetProtocol:
         """
         #TODO - is this method required given the new scaling of reduction ambition?
         if target.scope == EScope.S1S2 and target.coverage_s1 != target.coverage_s2:
-            if pd.isna(target.coverage_s1):
-                target.coverage_s1 = 0.0
-            if pd.isna(target.coverage_s2):
-                target.coverage_s2 = 0.0
-            combined_coverage = (
-                target.coverage_s1 * target.base_year_ghg_s1
-                + target.coverage_s2 * target.base_year_ghg_s2
-            ) / (target.base_year_ghg_s1 + target.base_year_ghg_s2)
-            target.coverage_s1 = combined_coverage
-            target.coverage_s2 = combined_coverage
+             # Handle NaN and None cases
+            target.coverage_s1 = 0.0 if pd.isnull(target.coverage_s1) else target.coverage_s1
+            target.coverage_s2 = 0.0 if pd.isnull(target.coverage_s2) else target.coverage_s2
+
+            if not pd.isnull(target.base_year_ghg_s1) and not pd.isnull(target.base_year_ghg_s2):
+                combined_coverage = (
+                    target.coverage_s1 * target.base_year_ghg_s1
+                    + target.coverage_s2 * target.base_year_ghg_s2
+                ) / (target.base_year_ghg_s1 + target.base_year_ghg_s2)
+                target.coverage_s1 = combined_coverage
+                target.coverage_s2 = combined_coverage
         return target
     
     @staticmethod
@@ -323,6 +330,7 @@ class TargetProtocol:
         :param target: The input target
         :return: The converted target (or the original if no conversion was required)
         """
+        raise RuntimeError("This method is not needed if we score on separate scopes")
         # In both cases the base_year_ghg s1 + s2 should not be zero, else would get ZeroDivisionError
         if target.base_year_ghg_s1 + target.base_year_ghg_s2 != 0:
             if target.scope == EScope.S1:
@@ -356,6 +364,10 @@ class TargetProtocol:
         """
         if target.target_type.lower() == "t_score":
             return target
+        
+        if pd.isna(target.reduction_ambition):
+            target.reduction_ambition = 0.0
+        
         elif target.scope == EScope.S1:
             target.reduction_ambition = (
                 target.reduction_ambition * target.coverage_s1
@@ -494,7 +506,7 @@ class TargetProtocol:
                     row[self.c.COLS.TIME_FRAME],
                     row[self.c.COLS.SCOPE],
                 )
-            ].copy()
+            ].copy() # type: ignore
             if isinstance(target_data, pd.Series):
                 # One match with Target data
                 return pd.DataFrame(target_data[target_columns]).T
@@ -515,6 +527,14 @@ class TargetProtocol:
                     target_data[self.c.COLS.END_YEAR] 
                   - target_data[self.c.COLS.BASE_YEAR]
                 )
+                # Reduction ambition is measured by CAR
+                try:
+                    target_data['CAR'] = target_data.apply(
+                        lambda row: abs((1 - row[self.c.COLS.REDUCTION_AMBITION]) ** (1 / row['END_YEAR_MINUS_BASE_YEAR']) - 1),
+                        axis=1
+                    )
+                except ZeroDivisionError:
+                    target_data['CAR'] = 0.0
                 # Scope 3 targets need to be filtered separately
                 if target_data.scope.iloc[0] != EScope.S3:
                     target_data = (
@@ -523,7 +543,7 @@ class TargetProtocol:
                                 self.c.COLS.TARGET_CONFIRM_DATE,
                                 coverage_column,
                                 self.c.COLS.TARGET_REFERENCE_NUMBER,
-                                self.c.COLS.REDUCTION_AMBITION,
+                                'CAR',
                                 'END_YEAR_MINUS_BASE_YEAR',
                                 self.c.COLS.END_YEAR,
                             ],
@@ -544,17 +564,27 @@ class TargetProtocol:
     def _find_s3_targets(self, target_data: pd.DataFrame, target_columns: List[str]) -> pd.DataFrame:
         """
         Find S3 target that correspond to the given row. Note that there may be more
-        than one S3 target. We first look for the target with the latest confirmation date.
+        than one S3 target. We first look for a headline target and return that. 
+        If there is none we look for the targets with the latest confirmation date.
         Then check if there is more than one target with the same confirmation date.
-        The method then returns all targets with the latest confirmation date.
+        The method then returns all non headline targets with the latest confirmation date.
 
         :param target_data: The target data
         :param target_columns: The columns to return
         :return: The target data that meet the criteria
         """
-        target_data['year'] = target_data[self.c.COLS.TARGET_CONFIRM_DATE].dt.year
-        latest_year = target_data['year'].max()
-        target_data = target_data[target_data['year'] == latest_year]
+        headline_target = target_data[target_data['s3_category'] == S3Category.CAT_H_LINE]
+        if not headline_target.empty:
+            # Sort by vintage and cope 3 coverage 
+            headline_target = headline_target.sort_values(by=[self.c.COLS.TARGET_CONFIRM_DATE, 
+                                                              self.c.COLS.COVERAGE_S3], 
+                                                              axis=0,
+                                                              ascending=[False, False])           
+            target_data = headline_target.head(1)
+        else:
+            target_data['year'] = target_data[self.c.COLS.TARGET_CONFIRM_DATE].dt.year
+            latest_year = target_data['year'].max()
+            target_data = target_data[target_data['year'] == latest_year]
         final = target_data[target_columns]
    
         return final
@@ -596,8 +626,8 @@ class TargetProtocol:
             ),
             columns=grid_columns + empty_columns,
         )
-        target_columns = extended_data.columns
-       
+        #target_columns = extended_data.columns
+        target_columns = extended_data.columns.tolist() #TODO - is this correct?
         results = []
         for _, row in extended_data.iterrows():
             result = self._find_target(row, target_columns)

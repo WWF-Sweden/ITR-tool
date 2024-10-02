@@ -22,13 +22,27 @@ class ExcelProvider(DataProvider):
         # Set all missing coverage values to 0.0
         self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3', 'reduction_ambition']] = \
             self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3', 'reduction_ambition']].fillna(0.0)
+        self.data['target_data']['scope'] = self.data['target_data']['scope'].replace({'S1S2S3': 'S1+S2+S3'})
+        self.data['target_data']['scope'] = self.data['target_data']['scope'].replace({'S1S2': 'S1+S2'})
        
         try:
-            self.data['target_data']['s3_category'] = self.data['target_data']['s3_category'].apply(lambda x: int(x) if str(x).isdigit() and 1 <= int(x) <= 15 else 0)
+           # self.data['target_data']['s3_category'] = self.data['target_data']['s3_category'].apply(lambda x: int(x) if str(x).isdigit() and 1 <= int(x) <= 15 else 0)
+           self.data['target_data']['s3_category'] = self.data['target_data'].apply(self._process_row, axis=1)
         except Exception as e:
             print(f"An error occurred: {e}")
        
         self.c = config
+
+    def _process_row(self, row):
+        if row['scope'] in ['S3', 'S1+S2+S3']:
+            if pd.isna(row['s3_category']) or row['s3_category'] == 0:
+                return 0
+            elif 1 <= int(row['s3_category']) <= 15:
+                return int(row['s3_category'])
+            else:
+                return 0
+        else:
+            return -1
 
     def get_targets(self, company_ids: List[str]) -> List[IDataProviderTarget]:
         """
