@@ -257,7 +257,7 @@ class TargetProtocol:
         :param target: The input target
         :return: The combined target (or the original if no combining was required)
         """
-        # raise RuntimeError("This method is not needed if we score on separate scopes")
+        raise RuntimeError("This method is not needed if we score on separate scopes")
         # reuse filtering to check combinations with the same base year, start year, end year, and target type
         if target.scope == EScope.S1 and not pd.isnull(target.base_year_ghg_s1):
             matches = [
@@ -515,7 +515,10 @@ class TargetProtocol:
             ].copy() # type: ignore
             if isinstance(target_data, pd.Series):
                 # One match with Target data
-                return pd.DataFrame(target_data[target_columns]).T
+                result_df = pd.DataFrame([target_data], columns=target_columns)
+                #target_data_df = target_data.to_frame().T
+                #return result_df #target_data_df[target_columns]
+                # return pd.DataFrame(target_data[target_columns]).T
             else:
                 if target_data.scope.iloc[0] == EScope.S3:
                     coverage_column = self.c.COLS.COVERAGE_S3
@@ -531,7 +534,7 @@ class TargetProtocol:
                 # We also prefer longer time spans within the same time frame
                 target_data['END_YEAR_MINUS_BASE_YEAR'] = (
                     target_data[self.c.COLS.END_YEAR] 
-                  - target_data[self.c.COLS.BASE_YEAR]
+                    - target_data[self.c.COLS.BASE_YEAR]
                 )
                 # Reduction ambition is measured by CAR
                 try:
@@ -558,10 +561,11 @@ class TargetProtocol:
                         ).iloc[0][target_columns]
                     )
                     result_df = pd.DataFrame([target_data], columns=target_columns)
-                    return result_df
+                #return result_df
                 else:
-                    target_data = self._find_s3_targets(target_data, target_columns)
-                    return target_data
+                #target_data = self._find_s3_targets(target_data, target_columns)
+                    result_df = self._find_s3_targets(target_data, target_columns)
+            return result_df
                           
         except KeyError:
             # No target found
@@ -667,70 +671,134 @@ class TargetProtocol:
     
     def sort_boundary_coverage(self, data: pd.DataFrame) -> pd.DataFrame:
         """
-        We want to select the sceop 1 and scope 2 targets that have the highest
+        We want to select the scope 1 and scope 2 targets that have the highest
         combined boundary coverage for each group of self.c.COLS.COMPANY_ID, 
         self.c.COLS.TIME_FRAME, self.c.COLS.SCOPE. 
         We compare combinations of individual scope 1 and scope 2
         targets with combined S1+S2 targets, and select the combination with 
         the highest boundary coverage. If there is only one single scope target
-        (eg a S1 but no S2), we dismiss it.
+        (e.g., S1 but no S2), we dismiss it.
 
         :param data: A dataframe with the target data
         :return: A dataframe with the target data sorted by boundary coverage
-
         """
-   
+        # Save the original columns to use when returning the result
+        original_columns = data.columns.tolist()
         # Ensure the data is indexed properly
         data = data.reset_index(drop=True)
+        scope_1_2_mask = data[self.c.COLS.SCOPE].isin([EScope.S1, EScope.S2, EScope.S1S2])
 
-        # Filter data to include only Scope 1 and Scope 2
-        scope_1_2_data = data[data[self.c.COLS.SCOPE].isin([EScope.S1, EScope.S2, EScope.S1S2])]
+        # Use the boolean mask to filter for Scope 1 and Scope 2
+        scope_1_2_data = data[scope_1_2_mask]
 
         # Group by COMPANY_ID and TIME_FRAME
         grouped_data = scope_1_2_data.groupby([self.c.COLS.COMPANY_ID, self.c.COLS.TIME_FRAME])
+        
+        def get_best_s1_s2_combination(group: pd.DataFrame) -> Tuple[float, pd.DataFrame]:
+            """
+            Find the combination of S1 and S2 targets with the highest combined coverage
+            :param group: The group of data to analyze
+            :return: The row with the highest combined coverage
+            """
+            ghg_s1 = self.c.COLS.BASEYEAR_GHG_S1
+            ghg_s2 = self.c.COLS.BASEYEAR_GHG_S2
 
+            mesh = pd.MultiIndex.from_product([group.index, group.index], names=["idx_s1", "idx_s2"])
+
+            # Create a DataFrame with all combinations of rows
+            combinations = pd.DataFrame(index=mesh).reset_index()
+
+            # Merge the DataFrame with itself to get all combinations
+            combinations = combinations.merge(group, left_on='idx_s1', right_index=True, suffixes=('_s1', '_1'))
+            combinations = combinations.merge(group, left_on='idx_s2', right_index=True, suffixes=('_1', '_2'))
+
+            # Calculate the weighted coverage
+            combinations['weighted_coverage'] = (
+                (combinations['coverage_s1_1'] * combinations[ghg_s1 + '_1'] + combinations['coverage_s2_2'] * combinations[ghg_s2 + '_2']) 
+                / (combinations[ghg_s1 + '_1'] + combinations[ghg_s2 + '_2'])
+            )
+
+            # Find the maximum weighted combination
+            max_combination = combinations.loc[combinations['weighted_coverage'].idxmax()]
+            max_coverage = max_combination['weighted_coverage'].item()
+            max_row_cov_s1 = group.loc[max_combination['idx_s1']]
+            max_row_cov_s2 = group.loc[max_combination['idx_s2']]
+           
+            # Combine the results into a single Series
+            result = pd.concat([max_row_cov_s1, max_row_cov_s2], axis=1).T
+           
+            return max_coverage, result
+         
+        def get_best_combined_s1_s2_coverage(group: pd.DataFrame) -> Tuple[float, pd.DataFrame]:
+            """
+            Find the combend S1+S2 target with the highest weighted coverage
+            :param group: The group of data to analyze
+            :return: The row with the highest combined coverage
+            """
+            ghg_s1 = self.c.COLS.BASEYEAR_GHG_S1
+            ghg_s2 = self.c.COLS.BASEYEAR_GHG_S2
+            group = group.copy()
+            # Add column weighted_coverage to the DataFrame
+            group['weighted_coverage'] = (
+                (group[self.c.COLS.COVERAGE_S1] * group[ghg_s1] + group[self.c.COLS.COVERAGE_S2] * group[ghg_s2])
+                / (group[ghg_s1] + group[ghg_s2])
+            ) 
+            # Find the maximum weighted coverage
+            sorted_group = group.sort_values(by='weighted_coverage', ascending=False)
+            result = sorted_group.iloc[0].to_frame().T
+
+            return result['weighted_coverage'].iloc[0], result
+        
+       
         # Initialize a list to collect the best entries
         best_entries = []
 
-        # Iterate over each group
+        # Iterate over each group of company_id and time_frame
         for _, group in grouped_data:
             # Check if both Scope 1 and Scope 2 exist in the group
             s1_data = group[group[self.c.COLS.SCOPE] == EScope.S1]
             s2_data = group[group[self.c.COLS.SCOPE] == EScope.S2]
             combined_s1_s2 = group[group[self.c.COLS.SCOPE] == EScope.S1S2]
 
-            # Calculate weighted combined coverage for Scope 1 and Scope 2 if both exist
-            if not s1_data.empty and not s2_data.empty:
-                s1_coverage = s1_data[self.c.COLS.COVERAGE_S1].sum()
-                s1_ghg = s1_data[self.c.COLS.BASEYEAR_GHG_S1].sum()
-                s2_coverage = s2_data[self.c.COLS.COVERAGE_S2].sum()
-                s2_ghg = s2_data[self.c.COLS.BASEYEAR_GHG_S2].sum()
+            if not s1_data.empty and not s2_data.empty and not combined_s1_s2.empty:
+                # If all three scopes exist, we need to compare the combined S1+S2 target with the individual S1 and S2 targets
+                # Note that there may be more than one of each of the individual targets
+                # Find the row in s1 and s2 with the highest coverage
+                #s1_s2_group = group[group[self.c.COLS.SCOPE].isin([EScope.S1, EScope.S2])]
+                single_coverage, best_s1_s2_combination = get_best_s1_s2_combination(pd.concat([s1_data, s2_data]))
+                # find the S1+S2 row with the highest weighted coverage
+                combined_coverage, best_s1_s2_target = get_best_combined_s1_s2_coverage(combined_s1_s2)
+            
+                if single_coverage > combined_coverage:
+                    best = best_s1_s2_combination
+                else:
+                    best = best_s1_s2_target
 
-                # Weighted combined coverage, divided by the sum of GHG_S1 and GHG_S2
-                combined_coverage = (s1_coverage * s1_ghg + s2_coverage * s2_ghg) / (s1_ghg + s2_ghg)
-            else:
-                combined_coverage = 0
+                best_entries.append(best)
 
-            # Calculate weighted coverage for combined S1+S2 if it exists
-            if not combined_s1_s2.empty:
-                combined_s1_s2_coverage = (
-                    combined_s1_s2[self.c.COLS.COVERAGE_S1].sum() * combined_s1_s2[self.c.COLS.BASEYEAR_GHG_S1].sum() +
-                    combined_s1_s2[self.c.COLS.COVERAGE_S2].sum() * combined_s1_s2[self.c.COLS.BASEYEAR_GHG_S2].sum()
-                ) / (combined_s1_s2[self.c.COLS.BASEYEAR_GHG_S1].sum() + combined_s1_s2[self.c.COLS.BASEYEAR_GHG_S2].sum())
-            else:
-                combined_s1_s2_coverage = 0
+            elif not s1_data.empty and not s2_data.empty and combined_s1_s2.empty:
+                # If only S1 and S2 exist we find the combination of S1 and S2 with the highest combined coverage
+                # Note that there may be more than one of each of the individual targets
+                # Find the row in s1 and s2 with the highest coverage
+                single_coverage, best_s1_s2_combination = get_best_s1_s2_combination(pd.concat([s1_data, s2_data]))
+                #This must be the best combination, so we append it to the best entries
+                best_entries.append(best_s1_s2_combination)
 
-            # Select the entry with the highest weighted coverage
-            if combined_coverage > combined_s1_s2_coverage:
-                best_entries.append(s1_data)
-                best_entries.append(s2_data)
-            elif combined_s1_s2_coverage > 0:
-                best_entries.append(combined_s1_s2)
+            elif not combined_s1_s2.empty:
+                # If only the combined S1+S2 target exists, we find the S1+S2 target with the highest weighted coverage
+                # Note that there may be more than one S1+S2 target
+                combined_coverage, best_s1_s2_target = get_best_combined_s1_s2_coverage(combined_s1_s2)
+                #This must be the best combination, so we append it to the best entries
+                best_entries.append(best_s1_s2_target)         
 
         # Concatenate all the best entries
-        result = pd.concat(best_entries)
-
+        result = pd.concat(best_entries, ignore_index=True)
+        result = result.reindex(columns=original_columns)
+        # Replace the identified rows in the original DataFrame with the sorted DataFrame
+        remaining_data = data[~scope_1_2_mask]
+        data = pd.concat([result, remaining_data], ignore_index=True)
         # Set the index again to maintain the original structure
-        result = result.set_index([self.c.COLS.COMPANY_ID, self.c.COLS.TIME_FRAME, self.c.COLS.SCOPE])
-
-        return result
+       
+        data = data.set_index([self.c.COLS.COMPANY_ID, self.c.COLS.TIME_FRAME, self.c.COLS.SCOPE], drop=False)
+        
+        return data

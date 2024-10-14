@@ -75,27 +75,27 @@ class IDataProviderCompany(BaseModel):
     company_name: str
     company_id: str
     isic: str
-    ghg_s1: Optional[float]
-    ghg_s2: Optional[float]
-    ghg_s1s2: Optional[float] = None 
-    ghg_s3: Optional[float]
+    ghg_s1: Optional[float] = np.nan
+    ghg_s2: Optional[float] = np.nan
+    ghg_s1s2: Optional[float] = np.nan 
+    ghg_s3: Optional[float] = np.nan
 
     # Optional fields for scope 3 categories
-    ghg_s3_1: Optional[float]
-    ghg_s3_2: Optional[float]
-    ghg_s3_3: Optional[float]
-    ghg_s3_4: Optional[float]
-    ghg_s3_5: Optional[float]
-    ghg_s3_6: Optional[float]
-    ghg_s3_7: Optional[float]
-    ghg_s3_8: Optional[float]
-    ghg_s3_9: Optional[float]
-    ghg_s3_10: Optional[float]
-    ghg_s3_11: Optional[float]
-    ghg_s3_12: Optional[float]
-    ghg_s3_13: Optional[float]
-    ghg_s3_14: Optional[float]
-    ghg_s3_15: Optional[float]
+    ghg_s3_1: Optional[float] = np.nan
+    ghg_s3_2: Optional[float] = np.nan
+    ghg_s3_3: Optional[float] = np.nan
+    ghg_s3_4: Optional[float] = np.nan
+    ghg_s3_5: Optional[float] = np.nan
+    ghg_s3_6: Optional[float] = np.nan
+    ghg_s3_7: Optional[float] = np.nan
+    ghg_s3_8: Optional[float] = np.nan
+    ghg_s3_9: Optional[float] = np.nan
+    ghg_s3_10: Optional[float] = np.nan
+    ghg_s3_11: Optional[float] = np.nan
+    ghg_s3_12: Optional[float] = np.nan
+    ghg_s3_13: Optional[float] = np.nan
+    ghg_s3_14: Optional[float] = np.nan
+    ghg_s3_15: Optional[float] = np.nan
 
     country: Optional[str]
     region: Optional[str] 

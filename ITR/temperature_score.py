@@ -832,8 +832,18 @@ class TemperatureScore(PortfolioAggregation):
 
         # Add missing columns to mean_temp_15 with appropriate data types
         for column in missing_columns:
-            mean_temp_15[column] = None
-            mean_temp_15[column] = mean_temp_15[column].astype(s3_data[column].dtype)
+            # mean_temp_15[column] = np.nan 
+            # mean_temp_15[column] = mean_temp_15[column].astype(s3_data[column].dtype)
+ 
+            # Check if the dtype of the column is integer
+            if pd.api.types.is_integer_dtype(s3_data[column].dtype):
+                # Cast the column to float64 to support NaN values
+                mean_temp_15[column] = np.nan
+                mean_temp_15[column] = mean_temp_15[column].astype('float64')
+            else:
+                # For other types (e.g., strings, floats, etc.), keep the original dtype
+                mean_temp_15[column] = np.nan
+                mean_temp_15[column] = mean_temp_15[column].astype(s3_data[column].dtype)
 
         # Reorder columns in mean_temp_15 to match the order in s3_data
         mean_temp_15 = mean_temp_15[s3_data.columns]
@@ -933,7 +943,16 @@ class TemperatureScore(PortfolioAggregation):
                 temp_s3_data = s3_data[col].copy()
                 
                 # Cast the values in temp_s3_data to the data type of the column in temp_data
-                temp_s3_data = temp_s3_data.astype(temp_data[col].dtype)
+                # Check if the dtype of the column is integer
+                if pd.api.types.is_integer_dtype(temp_data[col].dtype):
+                    # Cast the column to float64 to support NaN values
+                    temp_s3_data[col] = np.nan
+                    temp_s3_data[col] = temp_s3_data[col].astype('float64')
+                else:
+                    # For other types (e.g., strings, floats, etc.), keep the original dtype
+                    temp_s3_data[col] = np.nan
+                    temp_s3_data[col] = temp_s3_data[col].astype(temp_data[col].dtype)
+                #temp_s3_data = temp_s3_data.astype(temp_data[col].dtype)
                 
                 # Update the column in temp_data
                 temp_data.loc[:, col] = temp_data.loc[:, col].combine_first(temp_s3_data)
@@ -946,4 +965,4 @@ class TemperatureScore(PortfolioAggregation):
     
         return data
 
-        
+    
