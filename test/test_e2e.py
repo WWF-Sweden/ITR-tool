@@ -133,9 +133,9 @@ class EndToEndTest(unittest.TestCase):
         self.assertIsNotNone(scores)
         self.assertEqual(len(scores.index), 3)
 
-    def test_fallback_score(self):
+    def test_default_score(self):
         """
-        test fallback score assignment
+        test default score assignment
         """
         # Setup test provider
         company = copy.deepcopy(self.company_base)

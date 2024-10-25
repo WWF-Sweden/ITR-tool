@@ -64,7 +64,7 @@ class TestTemperatureScore(unittest.TestCase):
             ]["temperature_score"].iloc[0],
             3.2,
             places=2,
-            msg="The fallback temp score was incorrect",
+            msg="The default temp score was incorrect",
         )
         self.assertAlmostEqual(
             scores[
@@ -84,7 +84,7 @@ class TestTemperatureScore(unittest.TestCase):
             ]["temperature_score"].iloc[0],
             3.2,
             places=5,
-            msg="The aggregated fallback temp score was incorrect",
+            msg="The aggregated default temp score was incorrect",
         )
 
     def test_portfolio_aggregations(self):

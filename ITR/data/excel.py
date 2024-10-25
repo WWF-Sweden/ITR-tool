@@ -22,8 +22,18 @@ class ExcelProvider(DataProvider):
         # Set all missing coverage values to 0.0
         self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3', 'reduction_ambition']] = \
             self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3', 'reduction_ambition']].fillna(0.0)
+        self.data['target_data'][['achieved_reduction']] = self.data['target_data'][['achieved_reduction']].fillna(0.0)
+        self.data['target_data'][['base_year_ghg_s1', 'base_year_ghg_s2', 'base_year_ghg_s3']] = \
+            self.data['target_data'][['base_year_ghg_s1', 'base_year_ghg_s2', 'base_year_ghg_s3']].fillna(0.0)
         self.data['target_data']['scope'] = self.data['target_data']['scope'].replace({'S1S2S3': 'S1+S2+S3'})
         self.data['target_data']['scope'] = self.data['target_data']['scope'].replace({'S1S2': 'S1+S2'})
+        # Check for optional columns in 'fundamental_data' and handle missing values
+        optional_columns = ['ghg_s1', 'ghg_s2', 'ghg_s1s2', 'ghg_s3']
+        for col in optional_columns:
+            if col not in self.data['fundamental_data'].columns:
+                self.data['fundamental_data'][col] = 0.0
+            else:
+                self.data['fundamental_data'][col] = self.data['fundamental_data'][col].fillna(0.0)
        
         try:
            # self.data['target_data']['s3_category'] = self.data['target_data']['s3_category'].apply(lambda x: int(x) if str(x).isdigit() and 1 <= int(x) <= 15 else 0)
@@ -110,8 +120,8 @@ class ExcelProvider(DataProvider):
             IDataProviderCompany.parse_obj(company) for company in companies
         ]
         for company in model_companies:
-            if company.ghg_s1 is not None and company.ghg_s2 is not None:
-                company.ghg_s1s2 = company.ghg_s1 + company.ghg_s2
+            if company.ghg_s1 is not None or company.ghg_s2 is not None:
+                company.ghg_s1s2 = company.ghg_s1 + company.ghg_s2  # type: ignore (data set to 0.0 when reading)
 
         model_companies = [
             target for target in model_companies if target.company_id in company_ids

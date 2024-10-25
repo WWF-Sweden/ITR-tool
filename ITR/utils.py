@@ -245,7 +245,7 @@ def get_data(
 
 def calculate(
     portfolio_data: pd.DataFrame,
-    fallback_score: float,
+    default_score: float,
     aggregation_method: PortfolioAggregationMethod,
     grouping: Optional[List[str]],
     scenario: Optional[Scenario],
@@ -258,7 +258,7 @@ def calculate(
     Calculate the different parts of the temperature score (actual scores, aggregations, column distribution).
 
     :param portfolio_data: The portfolio data, already processed by the target validation module
-    :param fallback_score: The fallback score to use while calculating the temperature score
+    :param default_score: The default score to use while calculating the temperature score
     :param aggregation_method: The aggregation method to use
     :param time_frames: The time frames that the temperature scores should be calculated for  (None to calculate all)
     :param scopes: The scopes that the temperature scores should be calculated for (None to calculate all)
@@ -271,7 +271,7 @@ def calculate(
     ts = TemperatureScore(
         time_frames=time_frames,
         scopes=scopes,
-        fallback_score=fallback_score,
+        default_score=default_score,
         scenario=scenario,
         grouping=grouping,
         aggregation_method=aggregation_method,

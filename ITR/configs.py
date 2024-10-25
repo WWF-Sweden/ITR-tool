@@ -66,11 +66,13 @@ class ColumnsConfig:
     REGRESSION_MODEL = "Regression_model"
     BASEYEAR_GHG_S1 = "base_year_ghg_s1"
     BASEYEAR_GHG_S2 = "base_year_ghg_s2"
+    BASEYEAR_GHG_S1S2 = "base_year_ghg_s1s2"
     BASEYEAR_GHG_S3 = "base_year_ghg_s3"
     REGION = "region"
     ENGAGEMENT_TARGET = "engagement_target"
     BASE_YEAR_TS = "base_year_ts"
     END_YEAR_TS = "end_year_ts"
+    TO_CALCULATE = "to_calculate"
 
     # Scope 3 categories - from fundamental data
     GHG_S3_1 = "ghg_s3_1"
@@ -113,7 +115,7 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
     """
 
     SBTI_FACTOR = 1
-    FALLBACK_SCORE: float = 3.4
+    DEFAULT_SCORE: float = 3.4
     TEMPERATURE_FLOOR: float = 1.5  
   
     JSON_REGRESSION_MODEL = os.path.join(
@@ -127,7 +129,7 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
     # VALUE_TARGET_REFERENCE_ABSOLUTE = "absolute"
     # VALUE_TARGET_REFERENCE_T_SCORE = "t_score"
     # VALUE_TARGET_REFERENCE_INTENSITY = "intensity"
-    VALUE_TARGET_REFERENCE_INTENSITY_BASE = "int"
+    VALUE_TARGET_REFERENCE_INTENSITY_BASE = "inte"
 
     SLOPE_MAP = {
         ETimeFrames.SHORT: "slopeCA5",

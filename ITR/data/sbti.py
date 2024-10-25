@@ -20,11 +20,6 @@ class SBTi:
         """
         return os.path.isfile(self.c.FILE_TARGETS)
 
-    def handle_cta_file(self):
-        if self.c.USE_LOCAL_CTA:
-            self._use_local_cta_file()
-        else:
-            self._download_cta_file()
 
     def _check_CTA_less_than_one_week_old(self):
         """
@@ -54,11 +49,17 @@ class SBTi:
             raise ValueError('CTA file does not exist')
 
     def _download_cta_file(self):
-        if self._check_if_cta_file_exists() and self.c.SKIP_CTA_FILE_IF_EXISTS:
-            if self._check_CTA_less_than_one_week_old():
-                print(f'CTA file already exists in {self.c.FILE_TARGETS}, skipping download.')
-                return
-        else:
+        get_file = False
+        if self._check_if_cta_file_exists():
+            if self.c.SKIP_CTA_FILE_IF_EXISTS:
+                if not self._check_CTA_less_than_one_week_old():
+                    get_file = True
+            else:
+                get_file = True
+        else:                  
+            get_file = True
+
+        if get_file:
             try:
                 self._fetch_and_save_cta_file()
             
@@ -67,7 +68,9 @@ class SBTi:
                     print(f'403 Error fetching the CTA file: {err}')
                 else:
                     print(f'Error fetching the CTA file: {err}')
-              
+        else:            
+            print(f'CTA file already exists in {self.c.FILE_TARGETS}, skipping download.')
+
     def _fetch_and_save_cta_file(self):
         try:
             headers = {
@@ -85,6 +88,12 @@ class SBTi:
                 print(f'Status code from fetching the CTA file: {response.status_code}, 200 = OK')
         except requests.HTTPError as err:
             print(f'Error fetching the CTA file: {err}')
+
+    def handle_cta_file(self):
+        if self.c.USE_LOCAL_CTA:
+            self._use_local_cta_file()
+        else:
+            self._download_cta_file()
 
     def __init__(
         self, config: Type[PortfolioCoverageTVPConfig] = PortfolioCoverageTVPConfig
@@ -162,7 +171,10 @@ class SBTi:
         self.targets = self.filter_cta_file(self.targets)
 
         for company in companies:
-            isin, lei = id_map.get(company.company_id)
+            id_tuple = id_map.get(company.company_id)
+            if id_tuple is None:
+                continue
+            isin, lei = id_tuple
             # Check lei and length of lei to avoid zeros 
             if not lei.lower() == 'nan' and len(lei) > 3:
                 targets = self.targets[

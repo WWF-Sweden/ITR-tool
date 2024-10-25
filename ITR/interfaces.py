@@ -210,15 +210,17 @@ class IDataProviderTarget(BaseModel):
     reduction_ambition: Optional[float]
     
     base_year: int
-    base_year_ghg_s1: Optional[float]
-    base_year_ghg_s2: Optional[float]
-    base_year_ghg_s3: Optional[float]
+    base_year_ghg_s1: Optional[float] = 0.0
+    base_year_ghg_s2: Optional[float] = 0.0
+    base_year_ghg_s1s2: Optional[float] = 0.0
+    base_year_ghg_s3: Optional[float] = 0.0
     
     start_year: Optional[int]
     end_year: int
     statement_date: Optional[date]
     time_frame: Optional[ETimeFrames]
-    achieved_reduction: Optional[float] = 0
+    achieved_reduction: Optional[float] = 0.0
+    to_calculate: Optional[bool] = False # Set to True if the target should be calculated
 
     target_ids: List[str] = Field(
         default_factory=list,

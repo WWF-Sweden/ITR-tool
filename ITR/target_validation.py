@@ -96,10 +96,15 @@ class TargetProtocol:
         if target.target_type.lower() == "t_score":
             return self._validate_t_score(target)
         # Only absolute targets or intensity targets with a valid intensity metric are allowed.
-        target_type = "abs" in target.target_type.lower() or (
-            "int" in target.target_type.lower()
-            and target.intensity_metric is not None
-            and target.intensity_metric.lower() != "other"
+        # As of v1.5 we have target type 'int_to_abs' which is an intensity target that has been converted to an absolute target
+        target_type = (
+            "abs" in target.target_type.lower()
+            or "int_to_abs" in target.target_type.lower()
+            or (
+                "intensity" in target.target_type.lower()
+                and target.intensity_metric is not None
+                and target.intensity_metric.lower() != "other"
+            )
         )
         # The target should not have achieved its reduction yet.
         target_progress = (
@@ -247,6 +252,44 @@ class TargetProtocol:
             targets = [s1, s2]
            
         return targets
+    
+    def _split_s1s2_new(self,
+        target: pd.DataFrame,
+    ) -> pd.DataFrame:
+        """
+        Split the target into two targets, one for the S1 data and one for the S2 data.
+
+        :param target: The target to potentially split.
+        :return: A list containing the S1 target and the S2 target from the split.
+        """
+        print('splitting', target['target_ids'].item())
+        if target[self.c.COLS.TARGET_REFERENCE_NUMBER].iloc[0].lower() == "t_score":
+            return target
+        targets = target.iloc[0].copy()
+        # before splitting S1S2 targets we need to verify that there is GHG data to aggregate the scores later
+        # TODO - verify that company is one unique row
+        company = self.company_data[self.company_data[self.c.COLS.COMPANY_ID] == targets.company_id]
+        if (not (pd.isna(company[self.c.COLS.GHG_SCOPE1].values[0])
+            or pd.isna(company[self.c.COLS.GHG_SCOPE2].values[0]))
+            and target.scope.iloc[0] == EScope.S1S2
+        ):
+            s1 = targets.copy()
+            s2 = targets.copy()           
+
+            # Assign scalar values to the new DataFrames
+            s1['coverage_s1'] = targets['coverage_s1']
+            s2['coverage_s2'] = targets['coverage_s2']
+            s1['reduction_ambition'] = targets['reduction_ambition']
+            s2['reduction_ambition'] = targets['reduction_ambition']
+        
+            s1['scope'] = EScope.S1
+            s2['scope'] = EScope.S2
+            # Append '_1' and '_2' to the target_ids of s1 and s2, respectively
+            s1['target_ids'] = [id_ + '_1' for id_ in s1['target_ids']]
+            s2['target_ids'] = [id_ + '_2' for id_ in s2['target_ids']]
+            target = pd.concat([pd.DataFrame([s1]), pd.DataFrame([s2])], axis=0).reset_index(drop=True)
+           
+        return target
     
     # TODO - this method is not needed if we score on separate scopes
     def _combine_s1_s2(self, target: IDataProviderTarget):
@@ -503,16 +546,16 @@ class TargetProtocol:
         :param target_columns: The columns to return
         :return: records from the input data, which contains company and target information, that meet specific criteria. For example, record of greatest emissions_in_scope
         """
-        self.target_data.sort_index(level=self.target_data.index.names)
+        self.target_data.sort_index(level=self.target_data.index.names, inplace=True)
         # Find all targets that correspond to the given row
         try:
-            target_data = self.target_data.loc[
+            target_data = self.target_data.xs(
                 (
                     row[self.c.COLS.COMPANY_ID],
                     row[self.c.COLS.TIME_FRAME],
                     row[self.c.COLS.SCOPE],
                 )
-            ].copy() # type: ignore
+            ).copy() # type: ignore
             if isinstance(target_data, pd.Series):
                 # One match with Target data
                 result_df = pd.DataFrame([target_data], columns=target_columns)
@@ -565,11 +608,15 @@ class TargetProtocol:
                 else:
                 #target_data = self._find_s3_targets(target_data, target_columns)
                     result_df = self._find_s3_targets(target_data, target_columns)
+
+            result_df['to_calculate'] = True # TS for selected targets are to be calculated
             return result_df
                           
         except KeyError:
             # No target found
-            return pd.DataFrame([row], columns=target_columns)
+            result_df = pd.DataFrame([row], columns=target_columns)
+            result_df['to_calculate'] = False # TS for selected targets are not to be calculated
+            return result_df
     
     def _find_s3_targets(self, target_data: pd.DataFrame, target_columns: List[str]) -> pd.DataFrame:
         """
@@ -686,6 +733,8 @@ class TargetProtocol:
         original_columns = data.columns.tolist()
         # Ensure the data is indexed properly
         data = data.reset_index(drop=True)
+        # Need to save dypes as well since conversion from Series to DataFrame can change them
+        original_dtype = data.dtypes
         scope_1_2_mask = data[self.c.COLS.SCOPE].isin([EScope.S1, EScope.S2, EScope.S1S2])
 
         # Use the boolean mask to filter for Scope 1 and Scope 2
@@ -726,12 +775,12 @@ class TargetProtocol:
            
             # Combine the results into a single Series
             result = pd.concat([max_row_cov_s1, max_row_cov_s2], axis=1).T
-           
+             
             return max_coverage, result
          
         def get_best_combined_s1_s2_coverage(group: pd.DataFrame) -> Tuple[float, pd.DataFrame]:
             """
-            Find the combend S1+S2 target with the highest weighted coverage
+            Find the combined S1+S2 target with the highest weighted coverage
             :param group: The group of data to analyze
             :return: The row with the highest combined coverage
             """
@@ -746,10 +795,37 @@ class TargetProtocol:
             # Find the maximum weighted coverage
             sorted_group = group.sort_values(by='weighted_coverage', ascending=False)
             result = sorted_group.iloc[0].to_frame().T
+            max_coverage = result['weighted_coverage'].iloc[0]
+            result = result.drop('weighted_coverage', axis=1)
 
-            return result['weighted_coverage'].iloc[0], result
+            return max_coverage, result
         
-       
+        def settle_tied_coverage(single_scope_s1_s2: pd.DataFrame, combined_s1s2: pd.DataFrame) -> Tuple[bool, pd.DataFrame]:
+            """
+            Settle a tie between two targets by selecting the one with the highest ETargetReference
+            :param single_scope_s1_s2: A dataframe with two rows representing the S1 and S2 targets
+            :param combined_s1s2: A dataframe with the S1+S2 target
+            :return: The target with the highest ETargetReference
+            """
+            # get values of the target types
+            single_type_1 = single_scope_s1_s2[self.c.COLS.TARGET_REFERENCE_NUMBER].iloc[0]
+            single_type_2 = single_scope_s1_s2[self.c.COLS.TARGET_REFERENCE_NUMBER].iloc[1]
+            combined_type = combined_s1s2[self.c.COLS.TARGET_REFERENCE_NUMBER].iloc[0]
+
+            if single_type_1 == single_type_2:
+                if single_type_1 > combined_type:
+                    return False, single_scope_s1_s2
+                elif single_type_1 < combined_type:
+                     return True, combined_s1s2
+                else: # If both boundary coverage and target type are equal, then we prefer single scope targets
+                    return False, single_scope_s1_s2
+            else:
+                min_single = min(single_type_1, single_type_2)
+                if combined_type <= min_single:
+                    return True, combined_s1s2
+                else:
+                    return False, single_scope_s1_s2
+                
         # Initialize a list to collect the best entries
         best_entries = []
 
@@ -771,9 +847,15 @@ class TargetProtocol:
             
                 if single_coverage > combined_coverage:
                     best = best_s1_s2_combination
-                else:
+                    combined_best = False
+                elif single_coverage < combined_coverage:
                     best = best_s1_s2_target
-
+                    combined_best = True
+                else:
+                    # If it's a tie we prefer the target with the best target type 
+                    combined_best, best = settle_tied_coverage(best_s1_s2_combination, best_s1_s2_target)            
+                if combined_best:
+                    best = self._split_s1s2_new(best)
                 best_entries.append(best)
 
             elif not s1_data.empty and not s2_data.empty and combined_s1_s2.empty:
@@ -787,13 +869,37 @@ class TargetProtocol:
             elif not combined_s1_s2.empty:
                 # If only the combined S1+S2 target exists, we find the S1+S2 target with the highest weighted coverage
                 # Note that there may be more than one S1+S2 target
-                combined_coverage, best_s1_s2_target = get_best_combined_s1_s2_coverage(combined_s1_s2)
-                #This must be the best combination, so we append it to the best entries
-                best_entries.append(best_s1_s2_target)         
+                _, best_s1_s2_target = get_best_combined_s1_s2_coverage(combined_s1_s2)
+                #This must be the best combination, so we append it to the best entries after splitting
+                best_s1_s2_target = self._split_s1s2_new(best_s1_s2_target)
+                best_entries.append(best_s1_s2_target)
+
+            elif not s1_data.empty and s2_data.empty:
+                # If only S1 exists, we find the S1 target with the highest coverage
+                best_s1 = s1_data.sort_values(by=self.c.COLS.COVERAGE_S1, ascending=False).iloc[0]
+                best_entries.append(pd.DataFrame(best_s1))
+            elif s1_data.empty and not s2_data.empty:
+                # If only S2 exists, we find the S2 target with the highest coverage
+                best_s2 = s2_data.sort_values(by=self.c.COLS.COVERAGE_S2, ascending=False).iloc[0]
+                best_entries.append(pd.DataFrame(best_s2))
+            else:
+                continue
 
         # Concatenate all the best entries
+        for df in best_entries:
+            if isinstance(df, pd.DataFrame):
+                # Restore the original column types for each dataframe in best_entries
+                for col in df.columns:
+                    if col in original_dtype:
+                        df[col] = df[col].astype(original_dtype[col])
+        
         result = pd.concat(best_entries, ignore_index=True)
-        result = result.reindex(columns=original_columns)
+        if isinstance(result, pd.Series):
+            result = pd.DataFrame([result.values], columns = original_columns)
+        else:
+            result = result.reindex(columns=original_columns)
+        # Set column 'to_calculate' to True
+        result['to_calculate'] = True
         # Replace the identified rows in the original DataFrame with the sorted DataFrame
         remaining_data = data[~scope_1_2_mask]
         data = pd.concat([result, remaining_data], ignore_index=True)
