@@ -352,7 +352,7 @@ class TemperatureScore(PortfolioAggregation):
                 0,
             )
 
-    def get_ghc_temperature_score(
+    def aggregate_company_score(
         self, row: pd.Series, company_data: pd.DataFrame
     ) -> Tuple[float, float, list]:
         """
@@ -503,7 +503,7 @@ class TemperatureScore(PortfolioAggregation):
         :param data: The original data set as a pandas data frame
         :return: The data frame, with an updated s1s2s3 temperature score
         """
-        # Calculate the GHC
+     
         company_data = (
             data[
                 [
@@ -549,7 +549,7 @@ class TemperatureScore(PortfolioAggregation):
             data[self.c.COLS.TARGET_IDS],
         ) = zip(
             *data.apply(
-                lambda row: self.get_ghc_temperature_score(row, company_data), axis=1
+                lambda row: self.aggregate_company_score(row, company_data), axis=1
             )
         )
         return data
@@ -777,8 +777,9 @@ class TemperatureScore(PortfolioAggregation):
 
     def _calculate_s3_score(self, data: pd.DataFrame) -> pd.DataFrame:
         """
-        Calculate the combined S3 score each combination of company_id, time_frame and scope.
-        First 
+        When there are multiple S3 targets for a company, calculate the combined S3 score for each company_id and time_frame.
+        First aggregate the category 15 scores since there may be multiple targets for this category.
+        Then aggreagate across all S3 categories to get the final S3 score.
         :param data: The data to calculate the S3 score for.
         :return: The S3 score.
         """
