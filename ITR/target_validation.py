@@ -68,10 +68,13 @@ class TargetProtocol:
             .index
         )
         self.target_data = self.target_data.sort_index()
+        self.target_data.to_csv("/home/mountainrambler/ITR/ITR-tool/examples/data/local/DF_check1.csv") 
 
         self.target_data = self.sort_on_vintage(self.target_data)
+        self.target_data.to_csv("/home/mountainrambler/ITR/ITR-tool/examples/data/local/DF_check2.csv") 
 
         self.target_data = self.sort_boundary_coverage(self.target_data)
+        self.target_data.to_csv("/home/mountainrambler/ITR/ITR-tool/examples/data/local/DF_check3.csv") 
 
         #self.company_data = pd.DataFrame.from_records([c.dict() for c in companies])
         self.group_targets()
@@ -545,23 +548,23 @@ class TargetProtocol:
         :param target_columns: The columns to return
         :return: records from the input data, which contains company and target information, that meet specific criteria. For example, record of greatest emissions_in_scope
         """
-        self.target_data.sort_index(level=self.target_data.index.names, inplace=True)
+        #self.target_data.sort_index(level=self.target_data.index.names, inplace=True)
         
         # Find all targets that correspond to the given row
-        index_tuple = (
-            row[self.c.COLS.COMPANY_ID],
-            row[self.c.COLS.TIME_FRAME],
-            row[self.c.COLS.SCOPE],
-        )
+        # index_tuple = (
+        #     row[self.c.COLS.COMPANY_ID],
+        #     row[self.c.COLS.TIME_FRAME],
+        #     row[self.c.COLS.SCOPE],
+        # )
         try:
-            target_data = self.target_data.loc[index_tuple].copy()  # type: ignore
-            # target_data = self.target_data.xs(
-            #     (
-            #         row[self.c.COLS.COMPANY_ID],
-            #         row[self.c.COLS.TIME_FRAME],
-            #         row[self.c.COLS.SCOPE],
-            #     )
-            # ).copy() # type: ignore
+            #target_data = self.target_data.loc[index_tuple].copy()  # type: ignore
+            target_data = self.target_data.xs(
+                (
+                    row[self.c.COLS.COMPANY_ID],
+                    row[self.c.COLS.TIME_FRAME],
+                    row[self.c.COLS.SCOPE],
+                )
+            ).copy() # type: ignore
             if isinstance(target_data, pd.Series):
                 # One match with Target data
                 result_df = pd.DataFrame([target_data], columns=target_columns)
@@ -669,6 +672,7 @@ class TargetProtocol:
         -- Target type: Absolute over intensity
         -- If all else is equal: average the ambition of targets
         """
+        self.target_data = self.target_data.sort_index(level=self.target_data.index.names)
 
         grid_columns = [
             self.c.COLS.COMPANY_ID,
@@ -880,14 +884,6 @@ class TargetProtocol:
                 best_s1_s2_target = self._split_s1s2_new(best_s1_s2_target)
                 best_entries.append(best_s1_s2_target)
 
-            elif not s1_data.empty and s2_data.empty:
-                # If only S1 exists, we find the S1 target with the highest coverage
-                best_s1 = s1_data.sort_values(by=self.c.COLS.COVERAGE_S1, ascending=False).iloc[0]
-                best_entries.append(pd.DataFrame(best_s1))
-            elif s1_data.empty and not s2_data.empty:
-                # If only S2 exists, we find the S2 target with the highest coverage
-                best_s2 = s2_data.sort_values(by=self.c.COLS.COVERAGE_S2, ascending=False).iloc[0]
-                best_entries.append(pd.DataFrame(best_s2))
             else:
                 continue
 
