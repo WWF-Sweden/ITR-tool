@@ -921,12 +921,17 @@ class TemperatureScore(PortfolioAggregation):
                 # Check if the dtype of the column is integer
                 if pd.api.types.is_integer_dtype(temp_data[col].dtype):
                     # Cast the column to float64 to support NaN values
-                    temp_s3_data[col] = np.nan
-                    temp_s3_data[col] = temp_s3_data[col].astype('float64')
+                    # temp_s3_data[col] = np.nan
+                    # temp_s3_data[col] = temp_s3_data[col].astype('float64')
+                    temp_s3_data = temp_s3_data.astype('float64')
+                elif pd.api.types.is_bool_dtype(temp_data[col].dtype):
+                    # Cast the column to bool
+                    temp_s3_data = temp_s3_data.astype('bool')
                 else:
                     # For other types (e.g., strings, floats, etc.), keep the original dtype
-                    temp_s3_data[col] = np.nan
-                    temp_s3_data[col] = temp_s3_data[col].astype(temp_data[col].dtype)
+                    # temp_s3_data[col] = np.nan
+                    # temp_s3_data[col] = temp_s3_data[col].astype(temp_data[col].dtype)
+                    temp_s3_data = temp_s3_data.astype(temp_data[col].dtype)
                 #temp_s3_data = temp_s3_data.astype(temp_data[col].dtype)
                 
                 # Update the column in temp_data
@@ -978,6 +983,8 @@ class TemperatureScore(PortfolioAggregation):
                 idx = group.index[group['scope'] == EScope.S1S2][0] 
                 group.at[idx, 'target_ids'] = combined_target_ids
                       
+                # Explicitly infer object types to avoid future warnings
+                group = group.infer_objects()
                     # Update the original data DataFrame
                 data.update(group)
                     

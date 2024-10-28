@@ -262,7 +262,6 @@ class TargetProtocol:
         :param target: The target to potentially split.
         :return: A list containing the S1 target and the S2 target from the split.
         """
-        print('splitting', target['target_ids'].item())
         if target[self.c.COLS.TARGET_REFERENCE_NUMBER].iloc[0].lower() == "t_score":
             return target
         targets = target.iloc[0].copy()
@@ -547,15 +546,22 @@ class TargetProtocol:
         :return: records from the input data, which contains company and target information, that meet specific criteria. For example, record of greatest emissions_in_scope
         """
         self.target_data.sort_index(level=self.target_data.index.names, inplace=True)
+        
         # Find all targets that correspond to the given row
+        index_tuple = (
+            row[self.c.COLS.COMPANY_ID],
+            row[self.c.COLS.TIME_FRAME],
+            row[self.c.COLS.SCOPE],
+        )
         try:
-            target_data = self.target_data.xs(
-                (
-                    row[self.c.COLS.COMPANY_ID],
-                    row[self.c.COLS.TIME_FRAME],
-                    row[self.c.COLS.SCOPE],
-                )
-            ).copy() # type: ignore
+            target_data = self.target_data.loc[index_tuple].copy()  # type: ignore
+            # target_data = self.target_data.xs(
+            #     (
+            #         row[self.c.COLS.COMPANY_ID],
+            #         row[self.c.COLS.TIME_FRAME],
+            #         row[self.c.COLS.SCOPE],
+            #     )
+            # ).copy() # type: ignore
             if isinstance(target_data, pd.Series):
                 # One match with Target data
                 result_df = pd.DataFrame([target_data], columns=target_columns)
