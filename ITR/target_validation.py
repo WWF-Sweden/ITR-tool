@@ -68,13 +68,10 @@ class TargetProtocol:
             .index
         )
         self.target_data = self.target_data.sort_index()
-        self.target_data.to_csv("/home/mountainrambler/ITR/ITR-tool/examples/data/local/DF_check1.csv") 
 
         self.target_data = self.sort_on_vintage(self.target_data)
-        self.target_data.to_csv("/home/mountainrambler/ITR/ITR-tool/examples/data/local/DF_check2.csv") 
 
         self.target_data = self.sort_boundary_coverage(self.target_data)
-        self.target_data.to_csv("/home/mountainrambler/ITR/ITR-tool/examples/data/local/DF_check3.csv") 
 
         #self.company_data = pd.DataFrame.from_records([c.dict() for c in companies])
         self.group_targets()
