@@ -253,8 +253,6 @@ class TemperatureScore(PortfolioAggregation):
                 1 / (target[self.c.COLS.END_YEAR] - target[self.c.COLS.BASE_YEAR])
             ) -1
 
-            # LAR = target[self.c.COLS.REDUCTION_AMBITION] / float(
-            #     target[self.c.COLS.END_YEAR] - target[self.c.COLS.BASE_YEAR])
             return abs(CAR)
 
     def get_regression(
@@ -315,11 +313,7 @@ class TemperatureScore(PortfolioAggregation):
         :param target: The target as a row of a data frame
         :return: The temperature score
         """
-        # if (
-        #     pd.isnull(target[self.c.COLS.REGRESSION_PARAM])
-        #     or pd.isnull(target[self.c.COLS.REGRESSION_INTERCEPT])
-        #     or pd.isnull(target[self.c.COLS.ANNUAL_REDUCTION_RATE])
-        # ):
+   
         if not target.to_calculate:
             return self.default_score, 1.0
         
@@ -581,7 +575,7 @@ class TemperatureScore(PortfolioAggregation):
 
         data = self._calculate_s1s2_score(data)
 
-        data = self._calculate_s3_score(data)
+        data = self._aggregate_s3_score(data)
 
         if EScope.S1S2S3 in self.scopes:
             # self._check_column(data, self.c.COLS.GHG_SCOPE12)
@@ -774,14 +768,67 @@ class TemperatureScore(PortfolioAggregation):
             ] = "Company" + str(index + 1)
         return scores
 
-
-    def _calculate_s3_score(self, data: pd.DataFrame) -> pd.DataFrame:
+    def _calculate_s1s2_score(self, data: pd.DataFrame) -> pd.DataFrame:
         """
-        When there are multiple S3 targets for a company, calculate the combined S3 score for each company_id and time_frame.
-        First aggregate the category 15 scores since there may be multiple targets for this category.
-        Then aggreagate across all S3 categories to get the final S3 score.
-        :param data: The data to calculate the S3 score for.
-        :return: The S3 score.
+        Calculate the combined S1S2 score each combination of company_id, time_frame and scope.
+        If it was possible på calculate individual S1 and S2 scores, then we calculate the 
+        aggregated S1S2 score.
+
+        :param data: The data to calculate the S1S2 score for.
+        :return: The S1S2 score.
+        """
+              
+        s1s2_data_mask = data[self.c.COLS.SCOPE].isin([EScope.S1, EScope.S2, EScope.S1S2])
+        s1s2_data = data[s1s2_data_mask].copy()
+        grouped_data = s1s2_data.groupby(['company_id', 'time_frame'])
+
+        for _, group in grouped_data:
+            s1s2_score = np.nan # Initailize the s1s2_score to NaN
+            s1_s2_results = 1.0 # Initialize the s1_s2_results to 1.0
+            if (group.loc[group['scope'] == EScope.S1,'to_calculate'].item() or
+                group.loc[group['scope'] == EScope.S2, 'to_calculate'].item()
+            ):
+                # S1 and S2 scores are either calulted or default scores from earlier
+                s1_score = float(group.loc[group['scope'] == EScope.S1, 'temperature_score'].item())
+                s2_score = float(group.loc[group['scope'] == EScope.S2, 'temperature_score'].item())
+                s1_results = float(group.loc[group['scope'] == EScope.S1, 'temperature_results'].item())
+                s2_results = float(group.loc[group['scope'] == EScope.S2, 'temperature_results'].item())
+                s1_ghg = float(group.loc[group['scope'] == EScope.S1, 'ghg_s1'].item())
+                s2_ghg = float(group.loc[group['scope'] == EScope.S2, 'ghg_s2'].item())
+                # REQUIREMENT 6.5 Temperature Score Aggregation
+                
+                if not np.isnan(s1_ghg) and not np.isnan(s2_ghg):
+                    s1s2_score = (s1_score * s1_ghg + s2_score * s2_ghg) / (s1_ghg + s2_ghg)
+                    s1_s2_results = (s1_results * s1_ghg + s2_results * s2_ghg) / (s1_ghg + s2_ghg)
+                else:
+                    s1s2_score = max(s1_score, s2_score)
+                    s1_s2_results = 0.5
+                group.loc[group['scope'] == EScope.S1S2, 'temperature_score'] = s1s2_score
+                group.loc[group['scope'] == EScope.S1S2, 'temperature_results'] = round(s1_s2_results, 2)
+                s1_target_ids = group[group['scope'] == EScope.S1]['target_ids'].values 
+                s2_target_ids = group[group['scope'] == EScope.S2]['target_ids'].values
+                combined_target_ids = list(set().union(*s1_target_ids, *s2_target_ids))
+                idx = group.index[group['scope'] == EScope.S1S2][0] 
+                group.at[idx, 'target_ids'] = combined_target_ids
+                        
+                # Explicitly infer object types to avoid future warnings
+                group = group.infer_objects()
+                    # Update the original data DataFrame
+                data.update(group)
+                    
+        return data
+    
+    def _aggregate_s3_score(self, data: pd.DataFrame) -> pd.DataFrame:
+        """
+        1) aggregate scope3 category 15 scores to a single score by calculating the mean score
+        2) check if there is ghg data in all categories 1-15, if there is data create a np.array (set2)
+        of ghg values for categories 1-15
+        3) if we have ghg data calculate the weighted average of the scores 
+        4) if we do not have ghg data, calculate the average of the scores
+        5) create a new row with the aggregated score
+        6) append the new row to the dataframe so that it replaces the original scores
+        :param data: pandas DataFrame with the scores
+        :return: pandas DataFrame with the aggregated scores
         """
         s3_data_columns = data.columns.tolist()
        
@@ -796,7 +843,8 @@ class TemperatureScore(PortfolioAggregation):
             'target_ids': lambda x: list(set().union(*x)),
             'target_type': lambda x: x.iloc[0],  # Retain original target_type value
             's3_category': lambda x: S3Category.N_A if pd.isnull(x.iloc[0]) else x.iloc[0],  # Retain original s3_category value
-            'ghg_s3_15': lambda x: x.iloc[0]      # Retain original ghg_s3_15 value
+            'ghg_s3_15': lambda x: x.iloc[0],      # Retain original ghg_s3_15 value
+            'company_name': lambda x: x.iloc[0]     # Retain original company_name value
         })
 
         # Remove the original CAT_15 rows from s3_data
@@ -807,8 +855,6 @@ class TemperatureScore(PortfolioAggregation):
 
         # Add missing columns to mean_temp_15 with appropriate data types
         for column in missing_columns:
-            # mean_temp_15[column] = np.nan 
-            # mean_temp_15[column] = mean_temp_15[column].astype(s3_data[column].dtype)
  
             # Check if the dtype of the column is integer
             if pd.api.types.is_integer_dtype(s3_data[column].dtype):
@@ -832,160 +878,64 @@ class TemperatureScore(PortfolioAggregation):
         # Reset index to ensure continuous index after concatenation
         s3_data.reset_index(drop=True, inplace=True)
 
-        ghg_columns = self.c.S3_CATEGORY_MAPPINGS
-                 
-        s3_data['weight'] = s3_data.apply(
-            lambda row: row[ghg_columns.get(row['s3_category'])] 
-                if not pd.isna(row['s3_category']) 
-                else np.nan, 
-            axis=1
-        )
-        valid_groups = s3_data.groupby(['company_id', 'time_frame']).filter(lambda x: not x['weight'].isnull().any())
+        ghg_columns = list(self.c.S3_CATEGORY_MAPPINGS.values())
+        ghg_columns.pop()  # Remove the last element from the list (ghg_s3, the headline number)
 
-        # Group by 'company_id' and 'time_frame' and compute the sum of 'weight' for each group
-        sum_weights = valid_groups.groupby(['company_id', 'time_frame'])['weight'].transform('sum')
+        valid_groups = s3_data.groupby(['company_id', 'time_frame'])
+        temperature_scores_df = pd.DataFrame(columns=['temperature_score'], 
+                                            index=pd.MultiIndex(levels=[[], []], 
+                                            codes=[[], []], names=['company_id', 'time_frame']))
 
-        # Divide each 'weight' by the sum of 'weight' for its group
-        valid_groups['sum_weights'] = valid_groups['weight'] / sum_weights
+        for name, group in valid_groups:
+            # Check if all specified columns have values > 0.0 for the current group
+            
+            if group[ghg_columns].iloc[0].gt(0.0).all():
+                # Create a numpy array of scores for categories 1-15
+                set1 = group[ghg_columns].iloc[0].to_numpy().flatten()
+                ghg_data_available = True
 
-        # Fill NaN values with NA
-        valid_groups['sum_weights'] = valid_groups['sum_weights'].fillna(pd.NA)
 
-        # Update 'sum_weights' column in the original DataFrame 's3_data'
-        s3_data['sum_weights'] = valid_groups['sum_weights']
-        
-        # Calculate the weighted sum of 'temperature_score' for each group
-        weighted_sum = s3_data['temperature_score'] * s3_data['sum_weights']
-        s3_data['weighted_sum'] = weighted_sum.fillna(0)  # Fill NaN with 0 to avoid NaN in sum
-
-        # Group by 'company_id' and 'time_frame' and sum the weighted sum for each group
-        s3_data['weighted_sum'] = s3_data.groupby(['company_id', 'time_frame'])['weighted_sum'].transform('sum')
-
-        # Calculate the average of 'temperature_score' for each group
-        average_temperature_score = s3_data.groupby(['company_id', 'time_frame'])['temperature_score'].transform('mean')
-
-        # Update 's3_mean_scores' with the weighted sum if available, otherwise with the average
-        s3_data['s3_mean_scores'] = s3_data['weighted_sum'].where(s3_data['sum_weights']
-                                        .notnull(), average_temperature_score).infer_objects()
-
-        # Drop the 'weighted_sum' column
-        s3_data.drop(columns=['weighted_sum'], inplace=True)
-
-        # Combine target ids for each company_id and time_frame
-        def combine_target_ids(group):
-            non_empty_lists = [x for x in group if x]
-            if non_empty_lists:
-                return list(set(sum(non_empty_lists, [])))
             else:
-                return []
-
-        # Group by 'company_id' and 'time_frame' and aggregate the lists of 'target_ids'
-        combined_target_ids = s3_data.groupby(['company_id', 'time_frame'])['target_ids'].agg(combine_target_ids)
-
-        # Reset index to make 'company_id' and 'time_frame' columns again
-        combined_target_ids = combined_target_ids.reset_index()
-
-        # Merge the combined_target_ids DataFrame with the original s3_data DataFrame
-        s3_data = pd.merge(s3_data, combined_target_ids, on=['company_id', 'time_frame'], how='left')
-
-        # Drop the original 'target_ids' column
-        if 'target_ids_x' in s3_data.columns:
-            s3_data.drop(columns=['target_ids_x'], inplace=True)
-
-        # Rename the combined column to 'target_ids'
-        s3_data.rename(columns={'target_ids_y': 'target_ids'}, inplace=True)
-     
-        # Calculate weighted mean temperature for s3_category not equal to 15 for each time_frame
-        columns_to_exclude = ['company_id', 'time_frame', 'scope']
-        for column in columns_to_exclude:
-            s3_data_columns.remove(column)              
-        s3_data = s3_data.groupby(['company_id', 'time_frame', 'scope']).agg({
-            column: 'first' for column in s3_data_columns
-        }).reset_index()
-        
-        
-        data.drop_duplicates(subset=['company_id', 'time_frame', 'scope'], keep='last', inplace=True)
-        data.set_index(['company_id', 'time_frame', 'scope'], inplace=True)
-        s3_data.set_index(['company_id', 'time_frame', 'scope'], inplace=True)
-        # Make a deep copy of the data
-        temp_data = data.copy(deep=True)
-
-        # Loop over each column
-        for col in temp_data.columns:
-            # Check if the column exists in s3_data
-            if col in s3_data.columns:
-                # Make a copy of the column in s3_data
-                temp_s3_data = s3_data[col].copy()
-                
-                # Cast the values in temp_s3_data to the data type of the column in temp_data
-                # Check if the dtype of the column is integer
-                if pd.api.types.is_integer_dtype(temp_data[col].dtype):
-                    # Cast the column to float64 to support NaN values
-                    # temp_s3_data[col] = np.nan
-                    # temp_s3_data[col] = temp_s3_data[col].astype('float64')
-                    temp_s3_data = temp_s3_data.astype('float64')
-                elif pd.api.types.is_bool_dtype(temp_data[col].dtype):
-                    # Cast the column to bool
-                    temp_s3_data = temp_s3_data.astype('bool')
-                else:
-                    # For other types (e.g., strings, floats, etc.), keep the original dtype
-                    # temp_s3_data[col] = np.nan
-                    # temp_s3_data[col] = temp_s3_data[col].astype(temp_data[col].dtype)
-                    temp_s3_data = temp_s3_data.astype(temp_data[col].dtype)
-                #temp_s3_data = temp_s3_data.astype(temp_data[col].dtype)
-                
-                # Update the column in temp_data
-                temp_data.loc[:, col] = temp_data.loc[:, col].combine_first(temp_s3_data)
-
-        # Update the original data DataFrame
-        data = data.combine_first(temp_data)
-
-        #data.update(s3_data)
-        data.reset_index(inplace=True)
+                ghg_data_available = False
+            
+            temperature_scores = np.full(15, 3.4)
+            for index, row in group.iterrows():
+                s3_category = row['s3_category']
+                if pd.notna(s3_category) and isinstance(s3_category, S3Category):
+                    cat_index = s3_category.value - 1  # Convert CAT_1 to index 0, CAT_2 to index 1, etc.
+                    temperature_scores[cat_index] = row['temperature_score']
+            if ghg_data_available:
+                # Calculate the weighted average of the scores
+                mean_temperature_score = float(np.sum(set1 * temperature_scores) / np.sum(set1)) # type: ignore
+            else:
+                # Calculate the average of the scores
+                mean_temperature_score = float(np.mean(temperature_scores))
     
-        return data
+            temperature_scores_df.loc[(name[0], name[1]), 'temperature_score'] = mean_temperature_score
 
-    def _calculate_s1s2_score(self, data: pd.DataFrame) -> pd.DataFrame:
-        """
-        Calculate the combined S1S2 score each combination of company_id, time_frame and scope.
-        If it was possible på calculate individual S1 and S2 scores, then we calculate the 
-        aggregated S1S2 score.
 
-        :param data: The data to calculate the S1S2 score for.
-        :return: The S1S2 score.
-        """
-              
-        s1s2_data_mask = data[self.c.COLS.SCOPE].isin([EScope.S1, EScope.S2, EScope.S1S2])
-        s1s2_data = data[s1s2_data_mask].copy()
-        grouped_data = s1s2_data.groupby(['company_id', 'time_frame'])
+        temperature_scores_df.reset_index(inplace=True)
+        for col in s3_data.columns:
+            if col not in temperature_scores_df.columns:
+                temperature_scores_df[col] = np.nan
 
-        for _, group in grouped_data:
-            s1s2_score = np.nan # Initailize the s1s2_score to NaN
-            if (group.loc[group['scope'] == EScope.S1,'to_calculate'].item() and
-                group.loc[group['scope'] == EScope.S2, 'to_calculate'].item()
-            ):
-                s1_score = float(group.loc[group['scope'] == EScope.S1, 'temperature_score'].item())
-                s2_score = float(group.loc[group['scope'] == EScope.S2, 'temperature_score'].item())
-                s1_ghg = float(group.loc[group['scope'] == EScope.S1, 'ghg_s1'].item())
-                s2_ghg = float(group.loc[group['scope'] == EScope.S2, 'ghg_s2'].item())
-                # REQUIREMENT 6.5 Temperature Score Aggregation
-                if s1_score and s2_score:
-                    if not np.isnan(s1_ghg) and not np.isnan(s2_ghg):
-                        s1s2_score = (s1_score * s1_ghg + s2_score * s2_ghg) / (s1_ghg + s2_ghg)
-                    else:
-                        s1s2_score = max(s1_score, s2_score)
+        # Now loop through s3_data and copy values from temperature_scores_df
+        for index, row in s3_data.iterrows():
+            company_id = row['company_id']
+            time_frame = row['time_frame']
+            if (company_id, time_frame) in temperature_scores_df.set_index(
+                ['company_id', 'time_frame']).index:
+                s3_data.at[index, 'temperature_score'] = temperature_scores_df.set_index(
+                    ['company_id', 'time_frame']).at[(company_id, time_frame), 'temperature_score']
                 
-                group.loc[group['scope'] == EScope.S1S2, 'temperature_score'] = s1s2_score
-                group.loc[group['scope'] == EScope.S1S2, 'temperature_results'] = 0.0
-                s1_target_ids = group[group['scope'] == EScope.S1]['target_ids'].values 
-                s2_target_ids = group[group['scope'] == EScope.S2]['target_ids'].values
-                combined_target_ids = list(set().union(*s1_target_ids, *s2_target_ids))
-                idx = group.index[group['scope'] == EScope.S1S2][0] 
-                group.at[idx, 'target_ids'] = combined_target_ids
-                      
-                # Explicitly infer object types to avoid future warnings
-                group = group.infer_objects()
-                    # Update the original data DataFrame
-                data.update(group)
-                    
+        for name, group in valid_groups:
+            concatenated_list = sum(group['target_ids'], [])
+            s3_data.at[group.index[0], 'target_ids'] = concatenated_list
+            s3_data.drop(group.index[1:], inplace=True)
+                        
+        s3_data['s3_category'] = s3_data['s3_category'].apply(lambda x: x.value if isinstance(x, S3Category) else x)
+        data = data[data['scope'] != EScope.S3]
+        data = pd.concat([data, s3_data])
+        data.sort_values(by=['company_id', 'time_frame', 'scope'], inplace=True)
         return data
+       

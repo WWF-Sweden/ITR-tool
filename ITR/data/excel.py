@@ -36,7 +36,6 @@ class ExcelProvider(DataProvider):
                 self.data['fundamental_data'][col] = self.data['fundamental_data'][col].fillna(0.0)
        
         try:
-           # self.data['target_data']['s3_category'] = self.data['target_data']['s3_category'].apply(lambda x: int(x) if str(x).isdigit() and 1 <= int(x) <= 15 else 0)
            self.data['target_data']['s3_category'] = self.data['target_data'].apply(self._process_row, axis=1)
         except Exception as e:
             print(f"An error occurred: {e}")

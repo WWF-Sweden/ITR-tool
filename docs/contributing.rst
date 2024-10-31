@@ -44,7 +44,7 @@ To release a new version of the module you need to take two steps, create a new 
 
 Generate documentation
 ------------------------
-To generate the documentation, you should follow these steps in the "SBTi" repository (the one containing the Python module).
+To generate the documentation, you should follow these steps in the "WWF-Sweden" repository (the one containing the Python module).
 
 1. `cd docs`
 

@@ -38,6 +38,9 @@ def get_data_providers(
     :param data_providers_input: A list of data provider names
     :return: a list of data providers in order.
     """
+    #we need to see if we can remove this method so we first throw an error if the method is called
+    raise NotImplementedError("This method is not implemented yet")
+
     logger = logging.getLogger(__name__)
     data_providers = []
     for data_provider_config in data_providers_configs:
@@ -163,24 +166,6 @@ def _make_id_map(df_portfolio: pd.DataFrame) -> dict:
         .to_dict(orient="index")
         .items()
     }
-
-
-# def _make_isin_map(df_portfolio: pd.DataFrame) -> dict:
-#     """
-#     Create a mapping from company_id to ISIN (required for the SBTi matching).
-
-#     :param df_portfolio: The complete portfolio
-#     :return: A mapping from company_id to ISIN
-#     """
-#     return {
-#         company_id: company[ColumnsConfig.COMPANY_ISIN]
-#         for company_id, company in df_portfolio[
-#             [ColumnsConfig.COMPANY_ID, ColumnsConfig.COMPANY_ISIN]
-#         ]
-#         .set_index(ColumnsConfig.COMPANY_ID)
-#         .to_dict(orient="index")
-#         .items()
-#     }
 
 
 def dataframe_to_portfolio(df_portfolio: pd.DataFrame) -> List[PortfolioCompany]:

@@ -158,8 +158,8 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
         ("Aluminum", EScope.S1): "INT.emKyoto_gdp",
         ("Aluminum", EScope.S2): "INT.emCO2energysupply_SE",
         ("Aluminum", EScope.S3): "INT.emKyoto_gdp",
-        ("Power", EScope.S2): "INT.emCO2energysupply_SE",
         ("Power", EScope.S1): "INT.emCO2energysupply_SE",
+        ("Power", EScope.S2): "INT.emCO2energysupply_SE",
         ("Power", EScope.S3): "INT.emKyoto_gdp",
     }
     ABSOLUTE_MAPPINGS = {

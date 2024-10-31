@@ -2,7 +2,9 @@ import copy
 import datetime
 import unittest
 from typing import List
-
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import ITR
 from ITR.interfaces import (
     EScope,
@@ -63,7 +65,8 @@ class EndToEndTest(unittest.TestCase):
         self.company_base = IDataProviderCompany(
             company_name=company_id,
             company_id=company_id,
-            ghg_s1s2=100,
+            ghg_s1=100,
+            ghg_s2=100,
             ghg_s3=0,
             company_revenue=100,
             company_market_cap=100,
@@ -81,6 +84,7 @@ class EndToEndTest(unittest.TestCase):
             company_id=company_id,
             investment_value=100,
             company_isin=company_id,
+            company_lei=company_id,
         )
 
     def _create_target_with_defaults(self, company_id: str, **kwargs) -> IDataProviderTarget:
@@ -105,7 +109,7 @@ class EndToEndTest(unittest.TestCase):
             target_ids="target_base"
         )
         defaults.update(kwargs)
-        return IDataProviderTarget(**defaults)
+        return IDataProviderTarget(**defaults) # type: ignore
 
     def test_basic(self):
         """
@@ -493,6 +497,7 @@ class EndToEndTest(unittest.TestCase):
                 company_id=company_id,
                 investment_value=100,
                 company_isin=company_id,
+                company_lei=company_id
             )
 
             target = self._create_target_with_defaults(company_id=company_id)
