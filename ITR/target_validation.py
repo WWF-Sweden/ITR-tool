@@ -130,18 +130,47 @@ class TargetProtocol:
         # Note that all S1S2S3 pass these tests
         s1 = target.scope != EScope.S1 or (
             not pd.isnull(target.coverage_s1)
-            and not pd.isnull(target.base_year_ghg_s1)
+            and target.base_year_ghg_s1 is not None
+            and target.base_year_ghg_s1 > 0.0
         )
         s2 = target.scope != EScope.S2 or (
             not pd.isnull(target.coverage_s2)
-            and not pd.isnull(target.base_year_ghg_s2)
+            and target.base_year_ghg_s2 is not None 
+            and target.base_year_ghg_s2 > 0.0
         )
         s1s2 = target.scope != EScope.S1S2 or (
-            target.coverage_s1 == target.coverage_s2 or (
-            not pd.isnull(target.base_year_ghg_s1)
-            and not pd.isnull(target.base_year_ghg_s2)
-            )
+            target.base_year_ghg_s1 is not None
+            and target.base_year_ghg_s1 > 0.0
+            and target.base_year_ghg_s2 is not None 
+            and target.base_year_ghg_s2 > 0.0
         )
+        s1s2s3 = target.scope != EScope.S1S2S3 or (
+            target.base_year_ghg_s1 is not None
+            and target.base_year_ghg_s1 > 0.0
+            and target.base_year_ghg_s2 is not None
+            and target.base_year_ghg_s2 > 0.0
+            and target.base_year_ghg_s3 is not None
+            and target.base_year_ghg_s3 > 0.0
+        )
+        # s1 = target.scope != EScope.S1 or (
+        #     not pd.isnull(target.coverage_s1)
+        #     and not pd.isnull(target.base_year_ghg_s1)
+        # )
+        # s2 = target.scope != EScope.S2 or (
+        #     not pd.isnull(target.coverage_s2)
+        #     and not pd.isnull(target.base_year_ghg_s2)
+        # )
+        # s1s2 = target.scope != EScope.S1S2 or (
+        #     target.coverage_s1 == target.coverage_s2 or (
+        #     not pd.isnull(target.base_year_ghg_s1)
+        #     and not pd.isnull(target.base_year_ghg_s2)
+        #     )
+        # )
+        # s1s2s3 = target.scope != EScope.S1S2S3 or (
+        #    not pd.isnull(target.base_year_ghg_s1)
+        #     and not pd.isnull(target.base_year_ghg_s2)
+        #     and not pd.isnull(target.base_year_ghg_s3)
+        # )
         return (
             target_type 
             and target_progress 
@@ -150,6 +179,7 @@ class TargetProtocol:
             and s1 
             and s2
             and s1s2
+            and s1s2s3
         )
     
     def _validate_t_score(self, target: IDataProviderTarget) -> bool:
@@ -285,8 +315,8 @@ class TargetProtocol:
             # Append '_1' and '_2' to the target_ids of s1 and s2, respectively
             s1['target_ids'] = [id_ + '_1' for id_ in s1['target_ids']]
             s2['target_ids'] = [id_ + '_2' for id_ in s2['target_ids']]
-            target = pd.concat([pd.DataFrame([s1]), pd.DataFrame([s2])], axis=0).reset_index(drop=True)
-           
+      
+            return pd.DataFrame([s1, s2])
         return target
     
     def _cover_s1_s2(self, target: IDataProviderTarget)-> IDataProviderTarget:
@@ -684,9 +714,8 @@ class TargetProtocol:
             ) 
             # Find the maximum weighted coverage
             sorted_group = group.sort_values(by='weighted_coverage', ascending=False)
-            result = sorted_group.iloc[0].to_frame().T
-            max_coverage = result['weighted_coverage'].iloc[0]
-            result = result.drop('weighted_coverage', axis=1)
+            max_coverage = sorted_group['weighted_coverage'].max()
+            result = sorted_group[sorted_group['weighted_coverage'] == max_coverage].drop('weighted_coverage', axis=1)
 
             return max_coverage, result
         
@@ -763,7 +792,13 @@ class TargetProtocol:
                 # Note that there may be more than one S1+S2 target
                 _, best_s1_s2_target = get_best_combined_s1_s2_coverage(combined_s1_s2)
                 #This must be the best combination, so we append it to the best entries after splitting
-                best_s1_s2_target = self._split_s1s2_new(best_s1_s2_target)
+                # Process each row in best_s1_s2_target and apply _split_s1s2_new
+                split_rows = []
+                for _, row in best_s1_s2_target.iterrows():
+                    split_rows.append(self._split_s1s2_new(pd.DataFrame([row])))
+
+                # Concatenate the results
+                best_s1_s2_target = pd.concat(split_rows, ignore_index=True)
                 best_s1_s2_target['to_calculate'] = True
                 best_entries.append(best_s1_s2_target)
 

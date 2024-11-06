@@ -116,7 +116,7 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
 
     SBTI_FACTOR = 1
     DEFAULT_SCORE: float = 3.4
-    TEMPERATURE_FLOOR: float = 1.5  
+    TEMPERATURE_FLOOR: float = -30.0 # 1.5  
   
     JSON_REGRESSION_MODEL = os.path.join(
         os.path.dirname(os.path.realpath(__file__)),

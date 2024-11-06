@@ -112,7 +112,9 @@ class ExcelProvider(DataProvider):
         # so we need to convert them to empty strings
         fields_to_convert = ['isic','country', 'sector', 'industry_level_1', 'industry_level_2', 
                              'industry_level_3', 'industry_level_4']
-        data_company[fields_to_convert] = data_company[fields_to_convert].fillna('')
+        for field in fields_to_convert:
+          if field in data_company.columns:
+            data_company[field] = data_company[field].fillna('')
 
         companies = data_company.to_dict(orient="records")
         model_companies: List[IDataProviderCompany] = [
