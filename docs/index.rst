@@ -111,7 +111,6 @@ enhancing the tool’s functionalities by contributing code.
 
    intro
    getting_started
-   rest_api
    FunctionalOverview
    DataRequirements
    Legends

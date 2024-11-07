@@ -22,7 +22,6 @@ The folder structure for this project is as follows:
 
     .
     ├── .github                 # Github specific files (Github Actions workflows)
-    ├── app                     # FastAPI app files for the API endpoints
     ├── docs                    # Documentation files (Sphinx)
     ├── config                  # Config files for the Docker container
     ├── ITR                     # The main Python package for the temperature alignment tool
@@ -30,7 +29,7 @@ The folder structure for this project is as follows:
 
 ## Installation
 
-The SBTi package may be installed using PIP. If you'd like to install it locally use the following command. For testing or production please see the deployment section for further instructions
+The ITR package may be installed using PIP. If you'd like to install it locally use the following command. For testing or production please see the deployment section for further instructions
 
 ```bash
 pip install -e .

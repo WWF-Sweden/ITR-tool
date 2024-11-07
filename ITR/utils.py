@@ -181,8 +181,18 @@ def dataframe_to_portfolio(df_portfolio: pd.DataFrame) -> List[PortfolioCompany]
     )
 
     if 'user_fields' in df_portfolio:
-        df_portfolio['user_fields'] = df_portfolio['user_fields'].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else None)
- 
+        def process_user_fields(x):
+            if isinstance(x, str):
+                x = x.strip()
+                if x.startswith('{') or x.startswith('['):
+                    try:
+                        return ast.literal_eval(x)
+                    except (ValueError, SyntaxError):
+                        pass
+                return {'category': x}
+            return None
+
+        df_portfolio['user_fields'] = df_portfolio['user_fields'].apply(process_user_fields)
     return [
         PortfolioCompany.parse_obj(company)
         for company in df_portfolio.to_dict(orient="records")
