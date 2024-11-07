@@ -245,43 +245,7 @@ class TargetProtocol:
                 
         else:
             return target, None
-        
-    #@staticmethod
-    def _split_s1s2(self,
-        target: IDataProviderTarget,
-    ) -> List[IDataProviderTarget]:
-        """
-        Split the target into two targets, one for the S1 data and one for the S2 data.
-
-        :param target: The target to potentially split.
-        :return: A list containing (the original S1S2 target and) 
-         the S1 target and the S2 target from the split.
-        """
-        targets = [target]
-        if target.target_type.lower() == "t_score":
-            return targets
-        # before splitting S1S2 targets we need to verify that there is GHG data to aggregate the scores later
-        # TODO - verify that company is one unique row
-        company = self.company_data[self.company_data[self.c.COLS.COMPANY_ID] == target.company_id]
-        if (not (pd.isnull(company[self.c.COLS.GHG_SCOPE1].item())
-            or pd.isnull(company[self.c.COLS.GHG_SCOPE2].item()))
-            and target.scope == EScope.S1S2
-        ):
-            s1 = target.copy()
-            s2 = target.copy()
-            s1.coverage_s1 = target.coverage_s1
-            s2.coverage_s2 = target.coverage_s2
-            s1.reduction_ambition = target.reduction_ambition
-            s2.reduction_ambition = target.reduction_ambition
-            s1.scope = EScope.S1
-            s2.scope = EScope.S2
-            # Append '_1' and '_2' to the target_ids of s1 and s2, respectively
-            s1.target_ids = [id_ + '_1' for id_ in s1.target_ids]
-            s2.target_ids = [id_ + '_2' for id_ in s2.target_ids]
-            targets = [s1, s2]
            
-        return targets
-    
     def _split_s1s2_new(self,
         target: pd.DataFrame,
     ) -> pd.DataFrame:
