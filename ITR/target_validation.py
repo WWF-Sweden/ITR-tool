@@ -105,7 +105,6 @@ class TargetProtocol:
             or (
                 "intensity" in target.target_type.lower()
                 and target.intensity_metric is not None
-                and target.intensity_metric.lower() != "other"
             )
         )
         # The target should not have achieved its reduction yet.

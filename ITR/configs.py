@@ -161,6 +161,9 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
         ("Power", EScope.S1): "INT.emCO2energysupply_SE",
         ("Power", EScope.S2): "INT.emCO2energysupply_SE",
         ("Power", EScope.S3): "INT.emKyoto_gdp",
+        ("Other", EScope.S1): "INT.emKyoto_gdp",
+        ("Other", EScope.S2): "INT.emCO2energysupply_SE",
+        ("Other", EScope.S3): "INT.emKyoto_gdp",
     }
     ABSOLUTE_MAPPINGS = {
         # B06: Extraction Of Crude Petroleum And Natural Gas

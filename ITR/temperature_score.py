@@ -586,6 +586,7 @@ class TemperatureScore(PortfolioAggregation):
         # We need to filter the scopes again, because we might have had to add a scope in the preparation step
         data = data[data[self.c.COLS.SCOPE].isin(self.scopes)]
         data[self.c.COLS.TEMPERATURE_SCORE] = data[self.c.COLS.TEMPERATURE_SCORE].round(2)
+        data.drop(columns=['to_calculate'], inplace=True)
         
         return data
 
