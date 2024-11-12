@@ -5,9 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ITR.configs &mdash; WWF Finance Tool  documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -41,7 +39,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Introduction to temperature scoring and portfolio coverage methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started Using Python</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../rest_api.html">Getting Started Using REST API &amp; UI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../FunctionalOverview.html">Functional Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../DataRequirements.html">Data Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Legends.html">Data Legends</a></li>
@@ -392,6 +389,11 @@ the module, extend the respective config class and pass it to the class as the �
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="ITR.configs.ColumnsConfig.BASEYEAR_GHG_S1S2">
+<span class="sig-name descname"><span class="pre">BASEYEAR_GHG_S1S2</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">base_year_ghg_s1s2</span></em><a class="headerlink" href="#ITR.configs.ColumnsConfig.BASEYEAR_GHG_S1S2" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="ITR.configs.ColumnsConfig.BASEYEAR_GHG_S3">
 <span class="sig-name descname"><span class="pre">BASEYEAR_GHG_S3</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">base_year_ghg_s3</span></em><a class="headerlink" href="#ITR.configs.ColumnsConfig.BASEYEAR_GHG_S3" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
@@ -414,6 +416,11 @@ the module, extend the respective config class and pass it to the class as the �
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ITR.configs.ColumnsConfig.END_YEAR_TS">
 <span class="sig-name descname"><span class="pre">END_YEAR_TS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">end_year_ts</span></em><a class="headerlink" href="#ITR.configs.ColumnsConfig.END_YEAR_TS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ITR.configs.ColumnsConfig.TO_CALCULATE">
+<span class="sig-name descname"><span class="pre">TO_CALCULATE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">to_calculate</span></em><a class="headerlink" href="#ITR.configs.ColumnsConfig.TO_CALCULATE" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -542,8 +549,8 @@ global warning which is expressed through the temperature floor constant.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="ITR.configs.TemperatureScoreConfig.FALLBACK_SCORE">
-<span class="sig-name descname"><span class="pre">FALLBACK_SCORE</span></span><em class="property"><span class="w"> </span><span class="pre">:float</span> <span class="pre">=</span> <span class="pre">3.4</span></em><a class="headerlink" href="#ITR.configs.TemperatureScoreConfig.FALLBACK_SCORE" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ITR.configs.TemperatureScoreConfig.DEFAULT_SCORE">
+<span class="sig-name descname"><span class="pre">DEFAULT_SCORE</span></span><em class="property"><span class="w"> </span><span class="pre">:float</span> <span class="pre">=</span> <span class="pre">3.4</span></em><a class="headerlink" href="#ITR.configs.TemperatureScoreConfig.DEFAULT_SCORE" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -567,28 +574,18 @@ global warning which is expressed through the temperature floor constant.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="ITR.configs.TemperatureScoreConfig.VALUE_TARGET_REFERENCE_ABSOLUTE">
-<span class="sig-name descname"><span class="pre">VALUE_TARGET_REFERENCE_ABSOLUTE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">absolute</span></em><a class="headerlink" href="#ITR.configs.TemperatureScoreConfig.VALUE_TARGET_REFERENCE_ABSOLUTE" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="ITR.configs.TemperatureScoreConfig.VALUE_TARGET_REFERENCE_T_SCORE">
-<span class="sig-name descname"><span class="pre">VALUE_TARGET_REFERENCE_T_SCORE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">t_score</span></em><a class="headerlink" href="#ITR.configs.TemperatureScoreConfig.VALUE_TARGET_REFERENCE_T_SCORE" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="ITR.configs.TemperatureScoreConfig.VALUE_TARGET_REFERENCE_INTENSITY">
-<span class="sig-name descname"><span class="pre">VALUE_TARGET_REFERENCE_INTENSITY</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">intensity</span></em><a class="headerlink" href="#ITR.configs.TemperatureScoreConfig.VALUE_TARGET_REFERENCE_INTENSITY" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="ITR.configs.TemperatureScoreConfig.VALUE_TARGET_REFERENCE_INTENSITY_BASE">
-<span class="sig-name descname"><span class="pre">VALUE_TARGET_REFERENCE_INTENSITY_BASE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">int</span></em><a class="headerlink" href="#ITR.configs.TemperatureScoreConfig.VALUE_TARGET_REFERENCE_INTENSITY_BASE" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">VALUE_TARGET_REFERENCE_INTENSITY_BASE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">inte</span></em><a class="headerlink" href="#ITR.configs.TemperatureScoreConfig.VALUE_TARGET_REFERENCE_INTENSITY_BASE" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ITR.configs.TemperatureScoreConfig.SLOPE_MAP">
 <span class="sig-name descname"><span class="pre">SLOPE_MAP</span></span><a class="headerlink" href="#ITR.configs.TemperatureScoreConfig.SLOPE_MAP" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ITR.configs.TemperatureScoreConfig.VALUE_TARGET_REFERENCE">
+<span class="sig-name descname"><span class="pre">VALUE_TARGET_REFERENCE</span></span><a class="headerlink" href="#ITR.configs.TemperatureScoreConfig.VALUE_TARGET_REFERENCE" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

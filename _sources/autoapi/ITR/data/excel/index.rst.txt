@@ -25,6 +25,9 @@ Classes
 
    :param config: A dictionary containing a "path" field that leads to the path of the CSV file
 
+   .. py:method:: _process_row(self, row)
+
+
    .. py:method:: get_targets(self, company_ids: List[str]) -> List[ITR.interfaces.IDataProviderTarget]
 
       Get all relevant targets for a list of company ids (ISIN). This method should return a list of

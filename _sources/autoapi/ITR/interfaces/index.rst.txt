@@ -23,6 +23,7 @@ Classes
    ITR.interfaces.SortableEnum
    ITR.interfaces.EScope
    ITR.interfaces.ETimeFrames
+   ITR.interfaces.ETargetReference
    ITR.interfaces.S3Category
    ITR.interfaces.IDataProviderTarget
 
@@ -499,6 +500,35 @@ Classes
       
 
 
+.. py:class:: ETargetReference
+
+   Bases: :py:obj:`SortableEnum`
+
+   Generic enumeration.
+
+   Derive from this class to define new enumerations.
+
+   .. py:attribute:: ABSOLUTE
+      :annotation: = absolute
+
+      
+
+   .. py:attribute:: INT_TO_ABS
+      :annotation: = int_to_abs
+
+      
+
+   .. py:attribute:: INTENSITY
+      :annotation: = intensity
+
+      
+
+   .. py:attribute:: T_SCORE
+      :annotation: = t_score
+
+      
+
+
 .. py:class:: S3Category
 
    Bases: :py:obj:`SortableEnum`
@@ -582,8 +612,13 @@ Classes
 
       
 
-   .. py:attribute:: CAT_NAN
+   .. py:attribute:: CAT_H_LINE
       :annotation: = 0
+
+      
+
+   .. py:attribute:: N_A
+      
 
       
 
@@ -653,17 +688,22 @@ Classes
       
 
    .. py:attribute:: base_year_ghg_s1
-      :annotation: :Optional[float]
+      :annotation: :Optional[float] = 0.0
 
       
 
    .. py:attribute:: base_year_ghg_s2
-      :annotation: :Optional[float]
+      :annotation: :Optional[float] = 0.0
+
+      
+
+   .. py:attribute:: base_year_ghg_s1s2
+      :annotation: :Optional[float] = 0.0
 
       
 
    .. py:attribute:: base_year_ghg_s3
-      :annotation: :Optional[float]
+      :annotation: :Optional[float] = 0.0
 
       
 
@@ -688,7 +728,12 @@ Classes
       
 
    .. py:attribute:: achieved_reduction
-      :annotation: :Optional[float] = 0
+      :annotation: :Optional[float] = 0.0
+
+      
+
+   .. py:attribute:: to_calculate
+      :annotation: :Optional[bool] = False
 
       
 

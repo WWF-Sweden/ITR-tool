@@ -313,6 +313,11 @@ Classes
 
       
 
+   .. py:attribute:: BASEYEAR_GHG_S1S2
+      :annotation: = base_year_ghg_s1s2
+
+      
+
    .. py:attribute:: BASEYEAR_GHG_S3
       :annotation: = base_year_ghg_s3
 
@@ -335,6 +340,11 @@ Classes
 
    .. py:attribute:: END_YEAR_TS
       :annotation: = end_year_ts
+
+      
+
+   .. py:attribute:: TO_CALCULATE
+      :annotation: = to_calculate
 
       
 
@@ -461,7 +471,7 @@ Classes
 
       
 
-   .. py:attribute:: FALLBACK_SCORE
+   .. py:attribute:: DEFAULT_SCORE
       :annotation: :float = 3.4
 
       
@@ -486,27 +496,17 @@ Classes
 
       
 
-   .. py:attribute:: VALUE_TARGET_REFERENCE_ABSOLUTE
-      :annotation: = absolute
-
-      
-
-   .. py:attribute:: VALUE_TARGET_REFERENCE_T_SCORE
-      :annotation: = t_score
-
-      
-
-   .. py:attribute:: VALUE_TARGET_REFERENCE_INTENSITY
-      :annotation: = intensity
-
-      
-
    .. py:attribute:: VALUE_TARGET_REFERENCE_INTENSITY_BASE
-      :annotation: = int
+      :annotation: = inte
 
       
 
    .. py:attribute:: SLOPE_MAP
+      
+
+      
+
+   .. py:attribute:: VALUE_TARGET_REFERENCE
       
 
       

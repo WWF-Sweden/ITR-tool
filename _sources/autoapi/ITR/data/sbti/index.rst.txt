@@ -26,9 +26,6 @@ Classes
       Check if the CTA file exists in the local file system
 
 
-   .. py:method:: handle_cta_file(self)
-
-
    .. py:method:: _check_CTA_less_than_one_week_old(self)
 
       Check if the CTA file is older than a week
@@ -41,6 +38,9 @@ Classes
 
 
    .. py:method:: _fetch_and_save_cta_file(self)
+
+
+   .. py:method:: handle_cta_file(self)
 
 
    .. py:method:: filter_cta_file(self, targets)

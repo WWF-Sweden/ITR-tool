@@ -5,9 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Functional Overview &mdash; WWF Finance Tool  documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -21,7 +19,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Data Requirements" href="DataRequirements.html" />
-    <link rel="prev" title="Getting Started Using REST API &amp; UI" href="rest_api.html" /> 
+    <link rel="prev" title="Getting Started Using Python" href="getting_started.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,7 +41,6 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction to temperature scoring and portfolio coverage methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started Using Python</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rest_api.html">Getting Started Using REST API &amp; UI</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Functional Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#temperature-score">Temperature Score</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#time-frames">Time Frames</a></li>
@@ -100,19 +97,16 @@ company, the score is calculated based on the publicly announced
 targets, which are mapped to regression models based on IPCC climate
 scenarios. The company is then awarded a score for each period and scope
 based on the ambition and coverage of the relevant targets. For more
-information, refer to the methodology <a class="reference external" href="https://sciencebasedtargets.org/resources/files/Financial-Sector-Science-Based-Targets-Guidance-Pilot-Version.pdf">here</a>.
-If you are interested in knowing more about which scenarios are used
-in a specific model scenario data set, please see this file
-<a class="reference download internal" download="" href="_downloads/b590c4ed86771429f889e29ce23cac78/Model-scenarios%20data%20set%204%20and%20104.xlsx"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a> , which contains details
-on the scenarios used in models 4 (the standard regression model set)
-and 104.</p>
+information, refer to the methodology <a class="reference external" href="https://wwfint.awsassets.panda.org/downloads/cdp-wwf-temperature-scoring-methodology---september-2024.pdf">here</a>.
+If you are interested in knowing more about how scenarios are used to
+create regression parameters, please see this <a class="reference external" href="https://github.com/WWF-Sweden/ITR-regression">github repo</a>.</p>
 <section id="time-frames">
 <h3>Time Frames<a class="headerlink" href="#time-frames" title="Permalink to this heading"></a></h3>
 <p>By default, the WWF ITR-tool reports temperature scores
 on the mid-term time frames (i.e. based on emissions reduction targets
 aimed at 5-10 years into the future). However, it is also possible to
 inspect short (less than 5 years) and long-term time frames (10 to 30
-years).</p>
+years). The time frames are set when running the tool.</p>
 </section>
 <section id="scopes">
 <h3>Scopes<a class="headerlink" href="#scopes" title="Permalink to this heading"></a></h3>
@@ -177,23 +171,23 @@ are persuaded to set 1.5<sup>o</sup> C targets. This
 is simulated by setting all scores of the companies that have valid
 targets to at most 1.5<sup>o</sup> C.</p></li>
 <li><p>Scenario 3: In these scenarios, the top 10 contributors to the
-portfolio temperature score are persuaded to set 2.0<sup>o</sup> C
+portfolio temperature score are persuaded to set 1.75<sup>o</sup> C
 targets.</p>
 <ul>
-<li><p>Scenario 3a: All top 10 contributors set 2.0<sup>o</sup> C targets.</p></li>
-<li><p>Scenario 3b: All top 10 contributors set WB2C, i.e. 1.75<sup>o</sup> C targets.</p></li>
+<li><p>Scenario 3a: All top 10 contributors set WB2C, i.e. 1.75<sup>o</sup> C targets.</p></li>
+<li><p>Scenario 3b: All top 10 contributors set 1.5<sup>o</sup> C targets.</p></li>
 </ul>
 </li>
 <li><p>Scenario 4: In this scenario, the user can specify which companies it
-wants to engage with to influence to set 2.0<sup>o</sup> C or WB2C
+wants to engage with to influence to set WB2C<sup>o</sup> C or 1.5C
 targets. The user selects companies to engage with in the portfolio
 input file by settings the <em>engagement_target</em> field to TRUE for
 these companies.</p>
 <ul>
 <li><p>Scenario 4a: All companies that are marked as engagement targets
-set 2.0<sup>o</sup> C targets</p></li>
+set WB2C<sup>o</sup> C targets</p></li>
 <li><p>Scenario 4b: All companies that are marked as engagement targets
-set WB2C targets.</p></li>
+set 1.5C targets.</p></li>
 </ul>
 </li>
 </ul>
@@ -237,13 +231,13 @@ underlying data.</p>
 <li><p>Portfolio data</p></li>
 <li><p>Financial data</p></li>
 <li><p>GHG emissions</p></li>
-<li><p>Used target and all its parameters</p></li>
-<li><p>Values used during calculation such as the Linear annual reduction
-(LAR), mapped regression scenario, and parameters for the formula to
+<li><p>Used target and all its parameters and the target id</p></li>
+<li><p>Values used during calculation such as the Compound annual reduction
+(CAR), mapped regression scenario, and parameters for the formula to
 calculate the temperature score.</p></li>
 </ul>
 <p>Finally, it is possible to anonymize all names and identifiers, e.g. for
-submission to the SBTi Target Validation Team for approval.</p>
+submission to the SBTi or other organization for approval.</p>
 </section>
 </section>
 
@@ -251,7 +245,7 @@ submission to the SBTi Target Validation Team for approval.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="rest_api.html" class="btn btn-neutral float-left" title="Getting Started Using REST API &amp; UI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="getting_started.html" class="btn btn-neutral float-left" title="Getting Started Using Python" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="DataRequirements.html" class="btn btn-neutral float-right" title="Data Requirements" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

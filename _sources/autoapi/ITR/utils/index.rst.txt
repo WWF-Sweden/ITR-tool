@@ -102,12 +102,12 @@ Attributes
    :return: A data frame containing the relevant company-target data
 
 
-.. py:function:: calculate(portfolio_data: pandas.DataFrame, fallback_score: float, aggregation_method: ITR.portfolio_aggregation.PortfolioAggregationMethod, grouping: Optional[List[str]], scenario: Optional[ITR.temperature_score.Scenario], time_frames: List[ITR.interfaces.ETimeFrames], scopes: List[ITR.interfaces.EScope], anonymize: bool, aggregate: bool = True) -> Tuple[pandas.DataFrame, Optional[ITR.interfaces.ScoreAggregations]]
+.. py:function:: calculate(portfolio_data: pandas.DataFrame, default_score: float, aggregation_method: ITR.portfolio_aggregation.PortfolioAggregationMethod, grouping: Optional[List[str]], scenario: Optional[ITR.temperature_score.Scenario], time_frames: List[ITR.interfaces.ETimeFrames], scopes: List[ITR.interfaces.EScope], anonymize: bool, aggregate: bool = True) -> Tuple[pandas.DataFrame, Optional[ITR.interfaces.ScoreAggregations]]
 
    Calculate the different parts of the temperature score (actual scores, aggregations, column distribution).
 
    :param portfolio_data: The portfolio data, already processed by the target validation module
-   :param fallback_score: The fallback score to use while calculating the temperature score
+   :param default_score: The default score to use while calculating the temperature score
    :param aggregation_method: The aggregation method to use
    :param time_frames: The time frames that the temperature scores should be calculated for  (None to calculate all)
    :param scopes: The scopes that the temperature scores should be calculated for (None to calculate all)

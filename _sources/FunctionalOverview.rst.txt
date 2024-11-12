@@ -10,12 +10,9 @@ company, the score is calculated based on the publicly announced
 targets, which are mapped to regression models based on IPCC climate
 scenarios. The company is then awarded a score for each period and scope
 based on the ambition and coverage of the relevant targets. For more
-information, refer to the methodology `here <https://sciencebasedtargets.org/resources/files/Financial-Sector-Science-Based-Targets-Guidance-Pilot-Version.pdf>`__\ .
-If you are interested in knowing more about which scenarios are used 
-in a specific model scenario data set, please see this file
-:download:`here <Model-scenarios data set 4 and 104.xlsx>` , which contains details 
-on the scenarios used in models 4 (the standard regression model set) 
-and 104.
+information, refer to the methodology `here <https://wwfint.awsassets.panda.org/downloads/cdp-wwf-temperature-scoring-methodology---september-2024.pdf>`__\ .
+If you are interested in knowing more about how scenarios are used to 
+create regression parameters, please see this `github repo <https://github.com/WWF-Sweden/ITR-regression>`__\ .
 
 Time Frames
 ~~~~~~~~~~~
@@ -24,7 +21,7 @@ By default, the WWF ITR-tool reports temperature scores
 on the mid-term time frames (i.e. based on emissions reduction targets
 aimed at 5-10 years into the future). However, it is also possible to
 inspect short (less than 5 years) and long-term time frames (10 to 30
-years).
+years). The time frames are set when running the tool.
 
 Scopes
 ~~~~~~
@@ -103,24 +100,24 @@ The possible scenarios are:
    targets to at most 1.5\ :sup:`o` C.
 
 -  Scenario 3: In these scenarios, the top 10 contributors to the
-   portfolio temperature score are persuaded to set 2.0\ :sup:`o` C
+   portfolio temperature score are persuaded to set 1.75\ :sup:`o` C
    targets.
 
-   -  Scenario 3a: All top 10 contributors set 2.0\ :sup:`o` C targets.
+   -  Scenario 3a: All top 10 contributors set WB2C, i.e. 1.75\ :sup:`o` C targets.
 
-   -  Scenario 3b: All top 10 contributors set WB2C, i.e. 1.75\ :sup:`o` C targets.
+   -  Scenario 3b: All top 10 contributors set 1.5\ :sup:`o` C targets.
 
 -  Scenario 4: In this scenario, the user can specify which companies it
-   wants to engage with to influence to set 2.0\ :sup:`o` C or WB2C
+   wants to engage with to influence to set WB2C\ :sup:`o` C or 1.5C
    targets. The user selects companies to engage with in the portfolio
    input file by settings the *engagement_target* field to TRUE for
    these companies.
 
    -  Scenario 4a: All companies that are marked as engagement targets
-      set 2.0\ :sup:`o` C targets
+      set WB2C\ :sup:`o` C targets
 
    -  Scenario 4b: All companies that are marked as engagement targets
-      set WB2C targets.
+      set 1.5C targets.
 
 Portfolio coverage
 ------------------
@@ -169,11 +166,11 @@ underlying data.
 
 -  GHG emissions
 
--  Used target and all its parameters
+-  Used target and all its parameters and the target id
 
--  Values used during calculation such as the Linear annual reduction
-   (LAR), mapped regression scenario, and parameters for the formula to
+-  Values used during calculation such as the Compound annual reduction
+   (CAR), mapped regression scenario, and parameters for the formula to
    calculate the temperature score.
 
 Finally, it is possible to anonymize all names and identifiers, e.g. for
-submission to the SBTi Target Validation Team for approval.
+submission to the SBTi or other organization for approval.

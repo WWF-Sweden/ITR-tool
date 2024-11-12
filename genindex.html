@@ -4,9 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Index &mdash; WWF Finance Tool  documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -40,7 +38,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction to temperature scoring and portfolio coverage methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started Using Python</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rest_api.html">Getting Started Using REST API &amp; UI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FunctionalOverview.html">Functional Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="DataRequirements.html">Data Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Legends.html">Data Legends</a></li>
@@ -126,13 +123,15 @@
 </li>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.SortableEnum.__str__">__str__() (ITR.interfaces.SortableEnum method)</a>
 </li>
+      <li><a href="autoapi/ITR/temperature_score/index.html#ITR.temperature_score.TemperatureScore._aggregate_s3_score">_aggregate_s3_score() (ITR.temperature_score.TemperatureScore method)</a>
+</li>
       <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._assign_time_frame">_assign_time_frame() (ITR.target_validation.TargetProtocol static method)</a>
 </li>
       <li><a href="autoapi/ITR/portfolio_aggregation/index.html#ITR.portfolio_aggregation.PortfolioAggregation._calculate_aggregate_score">_calculate_aggregate_score() (ITR.portfolio_aggregation.PortfolioAggregation method)</a>
 </li>
       <li><a href="autoapi/ITR/temperature_score/index.html#ITR.temperature_score.TemperatureScore._calculate_company_score">_calculate_company_score() (ITR.temperature_score.TemperatureScore method)</a>
 </li>
-      <li><a href="autoapi/ITR/temperature_score/index.html#ITR.temperature_score.TemperatureScore._calculate_s3_score">_calculate_s3_score() (ITR.temperature_score.TemperatureScore method)</a>
+      <li><a href="autoapi/ITR/temperature_score/index.html#ITR.temperature_score.TemperatureScore._calculate_s1s2_score">_calculate_s1s2_score() (ITR.temperature_score.TemperatureScore method)</a>
 </li>
       <li><a href="autoapi/ITR/portfolio_aggregation/index.html#ITR.portfolio_aggregation.PortfolioAggregation._check_column">_check_column() (ITR.portfolio_aggregation.PortfolioAggregation method)</a>
 </li>
@@ -140,20 +139,16 @@
 </li>
       <li><a href="autoapi/ITR/data/sbti/index.html#ITR.data.sbti.SBTi._check_if_cta_file_exists">_check_if_cta_file_exists() (ITR.data.sbti.SBTi method)</a>
 </li>
-      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._combine_s1_s2">_combine_s1_s2() (ITR.target_validation.TargetProtocol method)</a>
-</li>
-      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._convert_s1_s2_into_combined">_convert_s1_s2_into_combined() (ITR.target_validation.TargetProtocol static method)</a>
-</li>
       <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._cover_s1_s2">_cover_s1_s2() (ITR.target_validation.TargetProtocol method)</a>
 </li>
       <li><a href="autoapi/ITR/data/sbti/index.html#ITR.data.sbti.SBTi._download_cta_file">_download_cta_file() (ITR.data.sbti.SBTi method)</a>
 </li>
       <li><a href="autoapi/ITR/data/sbti/index.html#ITR.data.sbti.SBTi._fetch_and_save_cta_file">_fetch_and_save_cta_file() (ITR.data.sbti.SBTi method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._find_s3_targets">_find_s3_targets() (ITR.target_validation.TargetProtocol method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._find_target">_find_target() (ITR.target_validation.TargetProtocol method)</a>
 </li>
       <li><a href="autoapi/ITR/utils/index.html#ITR.utils._flatten_user_fields">_flatten_user_fields() (in module ITR.utils)</a>
@@ -170,15 +165,21 @@
 </li>
       <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._prepare_targets">_prepare_targets() (ITR.target_validation.TargetProtocol method)</a>
 </li>
+      <li><a href="autoapi/ITR/data/excel/index.html#ITR.data.excel.ExcelProvider._process_row">_process_row() (ITR.data.excel.ExcelProvider method)</a>
+
+      <ul>
+        <li><a href="autoapi/ITR/data/index.html#ITR.data.ExcelProvider._process_row">(ITR.data.ExcelProvider method)</a>
+</li>
+      </ul></li>
       <li><a href="autoapi/ITR/data/index.html#ITR.data.Bloomberg._request">_request() (ITR.data.Bloomberg method)</a>
 
       <ul>
         <li><a href="autoapi/ITR/data/bloomberg/index.html#ITR.data.bloomberg.Bloomberg._request">(ITR.data.bloomberg.Bloomberg method)</a>
 </li>
       </ul></li>
-      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._scale_reduction_ambition_by_boundary_coverage">_scale_reduction_ambition_by_boundary_coverage() (ITR.target_validation.TargetProtocol static method)</a>
+      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._scale_reduction_ambition_by_boundary_coverage_new">_scale_reduction_ambition_by_boundary_coverage_new() (ITR.target_validation.TargetProtocol static method)</a>
 </li>
-      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._split_s1s2">_split_s1s2() (ITR.target_validation.TargetProtocol method)</a>
+      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._split_s1s2_new">_split_s1s2_new() (ITR.target_validation.TargetProtocol method)</a>
 </li>
       <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol._split_s1s2s3">_split_s1s2s3() (ITR.target_validation.TargetProtocol method)</a>
 </li>
@@ -206,20 +207,24 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.ETargetReference.ABSOLUTE">ABSOLUTE (ITR.interfaces.ETargetReference attribute)</a>
+</li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.TemperatureScoreConfig.ABSOLUTE_MAPPINGS">ABSOLUTE_MAPPINGS (ITR.configs.TemperatureScoreConfig attribute)</a>
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.ACHIEVED_EMISSIONS">ACHIEVED_EMISSIONS (ITR.configs.ColumnsConfig attribute)</a>
 </li>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.IDataProviderTarget.achieved_reduction">achieved_reduction (ITR.interfaces.IDataProviderTarget attribute)</a>
 </li>
+      <li><a href="autoapi/ITR/temperature_score/index.html#ITR.temperature_score.TemperatureScore.aggregate_company_score">aggregate_company_score() (ITR.temperature_score.TemperatureScore method)</a>
+</li>
       <li><a href="autoapi/ITR/temperature_score/index.html#ITR.temperature_score.TemperatureScore.aggregate_scores">aggregate_scores() (ITR.temperature_score.TemperatureScore method)</a>
 </li>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.Aggregation">Aggregation (class in ITR.interfaces)</a>
 </li>
-      <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.AggregationContribution">AggregationContribution (class in ITR.interfaces)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.AggregationContribution">AggregationContribution (class in ITR.interfaces)</a>
+</li>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.ScoreAggregation.all">all (ITR.interfaces.ScoreAggregation attribute)</a>
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.ANNUAL_REDUCTION_RATE">ANNUAL_REDUCTION_RATE (ITR.configs.ColumnsConfig attribute)</a>
@@ -246,6 +251,8 @@
 </li>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.IDataProviderTarget.base_year_ghg_s1">base_year_ghg_s1 (ITR.interfaces.IDataProviderTarget attribute)</a>
 </li>
+      <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.IDataProviderTarget.base_year_ghg_s1s2">base_year_ghg_s1s2 (ITR.interfaces.IDataProviderTarget attribute)</a>
+</li>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.IDataProviderTarget.base_year_ghg_s2">base_year_ghg_s2 (ITR.interfaces.IDataProviderTarget attribute)</a>
 </li>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.IDataProviderTarget.base_year_ghg_s3">base_year_ghg_s3 (ITR.interfaces.IDataProviderTarget attribute)</a>
@@ -257,6 +264,8 @@
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.IDataProviderTarget.base_year_ts">base_year_ts (ITR.interfaces.IDataProviderTarget attribute)</a>
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.BASEYEAR_GHG_S1">BASEYEAR_GHG_S1 (ITR.configs.ColumnsConfig attribute)</a>
+</li>
+      <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.BASEYEAR_GHG_S1S2">BASEYEAR_GHG_S1S2 (ITR.configs.ColumnsConfig attribute)</a>
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.BASEYEAR_GHG_S2">BASEYEAR_GHG_S2 (ITR.configs.ColumnsConfig attribute)</a>
 </li>
@@ -314,7 +323,7 @@
 </li>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.S3Category.CAT_9">CAT_9 (ITR.interfaces.S3Category attribute)</a>
 </li>
-      <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.S3Category.CAT_NAN">CAT_NAN (ITR.interfaces.S3Category attribute)</a>
+      <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.S3Category.CAT_H_LINE">CAT_H_LINE (ITR.interfaces.S3Category attribute)</a>
 </li>
       <li><a href="autoapi/ITR/data/index.html#ITR.data.CDP">CDP (class in ITR.data)</a>
 
@@ -438,15 +447,17 @@
 </li>
       <li><a href="autoapi/ITR/utils/index.html#ITR.utils.dataframe_to_portfolio">dataframe_to_portfolio() (in module ITR.utils)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/ITR/data/index.html#ITR.data.DataProvider">DataProvider (class in ITR.data)</a>
 
       <ul>
         <li><a href="autoapi/ITR/data/data_provider/index.html#ITR.data.data_provider.DataProvider">(class in ITR.data.data_provider)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.TemperatureScoreConfig.DEFAULT_INDUSTRY">DEFAULT_INDUSTRY (ITR.configs.TemperatureScoreConfig attribute)</a>
+</li>
+      <li><a href="autoapi/ITR/configs/index.html#ITR.configs.TemperatureScoreConfig.DEFAULT_SCORE">DEFAULT_SCORE (ITR.configs.TemperatureScoreConfig attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -488,6 +499,8 @@
 </li>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.EScope">EScope (class in ITR.interfaces)</a>
 </li>
+      <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.ETargetReference">ETargetReference (class in ITR.interfaces)</a>
+</li>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.ETimeFrames">ETimeFrames (class in ITR.interfaces)</a>
 </li>
       <li><a href="autoapi/ITR/data/index.html#ITR.data.ExcelProvider">ExcelProvider (class in ITR.data)</a>
@@ -502,18 +515,16 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autoapi/ITR/configs/index.html#ITR.configs.TemperatureScoreConfig.FALLBACK_SCORE">FALLBACK_SCORE (ITR.configs.TemperatureScoreConfig attribute)</a>
-</li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.PortfolioCoverageTVPConfig.FILE_TARGETS">FILE_TARGETS (ITR.configs.PortfolioCoverageTVPConfig attribute)</a>
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.PortfolioCoverageTVPConfig.FILE_TARGETS_CUSTOM_PATH">FILE_TARGETS_CUSTOM_PATH (ITR.configs.PortfolioCoverageTVPConfig attribute)</a>
 </li>
       <li><a href="autoapi/ITR/data/sbti/index.html#ITR.data.sbti.SBTi.filter_cta_file">filter_cta_file() (ITR.data.sbti.SBTi method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/ITR/temperature_score/index.html#ITR.temperature_score.Scenario.from_dict">from_dict() (ITR.temperature_score.Scenario static method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/ITR/temperature_score/index.html#ITR.temperature_score.EngagementType.from_int">from_int() (ITR.temperature_score.EngagementType static method)</a>
 
       <ul>
@@ -576,12 +587,12 @@
 </li>
       <li><a href="autoapi/ITR/utils/index.html#ITR.utils.get_data_providers">get_data_providers() (in module ITR.utils)</a>
 </li>
-      <li><a href="autoapi/ITR/temperature_score/index.html#ITR.temperature_score.TemperatureScore.get_default_score">get_default_score() (ITR.temperature_score.TemperatureScore method)</a>
+      <li><a href="autoapi/ITR/temperature_score/index.html#ITR.temperature_score.Scenario.get_default_score">get_default_score() (ITR.temperature_score.Scenario method)</a>
+
+      <ul>
+        <li><a href="autoapi/ITR/temperature_score/index.html#ITR.temperature_score.TemperatureScore.get_default_score">(ITR.temperature_score.TemperatureScore method)</a>
 </li>
-      <li><a href="autoapi/ITR/temperature_score/index.html#ITR.temperature_score.Scenario.get_fallback_score">get_fallback_score() (ITR.temperature_score.Scenario method)</a>
-</li>
-      <li><a href="autoapi/ITR/temperature_score/index.html#ITR.temperature_score.TemperatureScore.get_ghc_temperature_score">get_ghc_temperature_score() (ITR.temperature_score.TemperatureScore method)</a>
-</li>
+      </ul></li>
       <li><a href="autoapi/ITR/portfolio_coverage_tvp/index.html#ITR.portfolio_coverage_tvp.PortfolioCoverageTVP.get_portfolio_coverage">get_portfolio_coverage() (ITR.portfolio_coverage_tvp.PortfolioCoverageTVP method)</a>
 </li>
       <li><a href="autoapi/ITR/temperature_score/index.html#ITR.temperature_score.TemperatureScore.get_regression">get_regression() (ITR.temperature_score.TemperatureScore method)</a>
@@ -802,6 +813,10 @@
 </li>
       <li><a href="autoapi/ITR/data/inmemory/index.html#ITR.data.inmemory.InMemoryProvider">InMemoryProvider (class in ITR.data.inmemory)</a>
 </li>
+      <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.ETargetReference.INT_TO_ABS">INT_TO_ABS (ITR.interfaces.ETargetReference attribute)</a>
+</li>
+      <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.ETargetReference.INTENSITY">INTENSITY (ITR.interfaces.ETargetReference attribute)</a>
+</li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.TemperatureScoreConfig.INTENSITY_MAPPINGS">INTENSITY_MAPPINGS (ITR.configs.TemperatureScoreConfig attribute)</a>
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.INTENSITY_METRIC">INTENSITY_METRIC (ITR.configs.ColumnsConfig attribute)</a>
@@ -853,6 +868,8 @@
         <li><a href="autoapi/ITR/data/index.html#module-ITR.data">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ITR.data.bloomberg
 
@@ -860,8 +877,6 @@
         <li><a href="autoapi/ITR/data/bloomberg/index.html#module-ITR.data.bloomberg">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ITR.data.cdp
 
@@ -1069,6 +1084,10 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.S3Category.N_A">N_A (ITR.interfaces.S3Category attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.ScenarioInterface.number">number (ITR.interfaces.ScenarioInterface attribute)</a>
 </li>
   </ul></td>
@@ -1195,10 +1214,10 @@
 </li>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.ScenarioInterface">ScenarioInterface (class in ITR.interfaces)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/ITR/temperature_score/index.html#ITR.temperature_score.ScenarioType">ScenarioType (class in ITR.temperature_score)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.SCOPE">SCOPE (ITR.configs.ColumnsConfig attribute)</a>
 </li>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.IDataProviderTarget.scope">scope (ITR.interfaces.IDataProviderTarget attribute)</a>
@@ -1231,6 +1250,10 @@
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.TemperatureScoreConfig.SLOPE_MAP">SLOPE_MAP (ITR.configs.TemperatureScoreConfig attribute)</a>
 </li>
+      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol.sort_boundary_coverage">sort_boundary_coverage() (ITR.target_validation.TargetProtocol method)</a>
+</li>
+      <li><a href="autoapi/ITR/target_validation/index.html#ITR.target_validation.TargetProtocol.sort_on_vintage">sort_on_vintage() (ITR.target_validation.TargetProtocol method)</a>
+</li>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.SortableEnum">SortableEnum (class in ITR.interfaces)</a>
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.START_YEAR">START_YEAR (ITR.configs.ColumnsConfig attribute)</a>
@@ -1245,6 +1268,8 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.ETargetReference.T_SCORE">T_SCORE (ITR.interfaces.ETargetReference attribute)</a>
+</li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.TARGET_CLASSIFICATION">TARGET_CLASSIFICATION (ITR.configs.ColumnsConfig attribute)</a>
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.TARGET_CONFIRM_DATE">TARGET_CONFIRM_DATE (ITR.configs.ColumnsConfig attribute)</a>
@@ -1265,10 +1290,10 @@
 </li>
       <li><a href="autoapi/ITR/temperature_score/index.html#ITR.temperature_score.ScenarioType.TARGETS">TARGETS (ITR.temperature_score.ScenarioType attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.TemperatureScoreConfig.TEMPERATURE_FLOOR">TEMPERATURE_FLOOR (ITR.configs.TemperatureScoreConfig attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.TemperatureScoreConfig.TEMPERATURE_RESULTS">TEMPERATURE_RESULTS (ITR.configs.TemperatureScoreConfig attribute)</a>
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.TEMPERATURE_SCORE">TEMPERATURE_SCORE (ITR.configs.ColumnsConfig attribute)</a>
@@ -1284,6 +1309,10 @@
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.TIME_FRAME">TIME_FRAME (ITR.configs.ColumnsConfig attribute)</a>
 </li>
       <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.IDataProviderTarget.time_frame">time_frame (ITR.interfaces.IDataProviderTarget attribute)</a>
+</li>
+      <li><a href="autoapi/ITR/configs/index.html#ITR.configs.ColumnsConfig.TO_CALCULATE">TO_CALCULATE (ITR.configs.ColumnsConfig attribute)</a>
+</li>
+      <li><a href="autoapi/ITR/interfaces/index.html#ITR.interfaces.IDataProviderTarget.to_calculate">to_calculate (ITR.interfaces.IDataProviderTarget attribute)</a>
 </li>
       <li><a href="autoapi/ITR/data/index.html#ITR.data.Trucost">Trucost (class in ITR.data)</a>
 
@@ -1325,15 +1354,11 @@
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.PortfolioCoverageTVPConfig.VALUE_TARGET_NO">VALUE_TARGET_NO (ITR.configs.PortfolioCoverageTVPConfig attribute)</a>
 </li>
-      <li><a href="autoapi/ITR/configs/index.html#ITR.configs.TemperatureScoreConfig.VALUE_TARGET_REFERENCE_ABSOLUTE">VALUE_TARGET_REFERENCE_ABSOLUTE (ITR.configs.TemperatureScoreConfig attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autoapi/ITR/configs/index.html#ITR.configs.TemperatureScoreConfig.VALUE_TARGET_REFERENCE_INTENSITY">VALUE_TARGET_REFERENCE_INTENSITY (ITR.configs.TemperatureScoreConfig attribute)</a>
+      <li><a href="autoapi/ITR/configs/index.html#ITR.configs.TemperatureScoreConfig.VALUE_TARGET_REFERENCE">VALUE_TARGET_REFERENCE (ITR.configs.TemperatureScoreConfig attribute)</a>
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.TemperatureScoreConfig.VALUE_TARGET_REFERENCE_INTENSITY_BASE">VALUE_TARGET_REFERENCE_INTENSITY_BASE (ITR.configs.TemperatureScoreConfig attribute)</a>
-</li>
-      <li><a href="autoapi/ITR/configs/index.html#ITR.configs.TemperatureScoreConfig.VALUE_TARGET_REFERENCE_T_SCORE">VALUE_TARGET_REFERENCE_T_SCORE (ITR.configs.TemperatureScoreConfig attribute)</a>
 </li>
       <li><a href="autoapi/ITR/configs/index.html#ITR.configs.PortfolioCoverageTVPConfig.VALUE_TARGET_SET">VALUE_TARGET_SET (ITR.configs.PortfolioCoverageTVPConfig attribute)</a>
 </li>

@@ -103,7 +103,7 @@ Classes
    .. py:method:: get_score_cap(self) -> float
 
 
-   .. py:method:: get_fallback_score(self, fallback_score: float) -> float
+   .. py:method:: get_default_score(self, default_score: float) -> float
 
 
    .. py:method:: from_dict(scenario_values: dict) -> Optional[Scenario]
@@ -128,13 +128,13 @@ Classes
 
 
 
-.. py:class:: TemperatureScore(time_frames: List[ITR.interfaces.ETimeFrames], scopes: List[ITR.interfaces.EScope], fallback_score: ITR.configs.TemperatureScoreConfig = TemperatureScoreConfig.FALLBACK_SCORE, model: ITR.configs.TemperatureScoreConfig = TemperatureScoreConfig.MODEL_NUMBER, scenario: Optional[Scenario] = None, aggregation_method: ITR.portfolio_aggregation.PortfolioAggregationMethod = PortfolioAggregationMethod.WATS, grouping: Optional[List] = None, config: Type[ITR.configs.TemperatureScoreConfig] = TemperatureScoreConfig)
+.. py:class:: TemperatureScore(time_frames: List[ITR.interfaces.ETimeFrames], scopes: List[ITR.interfaces.EScope], default_score: float = TemperatureScoreConfig.DEFAULT_SCORE, model: int = TemperatureScoreConfig.MODEL_NUMBER, scenario: Optional[Scenario] = None, aggregation_method: ITR.portfolio_aggregation.PortfolioAggregationMethod = PortfolioAggregationMethod.WATS, grouping: Optional[List] = None, config: Type[ITR.configs.TemperatureScoreConfig] = TemperatureScoreConfig)
 
    Bases: :py:obj:`ITR.portfolio_aggregation.PortfolioAggregation`
 
    This class provides a temperature score based on the climate goals.
 
-   :param fallback_score: The temp score if a company is not found
+   :param default_score: The temp score if a company is not found
    :param model: The regression model to use
    :param config: A class defining the constants that are used throughout this class. This parameter is only required
                    if you'd like to overwrite a constant. This can be done by extending the TemperatureScoreConfig
@@ -181,7 +181,7 @@ Classes
       :return: The temperature score
 
 
-   .. py:method:: get_ghc_temperature_score(self, row: pandas.Series, company_data: pandas.DataFrame) -> Tuple[float, float, list]
+   .. py:method:: aggregate_company_score(self, row: pandas.Series, company_data: pandas.DataFrame) -> Tuple[float, float, list]
 
       Get the aggregated temperature score and a temperature result, which indicates how much of the score is 
       based on the default score for a certain company based on the emissions of company.
@@ -271,12 +271,27 @@ Classes
       :return: The input data frame, anonymized
 
 
-   .. py:method:: _calculate_s3_score(self, data: pandas.DataFrame) -> pandas.DataFrame
+   .. py:method:: _calculate_s1s2_score(self, data: pandas.DataFrame) -> pandas.DataFrame
 
-      Calculate the combined S3 score each combination of company_id, time_frame and scope.
-      First 
-      :param data: The data to calculate the S3 score for.
-      :return: The S3 score.
+      Calculate the combined S1S2 score each combination of company_id, time_frame and scope.
+      If it was possible på calculate individual S1 and S2 scores, then we calculate the 
+      aggregated S1S2 score.
+
+      :param data: The data to calculate the S1S2 score for.
+      :return: The S1S2 score.
+
+
+   .. py:method:: _aggregate_s3_score(self, data: pandas.DataFrame) -> pandas.DataFrame
+
+      Aggregate Scope 3 category scores into a single score per company and time frame.
+
+      Steps:
+      1) Calculate the mean temperature score for `s3_category == CAT_15`.
+      2) Remove original CAT_15 rows and append the mean CAT_15 score back to the data.
+      3) For each company and time frame:
+      a) If GHG data is available for all categories, calculate a weighted average.
+      b) If not, calculate a simple average of the scores.
+      4) Replace the original scores with the aggregated score.
 
 
 
