@@ -494,11 +494,7 @@ calculated. This data output provides:
 
 You can also anonymize the output data, which removes all names and
 identifiers. This is particularly useful for sharing results of your
-temperature score without having to reveal your holdings, for example
-for submitting your temperature score to the Target Validation Team
-(TVT) at SBTi to get your own GHG emissions reduction target approved. At
-the same time, it provides the opportunity to audit the scores during
-the validation process.
+temperature score without having to reveal your holdings.
 
 For a more detail please see Jupyter notebook examples found
 `here <https://wwf-sweden.github.io/ITR-tool/getting_started.html#google-colab>`__.
@@ -508,8 +504,8 @@ For a more detail please see Jupyter notebook examples found
    :width: 6.50000in
    :height: 2.02222in
 .. |image4| image:: image4.png
-   :width: 5.54166in
-   :height: 1.20675in
+   :width: 391px
+   :height: 423px
 .. |image5| image:: image5.png
    :width: 6.30297in
    :height: 3.79220in

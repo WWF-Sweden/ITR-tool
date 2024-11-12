@@ -38,6 +38,9 @@ def get_data_providers(
     :param data_providers_input: A list of data provider names
     :return: a list of data providers in order.
     """
+    #we need to see if we can remove this method so we first throw an error if the method is called
+    raise NotImplementedError("This method is not implemented yet")
+
     logger = logging.getLogger(__name__)
     data_providers = []
     for data_provider_config in data_providers_configs:
@@ -165,24 +168,6 @@ def _make_id_map(df_portfolio: pd.DataFrame) -> dict:
     }
 
 
-# def _make_isin_map(df_portfolio: pd.DataFrame) -> dict:
-#     """
-#     Create a mapping from company_id to ISIN (required for the SBTi matching).
-
-#     :param df_portfolio: The complete portfolio
-#     :return: A mapping from company_id to ISIN
-#     """
-#     return {
-#         company_id: company[ColumnsConfig.COMPANY_ISIN]
-#         for company_id, company in df_portfolio[
-#             [ColumnsConfig.COMPANY_ID, ColumnsConfig.COMPANY_ISIN]
-#         ]
-#         .set_index(ColumnsConfig.COMPANY_ID)
-#         .to_dict(orient="index")
-#         .items()
-#     }
-
-
 def dataframe_to_portfolio(df_portfolio: pd.DataFrame) -> List[PortfolioCompany]:
     """
     Convert a data frame to a list of portfolio company objects.
@@ -196,8 +181,18 @@ def dataframe_to_portfolio(df_portfolio: pd.DataFrame) -> List[PortfolioCompany]
     )
 
     if 'user_fields' in df_portfolio:
-        df_portfolio['user_fields'] = df_portfolio['user_fields'].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else None)
- 
+        def process_user_fields(x):
+            if isinstance(x, str):
+                x = x.strip()
+                if x.startswith('{') or x.startswith('['):
+                    try:
+                        return ast.literal_eval(x)
+                    except (ValueError, SyntaxError):
+                        pass
+                return {'category': x}
+            return None
+
+        df_portfolio['user_fields'] = df_portfolio['user_fields'].apply(process_user_fields)
     return [
         PortfolioCompany.parse_obj(company)
         for company in df_portfolio.to_dict(orient="records")
@@ -245,7 +240,7 @@ def get_data(
 
 def calculate(
     portfolio_data: pd.DataFrame,
-    fallback_score: float,
+    default_score: float,
     aggregation_method: PortfolioAggregationMethod,
     grouping: Optional[List[str]],
     scenario: Optional[Scenario],
@@ -258,7 +253,7 @@ def calculate(
     Calculate the different parts of the temperature score (actual scores, aggregations, column distribution).
 
     :param portfolio_data: The portfolio data, already processed by the target validation module
-    :param fallback_score: The fallback score to use while calculating the temperature score
+    :param default_score: The default score to use while calculating the temperature score
     :param aggregation_method: The aggregation method to use
     :param time_frames: The time frames that the temperature scores should be calculated for  (None to calculate all)
     :param scopes: The scopes that the temperature scores should be calculated for (None to calculate all)
@@ -271,7 +266,7 @@ def calculate(
     ts = TemperatureScore(
         time_frames=time_frames,
         scopes=scopes,
-        fallback_score=fallback_score,
+        default_score=default_score,
         scenario=scenario,
         grouping=grouping,
         aggregation_method=aggregation_method,

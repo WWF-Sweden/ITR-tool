@@ -22,13 +22,36 @@ class ExcelProvider(DataProvider):
         # Set all missing coverage values to 0.0
         self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3', 'reduction_ambition']] = \
             self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3', 'reduction_ambition']].fillna(0.0)
+        self.data['target_data'][['achieved_reduction']] = self.data['target_data'][['achieved_reduction']].fillna(0.0)
+        self.data['target_data'][['base_year_ghg_s1', 'base_year_ghg_s2', 'base_year_ghg_s3']] = \
+            self.data['target_data'][['base_year_ghg_s1', 'base_year_ghg_s2', 'base_year_ghg_s3']].fillna(0.0)
+        self.data['target_data']['scope'] = self.data['target_data']['scope'].replace({'S1S2S3': 'S1+S2+S3'})
+        self.data['target_data']['scope'] = self.data['target_data']['scope'].replace({'S1S2': 'S1+S2'})
+        # Check for optional columns in 'fundamental_data' and handle missing values
+        optional_columns = ['ghg_s1', 'ghg_s2', 'ghg_s1s2', 'ghg_s3']
+        for col in optional_columns:
+            if col not in self.data['fundamental_data'].columns:
+                self.data['fundamental_data'][col] = 0.0
+            else:
+                self.data['fundamental_data'][col] = self.data['fundamental_data'][col].fillna(0.0)
        
         try:
-            self.data['target_data']['s3_category'] = self.data['target_data']['s3_category'].apply(lambda x: int(x) if str(x).isdigit() and 1 <= int(x) <= 15 else 0)
+           self.data['target_data']['s3_category'] = self.data['target_data'].apply(self._process_row, axis=1)
         except Exception as e:
             print(f"An error occurred: {e}")
        
         self.c = config
+
+    def _process_row(self, row):
+        if row['scope'] in ['S3', 'S1+S2+S3']:
+            if pd.isna(row['s3_category']) or row['s3_category'] == 0:
+                return 0
+            elif 1 <= int(row['s3_category']) <= 15:
+                return int(row['s3_category'])
+            else:
+                return 0
+        else:
+            return -1
 
     def get_targets(self, company_ids: List[str]) -> List[IDataProviderTarget]:
         """
@@ -89,15 +112,17 @@ class ExcelProvider(DataProvider):
         # so we need to convert them to empty strings
         fields_to_convert = ['isic','country', 'sector', 'industry_level_1', 'industry_level_2', 
                              'industry_level_3', 'industry_level_4']
-        data_company[fields_to_convert] = data_company[fields_to_convert].fillna('')
+        for field in fields_to_convert:
+          if field in data_company.columns:
+            data_company[field] = data_company[field].fillna('')
 
         companies = data_company.to_dict(orient="records")
         model_companies: List[IDataProviderCompany] = [
             IDataProviderCompany.parse_obj(company) for company in companies
         ]
         for company in model_companies:
-            if company.ghg_s1 is not None and company.ghg_s2 is not None:
-                company.ghg_s1s2 = company.ghg_s1 + company.ghg_s2
+            if company.ghg_s1 is not None or company.ghg_s2 is not None:
+                company.ghg_s1s2 = company.ghg_s1 + company.ghg_s2  # type: ignore (data set to 0.0 when reading)
 
         model_companies = [
             target for target in model_companies if target.company_id in company_ids

@@ -13,6 +13,7 @@ from ITR.interfaces import (
     IDataProviderCompany,
     EScope,
     ETimeFrames,
+    S3Category
 )
 
 logger = logging.getLogger(__name__)
@@ -68,6 +69,12 @@ class TargetProtocol:
         )
         self.target_data = self.target_data.sort_index()
 
+        self.target_data = self.sort_on_vintage(self.target_data)
+
+        self.target_data = self.sort_boundary_coverage(self.target_data)
+
+        self.target_data['reduction_ambition'] = self.target_data.apply(self._scale_reduction_ambition_by_boundary_coverage_new, axis=1)
+
         #self.company_data = pd.DataFrame.from_records([c.dict() for c in companies])
         self.group_targets()
         out =  pd.merge(
@@ -91,10 +98,14 @@ class TargetProtocol:
         if target.target_type.lower() == "t_score":
             return self._validate_t_score(target)
         # Only absolute targets or intensity targets with a valid intensity metric are allowed.
-        target_type = "abs" in target.target_type.lower() or (
-            "int" in target.target_type.lower()
-            and target.intensity_metric is not None
-            and target.intensity_metric.lower() != "other"
+        # As of v1.5 we have target type 'int_to_abs' which is an intensity target that has been converted to an absolute target
+        target_type = (
+            "abs" in target.target_type.lower()
+            or "int_to_abs" in target.target_type.lower()
+            or (
+                "intensity" in target.target_type.lower()
+                and target.intensity_metric is not None
+            )
         )
         # The target should not have achieved its reduction yet.
         target_progress = (
@@ -114,24 +125,51 @@ class TargetProtocol:
         # Added in update Oct 22
         target_current = target.end_year >= datetime.datetime.now().year
 
-        # Delete all S1 or S2 targets we can't combine
+        # Check that base year ghg data is available for the scope of the target
         # Note that all S1S2S3 pass these tests
         s1 = target.scope != EScope.S1 or (
             not pd.isnull(target.coverage_s1)
-            and not pd.isnull(target.base_year_ghg_s1)
-            and not pd.isnull(target.base_year_ghg_s2) #TODO - is this correct when looking at individual scopes?
+            and target.base_year_ghg_s1 is not None
+            and target.base_year_ghg_s1 > 0.0
         )
         s2 = target.scope != EScope.S2 or (
             not pd.isnull(target.coverage_s2)
-            and not pd.isnull(target.base_year_ghg_s1) #TODO - is this correct when looking at individual scopes?
-            and not pd.isnull(target.base_year_ghg_s2)
+            and target.base_year_ghg_s2 is not None 
+            and target.base_year_ghg_s2 > 0.0
         )
         s1s2 = target.scope != EScope.S1S2 or (
-            target.coverage_s1 == target.coverage_s2 or (
-            not pd.isnull(target.base_year_ghg_s1)
-            and not pd.isnull(target.base_year_ghg_s2)
-            )
+            target.base_year_ghg_s1 is not None
+            and target.base_year_ghg_s1 > 0.0
+            and target.base_year_ghg_s2 is not None 
+            and target.base_year_ghg_s2 > 0.0
         )
+        s1s2s3 = target.scope != EScope.S1S2S3 or (
+            target.base_year_ghg_s1 is not None
+            and target.base_year_ghg_s1 > 0.0
+            and target.base_year_ghg_s2 is not None
+            and target.base_year_ghg_s2 > 0.0
+            and target.base_year_ghg_s3 is not None
+            and target.base_year_ghg_s3 > 0.0
+        )
+        # s1 = target.scope != EScope.S1 or (
+        #     not pd.isnull(target.coverage_s1)
+        #     and not pd.isnull(target.base_year_ghg_s1)
+        # )
+        # s2 = target.scope != EScope.S2 or (
+        #     not pd.isnull(target.coverage_s2)
+        #     and not pd.isnull(target.base_year_ghg_s2)
+        # )
+        # s1s2 = target.scope != EScope.S1S2 or (
+        #     target.coverage_s1 == target.coverage_s2 or (
+        #     not pd.isnull(target.base_year_ghg_s1)
+        #     and not pd.isnull(target.base_year_ghg_s2)
+        #     )
+        # )
+        # s1s2s3 = target.scope != EScope.S1S2S3 or (
+        #    not pd.isnull(target.base_year_ghg_s1)
+        #     and not pd.isnull(target.base_year_ghg_s2)
+        #     and not pd.isnull(target.base_year_ghg_s3)
+        # )
         return (
             target_type 
             and target_progress 
@@ -140,6 +178,7 @@ class TargetProtocol:
             and s1 
             and s2
             and s1s2
+            and s1s2s3
         )
     
     def _validate_t_score(self, target: IDataProviderTarget) -> bool:
@@ -163,14 +202,12 @@ class TargetProtocol:
             and target_current
         )
 
-    
-    #@staticmethod
     def _split_s1s2s3(self,
         target: IDataProviderTarget,
     ) -> Tuple[IDataProviderTarget, Optional[IDataProviderTarget]]:
         """
         If there is a s1s2s3 scope, split it into two targets with s1s2 and s3
-
+        This S3 target becomes a headline target
         :param target: The input target
         :return The split targets or the original target and None
         """
@@ -178,15 +215,18 @@ class TargetProtocol:
             return target, None
         if target.scope == EScope.S1S2S3:
             s1s2, s3 = target.copy(), None
+            s1s2.s3_category = S3Category.N_A
             if (
                 not pd.isnull(target.base_year_ghg_s1)
                 and not pd.isnull(target.base_year_ghg_s2)
             ) or target.coverage_s1 == target.coverage_s2:
                 s1s2.scope = EScope.S1S2
                 if (
-                    not pd.isnull(target.base_year_ghg_s1)
-                    and not pd.isnull(target.base_year_ghg_s2)
-                    and target.base_year_ghg_s1 + target.base_year_ghg_s2 != 0
+                    not pd.isnull(s1s2.coverage_s1)
+                    and not pd.isnull(s1s2.coverage_s2)
+                    and not pd.isnull(s1s2.base_year_ghg_s1)
+                    and not pd.isnull(s1s2.base_year_ghg_s2)
+                    and s1s2.base_year_ghg_s1 + s1s2.base_year_ghg_s2 != 0
                 ):
                     coverage_percentage = (
                         s1s2.coverage_s1 * s1s2.base_year_ghg_s1
@@ -198,99 +238,50 @@ class TargetProtocol:
             if not pd.isnull(target.coverage_s3):
                 s3 = target.copy()
                 s3.scope = EScope.S3
+                if s3.s3_category == S3Category.N_A:
+                    s3.s3_category = S3Category.CAT_H_LINE
             return s1s2, s3
-        
-        
+                
         else:
             return target, None
-        
-    #@staticmethod
-    def _split_s1s2(self,
-        target: IDataProviderTarget,
-    ) -> List[IDataProviderTarget]:
+           
+    def _split_s1s2_new(self,
+        target: pd.DataFrame,
+    ) -> pd.DataFrame:
         """
         Split the target into two targets, one for the S1 data and one for the S2 data.
 
         :param target: The target to potentially split.
-        :return: A list containing (the original S1S2 target and) 
-         the S1 target and the S2 target from the split.
+        :return: A list containing the S1 target and the S2 target from the split.
         """
-        targets = [target]
-        if target.target_type.lower() == "t_score":
-            return targets
+        if target[self.c.COLS.TARGET_REFERENCE_NUMBER].iloc[0].lower() == "t_score":
+            return target
+        targets = target.iloc[0].copy()
         # before splitting S1S2 targets we need to verify that there is GHG data to aggregate the scores later
         # TODO - verify that company is one unique row
-        company = self.company_data[self.company_data[self.c.COLS.COMPANY_ID] == target.company_id]
-        if (not (pd.isnull(company[self.c.COLS.GHG_SCOPE1].item())
-            or pd.isnull(company[self.c.COLS.GHG_SCOPE2].item()))
-            and target.scope == EScope.S1S2
+        company = self.company_data[self.company_data[self.c.COLS.COMPANY_ID] == targets.company_id]
+        if (not (pd.isna(company[self.c.COLS.GHG_SCOPE1].values[0])
+            or pd.isna(company[self.c.COLS.GHG_SCOPE2].values[0]))
+            and target.scope.iloc[0] == EScope.S1S2
         ):
-            s1 = target.copy()
-            s2 = target.copy()
-            s1.coverage_s1 = target.coverage_s1
-            s2.coverage_s2 = target.coverage_s2
-            s1.reduction_ambition = target.reduction_ambition
-            s2.reduction_ambition = target.reduction_ambition
-            s1.scope = EScope.S1
-            s2.scope = EScope.S2
+            s1 = targets.copy()
+            s2 = targets.copy()           
+
+            # Assign scalar values to the new DataFrames
+            s1['coverage_s1'] = targets['coverage_s1']
+            s2['coverage_s2'] = targets['coverage_s2']
+            s1['reduction_ambition'] = targets['reduction_ambition']
+            s2['reduction_ambition'] = targets['reduction_ambition']
+        
+            s1['scope'] = EScope.S1
+            s2['scope'] = EScope.S2
             # Append '_1' and '_2' to the target_ids of s1 and s2, respectively
-            s1.target_ids = [id_ + '_1' for id_ in s1.target_ids]
-            s2.target_ids = [id_ + '_2' for id_ in s2.target_ids]
-            targets.extend([s1, s2])
-           
-        return targets
-
-    def _combine_s1_s2(self, target: IDataProviderTarget):
-        """
-        Check if there is an S2 target that matches this target exactly (if this is a S1 target) 
-        and combine them into one target.
-
-        :param target: The input target
-        :return: The combined target (or the original if no combining was required)
-        """
-        if target.scope == EScope.S1 and not pd.isnull(target.base_year_ghg_s1):
-            matches = [
-                t
-                for t in self.s2_targets
-                if t.company_id == target.company_id
-                and t.base_year == target.base_year
-                and t.start_year == target.start_year
-                and t.end_year == target.end_year
-                and t.target_type == target.target_type
-                and (
-                    'abs' in t.target_type.lower() 
-                    or t.intensity_metric == target.intensity_metric
-                )
-            ]
-            if len(matches) > 0:
-                matches.sort(key=lambda t: t.coverage_s2, reverse=True)
-                s2 = matches[0]
-                combined_coverage = (
-                    target.coverage_s1 * target.base_year_ghg_s1
-                    + s2.coverage_s2 * s2.base_year_ghg_s2
-                ) / (target.base_year_ghg_s1 + s2.base_year_ghg_s2)
-                target.reduction_ambition = (
-                    (
-                        target.reduction_ambition
-                        * target.coverage_s1
-                        * target.base_year_ghg_s1
-                        + s2.reduction_ambition * s2.coverage_s2 * s2.base_year_ghg_s2
-                    )
-                ) / (
-                    target.coverage_s1 * target.base_year_ghg_s1
-                    + s2.coverage_s2 * s2.base_year_ghg_s2
-                )
-
-                target.coverage_s1 = combined_coverage
-                target.coverage_s2 = combined_coverage
-                # Enforce that we use the combined target - changed 2022-09-01/BBG input
-                # Note removed ".value" on 2022-11-23
-                target.scope = EScope.S1S2
-                # We don't need to delete the S2 target as it'll be definition have a lower coverage than the combined
-                # target, therefore it won't be picked for our 9-box grid
-                target.target_ids = target.target_ids + s2.target_ids
+            s1['target_ids'] = [id_ + '_1' for id_ in s1['target_ids']]
+            s2['target_ids'] = [id_ + '_2' for id_ in s2['target_ids']]
+      
+            return pd.DataFrame([s1, s2])
         return target
-
+    
     def _cover_s1_s2(self, target: IDataProviderTarget)-> IDataProviderTarget:
         """
         Set the S1 and S2 coverage of a S1+S2 target to the same value.
@@ -299,73 +290,42 @@ class TargetProtocol:
         """
         #TODO - is this method required given the new scaling of reduction ambition?
         if target.scope == EScope.S1S2 and target.coverage_s1 != target.coverage_s2:
-            if pd.isna(target.coverage_s1):
-                target.coverage_s1 = 0.0
-            if pd.isna(target.coverage_s2):
-                target.coverage_s2 = 0.0
-            combined_coverage = (
-                target.coverage_s1 * target.base_year_ghg_s1
-                + target.coverage_s2 * target.base_year_ghg_s2
-            ) / (target.base_year_ghg_s1 + target.base_year_ghg_s2)
-            target.coverage_s1 = combined_coverage
-            target.coverage_s2 = combined_coverage
+             # Handle NaN and None cases
+            target.coverage_s1 = 0.0 if pd.isnull(target.coverage_s1) else target.coverage_s1
+            target.coverage_s2 = 0.0 if pd.isnull(target.coverage_s2) else target.coverage_s2
+
+            if not pd.isnull(target.base_year_ghg_s1) and not pd.isnull(target.base_year_ghg_s2):
+                combined_coverage = (
+                    target.coverage_s1 * target.base_year_ghg_s1
+                    + target.coverage_s2 * target.base_year_ghg_s2
+                ) / (target.base_year_ghg_s1 + target.base_year_ghg_s2)
+                target.coverage_s1 = combined_coverage
+                target.coverage_s2 = combined_coverage
         return target
     
     @staticmethod
-    def _convert_s1_s2_into_combined(
-        target: IDataProviderTarget,
-    ) -> IDataProviderTarget:
-        """
-        Convert a S1 or S2 target into a S1+S2 target.
-
-        TODO - what is the incidence of targets where base_year_ghg_s2==0
-        
-        :param target: The input target
-        :return: The converted target (or the original if no conversion was required)
-        """
-        # In both cases the base_year_ghg s1 + s2 should not be zero, else would get ZeroDivisionError
-        if target.base_year_ghg_s1 + target.base_year_ghg_s2 != 0:
-            if target.scope == EScope.S1:
-                coverage = (
-                    target.coverage_s1
-                    * target.base_year_ghg_s1
-                    / (target.base_year_ghg_s1 + target.base_year_ghg_s2)
-                )
-                target.coverage_s1 = coverage
-                target.coverage_s2 = coverage
-                target.scope = EScope.S1S2
-            elif target.scope == EScope.S2:
-                coverage = (
-                    target.coverage_s2
-                    * target.base_year_ghg_s2
-                    / (target.base_year_ghg_s1 + target.base_year_ghg_s2)
-                )
-                target.coverage_s1 = coverage
-                target.coverage_s2 = coverage
-                target.scope = EScope.S1S2
-        return target
-
-    @staticmethod
-    def _scale_reduction_ambition_by_boundary_coverage(
-        target: IDataProviderTarget,
-        ) -> IDataProviderTarget:
+    def _scale_reduction_ambition_by_boundary_coverage_new(
+        target: pd.DataFrame,
+        ) -> float:
         """
         Change in ITR method 1.5: all targets have their ambition scaled by their boundary coverage.
         :param target: The input target
         :return: The original target with a weighted reduction ambition, if so required
         """
-        if target.target_type.lower() == "t_score":
-            return target
+                
+        if pd.isna(target.reduction_ambition):
+            reduction_ambition = 0.0
+        
         elif target.scope == EScope.S1:
-            target.reduction_ambition = (
+            reduction_ambition = (
                 target.reduction_ambition * target.coverage_s1
             )
         elif target.scope == EScope.S2:
-            target.reduction_ambition = (
+            reduction_ambition = (
                 target.reduction_ambition * target.coverage_s2
             )
         elif target.scope == EScope.S3:
-            target.reduction_ambition = (
+            reduction_ambition = (
                 target.reduction_ambition * target.coverage_s3
             )
         elif target.scope == EScope.S1S2:
@@ -381,14 +341,18 @@ class TargetProtocol:
                         target.coverage_s1 * target.base_year_ghg_s1
                         + target.coverage_s2 * target.base_year_ghg_s2
                     ) / (target.base_year_ghg_s1 + target.base_year_ghg_s2)
-                #TODO do we need to set these values?
+  
                     target.coverage_s1 = combined_coverage
                     target.coverage_s2 = combined_coverage
-                    target.reduction_ambition = (
+                    reduction_ambition = (
                         target.reduction_ambition * combined_coverage
                     )
-            
-        return target
+            else:
+                reduction_ambition = 0.0
+        else:
+            reduction_ambition = target.reduction_ambition
+
+        return reduction_ambition # type: ignore
     @staticmethod
     def _assign_time_frame(target: IDataProviderTarget) -> IDataProviderTarget:
         """
@@ -426,6 +390,7 @@ class TargetProtocol:
         target_input_count = len(targets)
         targets = list(filter(self._validate, targets))
         logger.info(f"dropped {(target_input_count - len(targets))=:,} invalid targets")
+        targets = [self._assign_time_frame(target) for target in targets]
 
         # TODO - what about targets with "0" coverage or "0" base_year_ghg_s2 - breaks the 'combine' logic
         # TODO - this is not needed if we score on separate scopes
@@ -444,36 +409,6 @@ class TargetProtocol:
             )
         )
         
-        targets = list(
-            itertools.chain.from_iterable(map(self._split_s1s2, targets))
-            )
-        
-        
-        #targets = [self._combine_s1_s2(target) for target in targets]
-        targets = [
-            self._scale_reduction_ambition_by_boundary_coverage(target)
-            for target in targets
-        ]
-        # Combine S1 and S2 targets that are identical in all but coverage
-        # new_targets = []
-        # for target in targets:
-        #     new_target = self._combine_s1_s2(copy.deepcopy(target))
-        #     new_targets.append(target) # keep the original target
-        #     if not target.equals(new_target):
-        #         new_targets.append(new_target) # add the combined target if it's different
-        # targets = new_targets
-        # # 
-        # targets = [self._cover_s1_s2(target) for target in targets]
-        # combined_targets = []
-        # for target in targets:
-        #     combined_targets.append(target)
-        #     new_target = self._convert_s1_s2_into_combined(copy.deepcopy(target))
-        #     if not target.equals(new_target):
-        #         combined_targets.append(new_target)
-        # targets = combined_targets
-        #targets = [self._convert_s1_s2_into_combined(target) for target in targets]
-        targets = [self._assign_time_frame(target) for target in targets]
-
         return targets
 
     def _find_target(self, row: pd.Series, target_columns: List[str]) -> pd.DataFrame:
@@ -485,19 +420,29 @@ class TargetProtocol:
         :param target_columns: The columns to return
         :return: records from the input data, which contains company and target information, that meet specific criteria. For example, record of greatest emissions_in_scope
         """
-        self.target_data.sort_index(level=self.target_data.index.names)
+        #self.target_data.sort_index(level=self.target_data.index.names, inplace=True)
+        
         # Find all targets that correspond to the given row
+        # index_tuple = (
+        #     row[self.c.COLS.COMPANY_ID],
+        #     row[self.c.COLS.TIME_FRAME],
+        #     row[self.c.COLS.SCOPE],
+        # )
         try:
-            target_data = self.target_data.loc[
+            #target_data = self.target_data.loc[index_tuple].copy()  # type: ignore
+            target_data = self.target_data.xs(
                 (
                     row[self.c.COLS.COMPANY_ID],
                     row[self.c.COLS.TIME_FRAME],
                     row[self.c.COLS.SCOPE],
                 )
-            ].copy()
+            ).copy() # type: ignore
             if isinstance(target_data, pd.Series):
                 # One match with Target data
-                return pd.DataFrame(target_data[target_columns]).T
+                result_df = pd.DataFrame([target_data], columns=target_columns)
+                #target_data_df = target_data.to_frame().T
+                #return result_df #target_data_df[target_columns]
+                # return pd.DataFrame(target_data[target_columns]).T
             else:
                 if target_data.scope.iloc[0] == EScope.S3:
                     coverage_column = self.c.COLS.COVERAGE_S3
@@ -513,8 +458,16 @@ class TargetProtocol:
                 # We also prefer longer time spans within the same time frame
                 target_data['END_YEAR_MINUS_BASE_YEAR'] = (
                     target_data[self.c.COLS.END_YEAR] 
-                  - target_data[self.c.COLS.BASE_YEAR]
+                    - target_data[self.c.COLS.BASE_YEAR]
                 )
+                # Reduction ambition is measured by CAR
+                try:
+                    target_data['CAR'] = target_data.apply(
+                        lambda row: abs((1 - row[self.c.COLS.REDUCTION_AMBITION]) ** (1 / row['END_YEAR_MINUS_BASE_YEAR']) - 1),
+                        axis=1
+                    )
+                except ZeroDivisionError:
+                    target_data['CAR'] = 0.0
                 # Scope 3 targets need to be filtered separately
                 if target_data.scope.iloc[0] != EScope.S3:
                     target_data = (
@@ -523,7 +476,7 @@ class TargetProtocol:
                                 self.c.COLS.TARGET_CONFIRM_DATE,
                                 coverage_column,
                                 self.c.COLS.TARGET_REFERENCE_NUMBER,
-                                self.c.COLS.REDUCTION_AMBITION,
+                                'CAR',
                                 'END_YEAR_MINUS_BASE_YEAR',
                                 self.c.COLS.END_YEAR,
                             ],
@@ -532,29 +485,44 @@ class TargetProtocol:
                         ).iloc[0][target_columns]
                     )
                     result_df = pd.DataFrame([target_data], columns=target_columns)
-                    return result_df
+                #return result_df
                 else:
-                    target_data = self._find_s3_targets(target_data, target_columns)
-                    return target_data
+                #target_data = self._find_s3_targets(target_data, target_columns)
+                    result_df = self._find_s3_targets(target_data, target_columns)
+
+            result_df['to_calculate'] = True # TS for selected targets are to be calculated
+            return result_df
                           
         except KeyError:
             # No target found
-            return pd.DataFrame([row], columns=target_columns)
+            result_df = pd.DataFrame([row], columns=target_columns)
+            result_df['to_calculate'] = False # TS for selected targets are not to be calculated
+            return result_df
     
     def _find_s3_targets(self, target_data: pd.DataFrame, target_columns: List[str]) -> pd.DataFrame:
         """
         Find S3 target that correspond to the given row. Note that there may be more
-        than one S3 target. We first look for the target with the latest confirmation date.
+        than one S3 target. We first look for a headline target and return that. 
+        If there is none we look for the targets with the latest confirmation date.
         Then check if there is more than one target with the same confirmation date.
-        The method then returns all targets with the latest confirmation date.
+        The method then returns all non headline targets with the latest confirmation date.
 
         :param target_data: The target data
         :param target_columns: The columns to return
         :return: The target data that meet the criteria
         """
-        target_data['year'] = target_data[self.c.COLS.TARGET_CONFIRM_DATE].dt.year
-        latest_year = target_data['year'].max()
-        target_data = target_data[target_data['year'] == latest_year]
+        headline_target = target_data[target_data['s3_category'] == S3Category.CAT_H_LINE]
+        if not headline_target.empty:
+            # Sort by vintage and cope 3 coverage 
+            headline_target = headline_target.sort_values(by=[self.c.COLS.TARGET_CONFIRM_DATE, 
+                                                              self.c.COLS.COVERAGE_S3], 
+                                                              axis=0,
+                                                              ascending=[False, False])           
+            target_data = headline_target.head(1)
+        else:
+            target_data['year'] = target_data[self.c.COLS.TARGET_CONFIRM_DATE].dt.year
+            latest_year = target_data['year'].max()
+            target_data = target_data[target_data['year'] == latest_year]
         final = target_data[target_columns]
    
         return final
@@ -576,6 +544,7 @@ class TargetProtocol:
         -- Target type: Absolute over intensity
         -- If all else is equal: average the ambition of targets
         """
+        self.target_data = self.target_data.sort_index(level=self.target_data.index.names)
 
         grid_columns = [
             self.c.COLS.COMPANY_ID,
@@ -596,8 +565,8 @@ class TargetProtocol:
             ),
             columns=grid_columns + empty_columns,
         )
-        target_columns = extended_data.columns
-       
+        #target_columns = extended_data.columns
+        target_columns = extended_data.columns.tolist() #TODO - is this correct?
         results = []
         for _, row in extended_data.iterrows():
             result = self._find_target(row, target_columns)
@@ -608,4 +577,217 @@ class TargetProtocol:
 
         return self.data
     
-   
+    def sort_on_vintage(self, target_data: pd.DataFrame) -> pd.DataFrame:
+        """
+        For each combination of company id, time frame, and scope, find all targets with the same latest 
+        TARGET_CONFIRM_DATE and return as a DataFrame of targets.
+
+        :param target_data: a DataFrame with target data
+        :return: A DataFrame of targets sorted based on their vintage
+        """
+        target_data['statement_year'] = target_data['statement_date'].dt.year
+
+        # Find the latest year for each group
+        latest_years = target_data.groupby(
+            level=[self.c.COLS.COMPANY_ID, self.c.COLS.TIME_FRAME, self.c.COLS.SCOPE]
+        )['statement_year'].transform('max')
+
+        latest_data = target_data[target_data['statement_year'] == latest_years]
+
+        latest_data = latest_data.drop(columns=['statement_year'])
+
+        return latest_data
+    
+    def sort_boundary_coverage(self, data: pd.DataFrame) -> pd.DataFrame:
+        """
+        We want to select the scope 1 and scope 2 targets that have the highest
+        combined boundary coverage for each group of self.c.COLS.COMPANY_ID, 
+        self.c.COLS.TIME_FRAME, self.c.COLS.SCOPE. 
+        We compare combinations of individual scope 1 and scope 2
+        targets with combined S1+S2 targets, and select the combination with 
+        the highest boundary coverage. If there is only one single scope target
+        (e.g., S1 but no S2), we dismiss it.
+
+        :param data: A dataframe with the target data
+        :return: A dataframe with the target data sorted by boundary coverage
+        """
+        # Save the original columns to use when returning the result
+        original_columns = data.columns.tolist()
+        # Ensure the data is indexed properly
+        #data = data.reset_index(drop=True)
+        # Need to save dypes as well since conversion from Series to DataFrame can change them
+        original_dtype = data.dtypes
+        scope_1_2_mask = data[self.c.COLS.SCOPE].isin([EScope.S1, EScope.S2, EScope.S1S2])
+
+        # Use the boolean mask to filter for Scope 1 and Scope 2
+        scope_1_2_data = data[scope_1_2_mask]
+        #scope_1_2_data.reset_index(drop=False, inplace=True)
+        # Group by COMPANY_ID and TIME_FRAME
+        grouped_data = scope_1_2_data.groupby(level=[self.c.COLS.COMPANY_ID, self.c.COLS.TIME_FRAME])
+                
+        def get_best_s1_s2_combination(group: pd.DataFrame) -> Tuple[float, pd.DataFrame]:
+            """
+            Find the combination of S1 and S2 targets with the highest combined coverage
+            :param group: The group of data to analyze
+            :return: The row with the highest combined coverage
+            """
+            group_reset = group.reset_index(drop=True)
+            ghg_s1 = self.c.COLS.BASEYEAR_GHG_S1
+            ghg_s2 = self.c.COLS.BASEYEAR_GHG_S2
+
+            # Filter the data for S1 and S2 scopes
+            idx_s1 = group_reset[group_reset[self.c.COLS.SCOPE] == EScope.S1]
+            idx_s2 = group_reset[group_reset[self.c.COLS.SCOPE] == EScope.S2]
+
+            max_coverage = -float('inf')
+            best_combination = None
+
+            # Iterate over all combinations of S1 and S2
+            for i, row_s1 in idx_s1.iterrows():
+                for j, row_s2 in idx_s2.iterrows():
+                    # Calculate the weighted coverage
+                    weighted_coverage = (
+                        (row_s1['coverage_s1'] * row_s1[ghg_s1] + row_s2['coverage_s2'] * row_s2[ghg_s2]) 
+                        / (row_s1[ghg_s1] + row_s2[ghg_s2])
+                    )
+
+                    # Check if this is the best combination so far
+                    if weighted_coverage > max_coverage:
+                        max_coverage = weighted_coverage
+                        best_combination = (row_s1, row_s2)
+
+            # Combine the results into a single DataFrame
+            result = pd.DataFrame([best_combination[0], best_combination[1]]) # type: ignore
+
+            return max_coverage, result
+     
+        def get_best_combined_s1_s2_coverage(group: pd.DataFrame) -> Tuple[float, pd.DataFrame]:
+            """
+            Find the combined S1+S2 target with the highest weighted coverage
+            :param group: The group of data to analyze
+            :return: The row with the highest combined coverage
+            """
+            ghg_s1 = self.c.COLS.BASEYEAR_GHG_S1
+            ghg_s2 = self.c.COLS.BASEYEAR_GHG_S2
+            group = group.copy()
+            # Add column weighted_coverage to the DataFrame
+            group['weighted_coverage'] = (
+                (group[self.c.COLS.COVERAGE_S1] * group[ghg_s1] + group[self.c.COLS.COVERAGE_S2] * group[ghg_s2])
+                / (group[ghg_s1] + group[ghg_s2])
+            ) 
+            # Find the maximum weighted coverage
+            sorted_group = group.sort_values(by='weighted_coverage', ascending=False)
+            max_coverage = sorted_group['weighted_coverage'].max()
+            result = sorted_group[sorted_group['weighted_coverage'] == max_coverage].drop('weighted_coverage', axis=1)
+
+            return max_coverage, result
+        
+        def settle_tied_coverage(single_scope_s1_s2: pd.DataFrame, combined_s1s2: pd.DataFrame) -> Tuple[bool, pd.DataFrame]:
+            """
+            Settle a tie between two targets by selecting the one with the highest ETargetReference
+            :param single_scope_s1_s2: A dataframe with two rows representing the S1 and S2 targets
+            :param combined_s1s2: A dataframe with the S1+S2 target
+            :return: The target with the highest ETargetReference
+            """
+            # get values of the target types
+            single_type_1 = single_scope_s1_s2[self.c.COLS.TARGET_REFERENCE_NUMBER].iloc[0]
+            single_type_2 = single_scope_s1_s2[self.c.COLS.TARGET_REFERENCE_NUMBER].iloc[1]
+            combined_type = combined_s1s2[self.c.COLS.TARGET_REFERENCE_NUMBER].iloc[0]
+
+            if single_type_1 == single_type_2:
+                if single_type_1 > combined_type:
+                    return False, single_scope_s1_s2
+                elif single_type_1 < combined_type:
+                     return True, combined_s1s2
+                else: # If both boundary coverage and target type are equal, then we prefer single scope targets
+                    return False, single_scope_s1_s2
+            else:
+                min_single = min(single_type_1, single_type_2)
+                if combined_type <= min_single:
+                    return True, combined_s1s2
+                else:
+                    return False, single_scope_s1_s2
+                
+        # Initialize a list to collect the best entries
+        best_entries = []
+
+        # Iterate over each group of company_id and time_frame
+        for _, group in grouped_data:
+            # Check if both Scope 1 and Scope 2 exist in the group
+            s1_data = group[group[self.c.COLS.SCOPE] == EScope.S1]
+            s2_data = group[group[self.c.COLS.SCOPE] == EScope.S2]
+            combined_s1_s2 = group[group[self.c.COLS.SCOPE] == EScope.S1S2]
+
+            if not s1_data.empty and not s2_data.empty and not combined_s1_s2.empty:
+                # If all three scopes exist, we need to compare the combined S1+S2 target with the individual S1 and S2 targets
+                # Note that there may be more than one of each of the individual targets
+                # Find the row in s1 and s2 with the highest coverage
+                #s1_s2_group = group[group[self.c.COLS.SCOPE].isin([EScope.S1, EScope.S2])]
+                single_coverage, best_s1_s2_combination = get_best_s1_s2_combination(pd.concat([s1_data, s2_data]))
+                # find the S1+S2 row with the highest weighted coverage
+                combined_coverage, best_s1_s2_target = get_best_combined_s1_s2_coverage(combined_s1_s2)
+            
+                if single_coverage > combined_coverage:
+                    best = best_s1_s2_combination
+                    combined_best = False
+                elif single_coverage < combined_coverage:
+                    best = best_s1_s2_target
+                    combined_best = True
+                else:
+                    # If it's a tie we prefer the target with the best target type 
+                    combined_best, best = settle_tied_coverage(best_s1_s2_combination, best_s1_s2_target)            
+                if combined_best:
+                    best = self._split_s1s2_new(best)
+                best['to_calculate'] = True
+                best_entries.append(best)
+
+            elif not s1_data.empty and not s2_data.empty and combined_s1_s2.empty:
+                # If only S1 and S2 exist we find the combination of S1 and S2 with the highest combined coverage
+                # Note that there may be more than one of each of the individual targets
+                # Find the row in s1 and s2 with the highest coverage
+                single_coverage, best_s1_s2_combination = get_best_s1_s2_combination(pd.concat([s1_data, s2_data]))
+                #This must be the best combination, so we append it to the best entries
+                best_s1_s2_combination['to_calculate'] = True
+                best_entries.append(best_s1_s2_combination)
+
+            elif not combined_s1_s2.empty:
+                # If only the combined S1+S2 target exists, we find the S1+S2 target with the highest weighted coverage
+                # Note that there may be more than one S1+S2 target
+                _, best_s1_s2_target = get_best_combined_s1_s2_coverage(combined_s1_s2)
+                #This must be the best combination, so we append it to the best entries after splitting
+                # Process each row in best_s1_s2_target and apply _split_s1s2_new
+                split_rows = []
+                for _, row in best_s1_s2_target.iterrows():
+                    split_rows.append(self._split_s1s2_new(pd.DataFrame([row])))
+
+                # Concatenate the results
+                best_s1_s2_target = pd.concat(split_rows, ignore_index=True)
+                best_s1_s2_target['to_calculate'] = True
+                best_entries.append(best_s1_s2_target)
+
+            else:
+                best_entries.append(group)
+
+        # Concatenate all the best entries
+        for df in best_entries:
+            if isinstance(df, pd.DataFrame):
+                # Restore the original column types for each dataframe in best_entries
+                for col in df.columns:
+                    if col in original_dtype:
+                        df[col] = df[col].astype(original_dtype[col])
+        
+        result = pd.concat(best_entries, ignore_index=True)
+        if isinstance(result, pd.Series):
+            result = pd.DataFrame([result.values], columns = original_columns)
+        else:
+            result = result.reindex(columns=original_columns)
+        result = result.set_index([self.c.COLS.COMPANY_ID, self.c.COLS.TIME_FRAME, self.c.COLS.SCOPE], drop=False)
+       
+        # Replace the identified rows in the original DataFrame with the sorted DataFrame
+        remaining_data = data[~scope_1_2_mask]
+        data = pd.concat([result, remaining_data], ignore_index=True)
+        # Set the index again to maintain the original structure
+       
+        data = data.set_index([self.c.COLS.COMPANY_ID, self.c.COLS.TIME_FRAME, self.c.COLS.SCOPE], drop=False)
+            
+        return data

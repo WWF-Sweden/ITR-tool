@@ -75,27 +75,27 @@ class IDataProviderCompany(BaseModel):
     company_name: str
     company_id: str
     isic: str
-    ghg_s1: Optional[float]
-    ghg_s2: Optional[float]
-    ghg_s1s2: Optional[float] = None 
-    ghg_s3: Optional[float]
+    ghg_s1: Optional[float] = np.nan
+    ghg_s2: Optional[float] = np.nan
+    ghg_s1s2: Optional[float] = np.nan 
+    ghg_s3: Optional[float] = np.nan
 
     # Optional fields for scope 3 categories
-    ghg_s3_1: Optional[float]
-    ghg_s3_2: Optional[float]
-    ghg_s3_3: Optional[float]
-    ghg_s3_4: Optional[float]
-    ghg_s3_5: Optional[float]
-    ghg_s3_6: Optional[float]
-    ghg_s3_7: Optional[float]
-    ghg_s3_8: Optional[float]
-    ghg_s3_9: Optional[float]
-    ghg_s3_10: Optional[float]
-    ghg_s3_11: Optional[float]
-    ghg_s3_12: Optional[float]
-    ghg_s3_13: Optional[float]
-    ghg_s3_14: Optional[float]
-    ghg_s3_15: Optional[float]
+    ghg_s3_1: Optional[float] = np.nan
+    ghg_s3_2: Optional[float] = np.nan
+    ghg_s3_3: Optional[float] = np.nan
+    ghg_s3_4: Optional[float] = np.nan
+    ghg_s3_5: Optional[float] = np.nan
+    ghg_s3_6: Optional[float] = np.nan
+    ghg_s3_7: Optional[float] = np.nan
+    ghg_s3_8: Optional[float] = np.nan
+    ghg_s3_9: Optional[float] = np.nan
+    ghg_s3_10: Optional[float] = np.nan
+    ghg_s3_11: Optional[float] = np.nan
+    ghg_s3_12: Optional[float] = np.nan
+    ghg_s3_13: Optional[float] = np.nan
+    ghg_s3_14: Optional[float] = np.nan
+    ghg_s3_15: Optional[float] = np.nan
 
     country: Optional[str]
     region: Optional[str] 
@@ -168,6 +168,13 @@ class ETimeFrames(SortableEnum):
     MID = "mid"
     LONG = "long"
 
+#test this
+class ETargetReference(SortableEnum):
+    ABSOLUTE = "absolute"
+    INT_TO_ABS = "int_to_abs"
+    INTENSITY = "intensity"
+    T_SCORE = "t_score"
+
 class S3Category(SortableEnum):
     CAT_1 = 1
     CAT_2 = 2
@@ -184,7 +191,8 @@ class S3Category(SortableEnum):
     CAT_13 = 13
     CAT_14 = 14
     CAT_15 = 15
-    CAT_NAN = 0
+    CAT_H_LINE = 0
+    N_A = -1
 
 class IDataProviderTarget(BaseModel):
     company_id: str
@@ -202,15 +210,17 @@ class IDataProviderTarget(BaseModel):
     reduction_ambition: Optional[float]
     
     base_year: int
-    base_year_ghg_s1: Optional[float]
-    base_year_ghg_s2: Optional[float]
-    base_year_ghg_s3: Optional[float]
+    base_year_ghg_s1: Optional[float] = 0.0
+    base_year_ghg_s2: Optional[float] = 0.0
+    base_year_ghg_s1s2: Optional[float] = 0.0
+    base_year_ghg_s3: Optional[float] = 0.0
     
     start_year: Optional[int]
     end_year: int
     statement_date: Optional[date]
     time_frame: Optional[ETimeFrames]
-    achieved_reduction: Optional[float] = 0
+    achieved_reduction: Optional[float] = 0.0
+    to_calculate: Optional[bool] = False # Set to True if the target should be calculated
 
     target_ids: List[str] = Field(
         default_factory=list,

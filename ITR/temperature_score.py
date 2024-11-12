@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Optional, Tuple, Type, List
+from typing import Optional, Tuple, Type, List, Any, cast
 
 import pandas as pd
 import numpy as np
@@ -9,6 +9,7 @@ from .interfaces import (
     ScenarioInterface,
     EScope,
     ETimeFrames,
+    ETargetReference,
     Aggregation,
     AggregationContribution,
     ScoreAggregation,
@@ -102,11 +103,11 @@ class Scenario:
         else:
             return np.NaN
 
-    def get_fallback_score(self, fallback_score: float) -> float:
+    def get_default_score(self, default_score: float) -> float:
         if self.scenario_type == ScenarioType.TARGETS:
             return 1.75
         else:
-            return fallback_score
+            return default_score
 
     @staticmethod
     def from_dict(scenario_values: dict) -> Optional["Scenario"]:
@@ -161,7 +162,7 @@ class TemperatureScore(PortfolioAggregation):
     """
     This class provides a temperature score based on the climate goals.
 
-    :param fallback_score: The temp score if a company is not found
+    :param default_score: The temp score if a company is not found
     :param model: The regression model to use
     :param config: A class defining the constants that are used throughout this class. This parameter is only required
                     if you'd like to overwrite a constant. This can be done by extending the TemperatureScoreConfig
@@ -172,8 +173,8 @@ class TemperatureScore(PortfolioAggregation):
         self,
         time_frames: List[ETimeFrames],
         scopes: List[EScope],
-        fallback_score: TemperatureScoreConfig = TemperatureScoreConfig.FALLBACK_SCORE,
-        model: TemperatureScoreConfig = TemperatureScoreConfig.MODEL_NUMBER,
+        default_score: float = TemperatureScoreConfig.DEFAULT_SCORE,
+        model: int = TemperatureScoreConfig.MODEL_NUMBER,
         scenario: Optional[Scenario] = None,
         aggregation_method: PortfolioAggregationMethod = PortfolioAggregationMethod.WATS,
         grouping: Optional[List] = None,
@@ -183,13 +184,13 @@ class TemperatureScore(PortfolioAggregation):
         self.model = model
         self.c: Type[TemperatureScoreConfig] = config
         self.scenario: Optional[Scenario] = scenario
-        self.fallback_score = fallback_score
+        self.default_score = default_score
 
         self.time_frames = time_frames
         self.scopes = scopes
 
         if self.scenario is not None:
-            self.fallback_score = self.scenario.get_fallback_score(self.fallback_score)
+            self.default_score = self.scenario.get_default_score(self.default_score)
 
         self.aggregation_method: PortfolioAggregationMethod = aggregation_method
         self.grouping: list = []
@@ -252,8 +253,6 @@ class TemperatureScore(PortfolioAggregation):
                 1 / (target[self.c.COLS.END_YEAR] - target[self.c.COLS.BASE_YEAR])
             ) -1
 
-            # LAR = target[self.c.COLS.REDUCTION_AMBITION] / float(
-            #     target[self.c.COLS.END_YEAR] - target[self.c.COLS.BASE_YEAR])
             return abs(CAR)
 
     def get_regression(
@@ -293,10 +292,12 @@ class TemperatureScore(PortfolioAggregation):
         Merge the data with the regression parameters from the CDP-WWF Warming Function.
         :param data: The data to merge
         :return: The data set, amended with the regression parameters
-        """
-        data[self.c.COLS.SLOPE] = data.apply(
-            lambda row: self.c.SLOPE_MAP.get(row[self.c.COLS.TIME_FRAME], None), axis=1
-        )
+        """     
+        def get_slope(row: pd.Series) -> Optional[str]:
+            return self.c.SLOPE_MAP.get(row[self.c.COLS.TIME_FRAME], None)
+
+        data[self.c.COLS.SLOPE] = data.apply(lambda row: get_slope(row), axis=1) # type: ignore
+
         return pd.merge(
             left=data,
             right=self.regression_model,
@@ -312,12 +313,9 @@ class TemperatureScore(PortfolioAggregation):
         :param target: The target as a row of a data frame
         :return: The temperature score
         """
-        if (
-            pd.isnull(target[self.c.COLS.REGRESSION_PARAM])
-            or pd.isnull(target[self.c.COLS.REGRESSION_INTERCEPT])
-            or pd.isnull(target[self.c.COLS.ANNUAL_REDUCTION_RATE])
-        ):
-            return self.fallback_score, 1.0
+   
+        if not target.to_calculate:
+            return self.default_score, 1.0
         
         # CAR formula won't accept reduction of 100%, so assign the floor temperature score
         if abs(target[self.c.COLS.REDUCTION_AMBITION] - 1.0) < self.c.EPSILON:
@@ -344,11 +342,11 @@ class TemperatureScore(PortfolioAggregation):
         else:
             return (
                 ts * self.c.SBTI_FACTOR
-                + self.fallback_score * (1 - self.c.SBTI_FACTOR),
+                + self.default_score * (1 - self.c.SBTI_FACTOR),
                 0,
             )
 
-    def get_ghc_temperature_score(
+    def aggregate_company_score(
         self, row: pd.Series, company_data: pd.DataFrame
     ) -> Tuple[float, float, list]:
         """
@@ -369,59 +367,61 @@ class TemperatureScore(PortfolioAggregation):
                 row[self.c.TEMPERATURE_RESULTS],
                 row[self.c.COLS.TARGET_IDS],
             )
-        s1 = company_data.loc[
-            (row[self.c.COLS.COMPANY_ID], row[self.c.COLS.TIME_FRAME], EScope.S1)
-        ]
-        s2 = company_data.loc[
-            (row[self.c.COLS.COMPANY_ID], row[self.c.COLS.TIME_FRAME], EScope.S2)
-        ]
-        s3 = company_data.loc[
-            (row[self.c.COLS.COMPANY_ID], row[self.c.COLS.TIME_FRAME], EScope.S3)
-        ]
-
-        # returning different sets of target_ids depending on how GHG temperature score is determined
-        s1_targets = s1[self.c.COLS.TARGET_IDS]
-        s2_targets = s2[self.c.COLS.TARGET_IDS]
-        combined_targets = ((s1_targets or []) + (s2_targets or []) + (s3[self.c.COLS.TARGET_IDS] or [])) or None
-
-        # Return original score ghg scope 1, 2 or 3 is empty
-        if (pd.isnull(s1[self.c.COLS.GHG_SCOPE1]) or
-                pd.isnull(s2[self.c.COLS.GHG_SCOPE2]) or
-                pd.isnull(s3[self.c.COLS.GHG_SCOPE3])
-            ):
-            return (
-                row[self.c.COLS.TEMPERATURE_SCORE],
-                row[self.c.TEMPERATURE_RESULTS],
-                row[self.c.COLS.TARGET_IDS],
-            )
         
-        try:
-            company_emissions = (
-                s1[self.c.COLS.GHG_SCOPE1] + s2[self.c.COLS.GHG_SCOPE2] + s3[self.c.COLS.GHG_SCOPE3]
-            )
-            return (
-                (
-                    s1[self.c.COLS.TEMPERATURE_SCORE]
-                    * s1[self.c.COLS.GHG_SCOPE1]
-                    + s2[self.c.COLS.TEMPERATURE_SCORE]
-                    * s2[self.c.COLS.GHG_SCOPE2]
-                    + s3[self.c.COLS.TEMPERATURE_SCORE] 
-                    * s3[self.c.COLS.GHG_SCOPE3]
-                )
-                / company_emissions,
-                (
-                    s1[self.c.TEMPERATURE_RESULTS] * s1[self.c.COLS.GHG_SCOPE1]
-                    + s2[self.c.TEMPERATURE_RESULTS] * s2[self.c.COLS.GHG_SCOPE2]
-                    + s3[self.c.TEMPERATURE_RESULTS] * s3[self.c.COLS.GHG_SCOPE3]
-                )
-                / company_emissions,
-                combined_targets,
-            )
+        s1 = company_data.xs(
+            (row[self.c.COLS.COMPANY_ID], row[self.c.COLS.TIME_FRAME], EScope.S1)
+        )
+        s2 = company_data.xs(
+            (row[self.c.COLS.COMPANY_ID], row[self.c.COLS.TIME_FRAME], EScope.S2)
+        )
+        s1s2 = company_data.xs(
+            (row[self.c.COLS.COMPANY_ID], row[self.c.COLS.TIME_FRAME], EScope.S1S2)
+        )
+        s3 = company_data.xs(
+            (row[self.c.COLS.COMPANY_ID], row[self.c.COLS.TIME_FRAME], EScope.S3)
+        )
 
-        # TODO - this doesn't get triggered if denom is np.float64, instead returns an (inf, inf),
-        #  which 'ruins' the default score return and end up with NULL values where should have defaults
-        except ZeroDivisionError:
-            raise ValueError("The mean of the S1+S2 plus the S3 emissions is zero")
+        s1_ghg = s1[self.c.COLS.GHG_SCOPE1]
+        s2_ghg = s2[self.c.COLS.GHG_SCOPE2]
+        s1s2_ghg = s1s2[self.c.COLS.GHG_SCOPE12]
+        s3_ghg = s3[self.c.COLS.GHG_SCOPE3]
+
+        if s1_ghg > 0 and s2_ghg > 0 and s3_ghg > 0:
+            combined_TS = (s1.temperature_score * s1_ghg + 
+            s2.temperature_score * s2_ghg + 
+            s3.temperature_score * s3_ghg
+            ) / (s1_ghg + s2_ghg + s3_ghg)
+            combined_TR = (s1.temperature_results * s1_ghg +
+            s2.temperature_results * s2_ghg +
+            s3.temperature_results * s3_ghg
+            ) / (s1_ghg + s2_ghg + s3_ghg)
+            combined_targets = list((s1.target_ids or []) + 
+            (s2.target_ids or []) + (s3.target_ids or [])) or []
+        elif s1s2_ghg > 0 and s3_ghg > 0:
+            if s1s2.to_calculate:
+                combined_TS = (s1s2.temperature_score * s1s2_ghg + 
+                s3.temperature_score * s3_ghg
+                ) / (s1s2_ghg + s3_ghg)
+            else:
+                combined_TS = max(s1s2.temperature_score.item(), s3.temperature_score.item())
+
+            combined_TR = (s1s2.temperature_results * s1s2_ghg + 
+            s3.temperature_results * s3_ghg
+            ) / (s1s2_ghg + s3_ghg)
+            combined_targets = list((s1s2.target_ids or []) + 
+            (s3.target_ids or [])) or []
+        else:
+            combined_TS = max(s1s2.temperature_score.item(), s3.temperature_score.item())
+            combined_TR = row[self.c.TEMPERATURE_RESULTS]
+            combined_targets = row[self.c.COLS.TARGET_IDS]
+       
+
+        return (
+            combined_TS,
+            combined_TR,
+            combined_targets
+        ) # type: ignore Pylance doesn't understand that TS and TR are floats
+     
 
     def get_default_score(self, target: pd.Series) -> int:
         """
@@ -468,18 +468,19 @@ class TemperatureScore(PortfolioAggregation):
 
         data[self.c.COLS.TARGET_REFERENCE_NUMBER] = data[
             self.c.COLS.TARGET_REFERENCE_NUMBER
-        ].replace({np.nan: self.c.VALUE_TARGET_REFERENCE_ABSOLUTE})
+        #].replace({np.nan: self.c.VALUE_TARGET_REFERENCE_ABSOLUTE})
+        ].replace({np.nan: ETargetReference.ABSOLUTE.value})
        
         # Replacing NaN with empty list in column target_ids
         data[self.c.COLS.TARGET_IDS] = data[self.c.COLS.TARGET_IDS].apply(
             lambda x: x if isinstance(x, list) else []
         )
         data[self.c.COLS.AR6] = data.apply(
-            lambda row: self.get_target_mapping(row), axis=1
-        )
+            lambda row: self.get_target_mapping(row), axis=1 # type: ignore
+        )  # type: ignore
         data[self.c.COLS.ANNUAL_REDUCTION_RATE] = data.apply(
-            lambda row: self.get_annual_reduction_rate(row), axis=1
-        )
+            lambda row: self.get_annual_reduction_rate(row), axis=1 # type: ignore
+        ) # type: ignore
         data = self._merge_regression(data)
 
         data[self.c.COLS.TEMPERATURE_SCORE], data[self.c.TEMPERATURE_RESULTS] = zip(
@@ -496,7 +497,7 @@ class TemperatureScore(PortfolioAggregation):
         :param data: The original data set as a pandas data frame
         :return: The data frame, with an updated s1s2s3 temperature score
         """
-        # Calculate the GHC
+     
         company_data = (
             data[
                 [
@@ -505,10 +506,12 @@ class TemperatureScore(PortfolioAggregation):
                     self.c.COLS.SCOPE,
                     self.c.COLS.GHG_SCOPE1,
                     self.c.COLS.GHG_SCOPE2,
+                    self.c.COLS.GHG_SCOPE12,
                     self.c.COLS.GHG_SCOPE3,
                     self.c.COLS.TEMPERATURE_SCORE,
                     self.c.COLS.TARGET_IDS,
                     self.c.TEMPERATURE_RESULTS,
+                    self.c.COLS.TO_CALCULATE,
                 ]
             ]
             .groupby(
@@ -519,10 +522,12 @@ class TemperatureScore(PortfolioAggregation):
                 {
                     self.c.COLS.GHG_SCOPE1: "mean",
                     self.c.COLS.GHG_SCOPE2: "mean",
+                    self.c.COLS.GHG_SCOPE12: "mean",
                     self.c.COLS.GHG_SCOPE3: "mean",
                     self.c.COLS.TEMPERATURE_SCORE: "mean",
                     self.c.TEMPERATURE_RESULTS: "mean",
                     self.c.COLS.TARGET_IDS: "sum",
+                    self.c.COLS.TO_CALCULATE: "any",
                 }
             )
         )
@@ -538,7 +543,7 @@ class TemperatureScore(PortfolioAggregation):
             data[self.c.COLS.TARGET_IDS],
         ) = zip(
             *data.apply(
-                lambda row: self.get_ghc_temperature_score(row, company_data), axis=1
+                lambda row: self.aggregate_company_score(row, company_data), axis=1
             )
         )
         return data
@@ -568,7 +573,10 @@ class TemperatureScore(PortfolioAggregation):
 
         data = self._prepare_data(data)
 
-        data = self._calculate_s3_score(data)
+        data = self._calculate_s1s2_score(data)
+
+        # data = self._aggregate_s3_score(data)
+        data = self._aggregate_s3_score(data)
 
         if EScope.S1S2S3 in self.scopes:
             # self._check_column(data, self.c.COLS.GHG_SCOPE12)
@@ -577,9 +585,9 @@ class TemperatureScore(PortfolioAggregation):
 
         # We need to filter the scopes again, because we might have had to add a scope in the preparation step
         data = data[data[self.c.COLS.SCOPE].isin(self.scopes)]
-        data[self.c.COLS.TEMPERATURE_SCORE] = data[self.c.COLS.TEMPERATURE_SCORE].round(
-            2
-        )
+        data[self.c.COLS.TEMPERATURE_SCORE] = data[self.c.COLS.TEMPERATURE_SCORE].round(2)
+        data.drop(columns=['to_calculate'], inplace=True)
+        
         return data
 
     def _get_aggregations(
@@ -676,9 +684,9 @@ class TemperatureScore(PortfolioAggregation):
         :return: A weighted temperature score for the portfolio
         """
 
-        score_aggregations = ScoreAggregations()
+        score_aggregations = ScoreAggregations() # type: ignore
         for time_frame in self.time_frames:
-            score_aggregation_scopes = ScoreAggregationScopes()
+            score_aggregation_scopes = ScoreAggregationScopes() # type: ignore
             for scope in self.scopes:
                 score_aggregation_scopes.__setattr__(
                     scope.name, self._get_score_aggregation(data, time_frame, scope)
@@ -697,6 +705,7 @@ class TemperatureScore(PortfolioAggregation):
         """
         if self.scenario is None:
             return scores
+              
         if self.scenario.scenario_type == ScenarioType.APPROVED_TARGETS:
             score_based_on_target = ~pd.isnull(
                 scores[self.c.COLS.TARGET_REFERENCE_NUMBER]
@@ -704,7 +713,7 @@ class TemperatureScore(PortfolioAggregation):
             scores.loc[
                 score_based_on_target, self.c.COLS.TEMPERATURE_SCORE
             ] = scores.loc[score_based_on_target, self.c.COLS.TEMPERATURE_SCORE].apply(
-                lambda x: min(x, self.scenario.get_score_cap())
+                lambda x: min(x, self.scenario.get_score_cap()) # type: ignore
             )
         elif self.scenario.scenario_type == ScenarioType.HIGHEST_CONTRIBUTORS:
             # Cap scores of 10 highest contributors per time frame-scope combination
@@ -731,15 +740,15 @@ class TemperatureScore(PortfolioAggregation):
                             company_mask, self.c.COLS.TEMPERATURE_SCORE
                         ] = scores.loc[
                             company_mask, self.c.COLS.TEMPERATURE_SCORE
-                        ].apply(
-                            lambda x: min(x, self.scenario.get_score_cap())
+                        ].apply( # type: ignore
+                            lambda x: min(x, self.scenario.get_score_cap()) # type: ignore
                         )
         elif self.scenario.scenario_type == ScenarioType.HIGHEST_CONTRIBUTORS_APPROVED:
             score_based_on_target = scores[self.c.COLS.ENGAGEMENT_TARGET]
             scores.loc[
                 score_based_on_target, self.c.COLS.TEMPERATURE_SCORE
             ] = scores.loc[score_based_on_target, self.c.COLS.TEMPERATURE_SCORE].apply(
-                lambda x: min(x, self.scenario.get_score_cap())
+                lambda x: min(x, self.scenario.get_score_cap()) # type: ignore
             )
         return scores
 
@@ -760,150 +769,135 @@ class TemperatureScore(PortfolioAggregation):
             ] = "Company" + str(index + 1)
         return scores
 
+    def _calculate_s1s2_score(self, data: pd.DataFrame) -> pd.DataFrame:
+        """
+        Calculate the combined S1S2 score each combination of company_id, time_frame and scope.
+        If it was possible på calculate individual S1 and S2 scores, then we calculate the 
+        aggregated S1S2 score.
 
-    def _calculate_s3_score(self, data: pd.DataFrame) -> pd.DataFrame:
+        :param data: The data to calculate the S1S2 score for.
+        :return: The S1S2 score.
         """
-        Calculate the combined S3 score each combination of company_id, time_frame and scope.
-        First 
-        :param data: The data to calculate the S3 score for.
-        :return: The S3 score.
+              
+        s1s2_data_mask = data[self.c.COLS.SCOPE].isin([EScope.S1, EScope.S2, EScope.S1S2])
+        s1s2_data = data[s1s2_data_mask].copy()
+        grouped_data = s1s2_data.groupby(['company_id', 'time_frame'])
+
+        for _, group in grouped_data:
+            s1s2_score = np.nan # Initailize the s1s2_score to NaN
+            s1_s2_results = 1.0 # Initialize the s1_s2_results to 1.0
+            if (group.loc[group['scope'] == EScope.S1,'to_calculate'].item() or
+                group.loc[group['scope'] == EScope.S2, 'to_calculate'].item()
+            ):
+                # S1 and S2 scores are either calulted or default scores from earlier
+                s1_score = float(group.loc[group['scope'] == EScope.S1, 'temperature_score'].item())
+                s2_score = float(group.loc[group['scope'] == EScope.S2, 'temperature_score'].item())
+                s1_results = float(group.loc[group['scope'] == EScope.S1, 'temperature_results'].item())
+                s2_results = float(group.loc[group['scope'] == EScope.S2, 'temperature_results'].item())
+                s1_ghg = float(group.loc[group['scope'] == EScope.S1, 'ghg_s1'].item())
+                s2_ghg = float(group.loc[group['scope'] == EScope.S2, 'ghg_s2'].item())
+                # REQUIREMENT 6.5 Temperature Score Aggregation
+                
+                if not np.isnan(s1_ghg) and not np.isnan(s2_ghg):
+                    try:
+                        s1s2_score = (s1_score * s1_ghg + s2_score * s2_ghg) / (s1_ghg + s2_ghg)
+                        s1_s2_results = (s1_results * s1_ghg + s2_results * s2_ghg) / (s1_ghg + s2_ghg)
+                    except ZeroDivisionError:
+                       print("Division by zero")
+                       print(f"Target ID {group['target_ids'].values[0]}")
+                else:
+                    s1s2_score = max(s1_score, s2_score)
+                    s1_s2_results = 0.5
+                group.loc[group['scope'] == EScope.S1S2, 'temperature_score'] = s1s2_score
+                group.loc[group['scope'] == EScope.S1S2, 'temperature_results'] = round(s1_s2_results, 2)
+                s1_target_ids = group[group['scope'] == EScope.S1]['target_ids'].values 
+                s2_target_ids = group[group['scope'] == EScope.S2]['target_ids'].values
+                combined_target_ids = list(set().union(*s1_target_ids, *s2_target_ids))
+                idx = group.index[group['scope'] == EScope.S1S2][0] 
+                group.at[idx, 'target_ids'] = combined_target_ids
+                        
+                # Explicitly infer object types to avoid future warnings
+                group = group.infer_objects()
+                    # Update the original data DataFrame
+                data.update(group)
+                    
+        return data
+          
+    def _aggregate_s3_score(self, data: pd.DataFrame) -> pd.DataFrame:
         """
-        s3_data_columns = data.columns.tolist()
-       
-        s3_data = data[data['scope'] == EScope.S3]
-    
-        # Separate rows with s3_category == CAT_15
+        Aggregate Scope 3 category scores into a single score per company and time frame.
+
+        Steps:
+        1) Calculate the mean temperature score for `s3_category == CAT_15`.
+        2) Remove original CAT_15 rows and append the mean CAT_15 score back to the data.
+        3) For each company and time frame:
+        a) If GHG data is available for all categories, calculate a weighted average.
+        b) If not, calculate a simple average of the scores.
+        4) Replace the original scores with the aggregated score.
+        """
+        # Separate Scope 3 data
+        s3_data = data[data['scope'] == EScope.S3].copy()
+
+        # Step 1: Calculate mean temperature score for CAT_15
         cat_15_data = s3_data[s3_data['s3_category'] == S3Category.CAT_15].copy()
-
-        # Calculate mean temperature for s3_category = 15 for each time_frame
-        mean_temp_15 = cat_15_data.groupby(['company_id', 'time_frame', 'scope'], as_index=False).agg({
+        mean_cat_15 = cat_15_data.groupby(['company_id', 'time_frame']).agg({
             'temperature_score': 'mean',
             'target_ids': lambda x: list(set().union(*x)),
-            'target_type': lambda x: x.iloc[0],  # Retain original target_type value
-            's3_category': lambda x: S3Category.CAT_NAN if pd.isnull(x.iloc[0]) else x.iloc[0],  # Retain original s3_category value
-            'ghg_s3_15': lambda x: x.iloc[0]      # Retain original ghg_s3_15 value
-        })
-
-        # Remove the original CAT_15 rows from s3_data
-        s3_data = s3_data[s3_data['s3_category'] != S3Category.CAT_15]
-
-        # Identify the columns that are present in s3_data but not in mean_temp_15
-        missing_columns = set(s3_data.columns) - set(mean_temp_15.columns)
-
-        # Add missing columns to mean_temp_15 with appropriate data types
-        for column in missing_columns:
-            mean_temp_15[column] = None
-            mean_temp_15[column] = mean_temp_15[column].astype(s3_data[column].dtype)
-
-        # Reorder columns in mean_temp_15 to match the order in s3_data
-        mean_temp_15 = mean_temp_15[s3_data.columns]
-
-        # Append the new DataFrame to s3_data
-        s3_data = pd.concat([s3_data, mean_temp_15])
-
-        # Sort by company_id and time_frame to ensure data integrity
-        s3_data.sort_values(by=['company_id', 'time_frame'], inplace=True)
-
-        # Reset index to ensure continuous index after concatenation
-        s3_data.reset_index(drop=True, inplace=True)
-
-        ghg_columns = self.c.S3_CATEGORY_MAPPINGS
-                 
-        s3_data['weight'] = s3_data.apply(
-            lambda row: row[ghg_columns.get(row['s3_category'])] 
-                if not pd.isna(row['s3_category']) 
-                else np.nan, 
-            axis=1
-        )
-        valid_groups = s3_data.groupby(['company_id', 'time_frame']).filter(lambda x: not x['weight'].isnull().any())
-
-        # Group by 'company_id' and 'time_frame' and compute the sum of 'weight' for each group
-        sum_weights = valid_groups.groupby(['company_id', 'time_frame'])['weight'].transform('sum')
-
-        # Divide each 'weight' by the sum of 'weight' for its group
-        valid_groups['sum_weights'] = valid_groups['weight'] / sum_weights
-
-        # Fill NaN values with NA
-        valid_groups['sum_weights'] = valid_groups['sum_weights'].fillna(pd.NA)
-
-        # Update 'sum_weights' column in the original DataFrame 's3_data'
-        s3_data['sum_weights'] = valid_groups['sum_weights']
-        
-        # Calculate the weighted sum of 'temperature_score' for each group
-        weighted_sum = s3_data['temperature_score'] * s3_data['sum_weights']
-        s3_data['weighted_sum'] = weighted_sum.fillna(0)  # Fill NaN with 0 to avoid NaN in sum
-
-        # Group by 'company_id' and 'time_frame' and sum the weighted sum for each group
-        s3_data['weighted_sum'] = s3_data.groupby(['company_id', 'time_frame'])['weighted_sum'].transform('sum')
-
-        # Calculate the average of 'temperature_score' for each group
-        average_temperature_score = s3_data.groupby(['company_id', 'time_frame'])['temperature_score'].transform('mean')
-
-        # Update 's3_mean_scores' with the weighted sum if available, otherwise with the average
-        s3_data['s3_mean_scores'] = s3_data['weighted_sum'].where(s3_data['sum_weights']
-                                        .notnull(), average_temperature_score).infer_objects()
-
-        # Drop the 'weighted_sum' column
-        s3_data.drop(columns=['weighted_sum'], inplace=True)
-
-        # Combine target ids for each company_id and time_frame
-        def combine_target_ids(group):
-            non_empty_lists = [x for x in group if x]
-            if non_empty_lists:
-                return list(set(sum(non_empty_lists, [])))
-            else:
-                return []
-
-        # Group by 'company_id' and 'time_frame' and aggregate the lists of 'target_ids'
-        combined_target_ids = s3_data.groupby(['company_id', 'time_frame'])['target_ids'].agg(combine_target_ids)
-
-        # Reset index to make 'company_id' and 'time_frame' columns again
-        combined_target_ids = combined_target_ids.reset_index()
-
-        # Merge the combined_target_ids DataFrame with the original s3_data DataFrame
-        s3_data = pd.merge(s3_data, combined_target_ids, on=['company_id', 'time_frame'], how='left')
-
-        # Drop the original 'target_ids' column
-        if 'target_ids_x' in s3_data.columns:
-            s3_data.drop(columns=['target_ids_x'], inplace=True)
-
-        # Rename the combined column to 'target_ids'
-        s3_data.rename(columns={'target_ids_y': 'target_ids'}, inplace=True)
-     
-        # Calculate weighted mean temperature for s3_category not equal to 15 for each time_frame
-        columns_to_exclude = ['company_id', 'time_frame', 'scope']
-        for column in columns_to_exclude:
-            s3_data_columns.remove(column)              
-        s3_data = s3_data.groupby(['company_id', 'time_frame', 'scope']).agg({
-            column: 'first' for column in s3_data_columns
+            'target_type': 'first',
+            's3_category': 'first',
+            'ghg_s3_15': 'first',
+            'company_name': 'first'
         }).reset_index()
-        
-        
-        data.drop_duplicates(subset=['company_id', 'time_frame', 'scope'], keep='last', inplace=True)
-        data.set_index(['company_id', 'time_frame', 'scope'], inplace=True)
-        s3_data.set_index(['company_id', 'time_frame', 'scope'], inplace=True)
-        # Make a deep copy of the data
-        temp_data = data.copy(deep=True)
 
-        # Loop over each column
-        for col in temp_data.columns:
-            # Check if the column exists in s3_data
-            if col in s3_data.columns:
-                # Make a copy of the column in s3_data
-                temp_s3_data = s3_data[col].copy()
-                
-                # Cast the values in temp_s3_data to the data type of the column in temp_data
-                temp_s3_data = temp_s3_data.astype(temp_data[col].dtype)
-                
-                # Update the column in temp_data
-                temp_data.loc[:, col] = temp_data.loc[:, col].combine_first(temp_s3_data)
+        # Step 2: Remove original CAT_15 rows and append the mean score
+        s3_data = s3_data[s3_data['s3_category'] != S3Category.CAT_15]
+        s3_data = pd.concat([s3_data, mean_cat_15], ignore_index=True)
 
-        # Update the original data DataFrame
-        data = data.combine_first(temp_data)
+        # Ensure all required columns are present
+        required_columns = data.columns.tolist()
+        for col in required_columns:
+            if col not in s3_data.columns:
+                s3_data[col] = np.nan
+        s3_data = s3_data[required_columns]
 
-        #data.update(s3_data)
-        data.reset_index(inplace=True)
-    
+        # Step 3: Aggregate scores for each company and time frame
+        aggregated_rows = []
+        grouped = s3_data.groupby(['company_id', 'time_frame'])
+        for _ , group in grouped:
+            temperature_scores = np.full(15, 3.4)
+            ghg_values = np.zeros(15)
+            ghg_available = True
+
+            for _, row in group.iterrows():
+                s3_category = row['s3_category']
+                if pd.notna(s3_category) and isinstance(s3_category, S3Category):
+                    index = s3_category.value - 1  # Convert category to index
+                    temperature_scores[index] = row['temperature_score']
+                    ghg_column = f'ghg_s3_{s3_category.value}'
+                    ghg_value = row.get(ghg_column, 0.0)
+                    if ghg_value > 0.0:
+                        ghg_values[index] = ghg_value
+                    else:
+                        ghg_available = False
+
+            # Calculate weighted or simple average
+            if ghg_available and ghg_values.sum() > 0.0:
+                weighted_avg = np.sum(ghg_values * temperature_scores) / np.sum(ghg_values)
+            else:
+                weighted_avg = temperature_scores.mean()
+
+            # Create aggregated row
+            aggregated_row = group.iloc[0].copy()
+            aggregated_row['temperature_score'] = weighted_avg
+            aggregated_row['target_ids'] = sum(group['target_ids'], [])
+            aggregated_row['s3_category'] = 'Aggregated'
+
+            aggregated_rows.append(aggregated_row)
+
+        # Step 4: Replace original s3_data with aggregated data
+        aggregated_data = pd.DataFrame(aggregated_rows)
+        data = data[data['scope'] != EScope.S3]
+        data = pd.concat([data, aggregated_data], ignore_index=True)
+        data.sort_values(by=['company_id', 'time_frame', 'scope'], inplace=True)
+
         return data
-
-        

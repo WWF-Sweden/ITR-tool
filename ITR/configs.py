@@ -4,11 +4,11 @@ the module, extend the respective config class and pass it to the class as the "
 """
 import os
 
-from ITR.interfaces import ETimeFrames, EScope, S3Category
+from ITR.interfaces import ETimeFrames, EScope, S3Category, ETargetReference
 
 
 class ColumnsConfig:
-    # Define a constant for each column used in the
+    # Define a constant for each column used in the input data
     COMPANY_ID = "company_id"
     COMPANY_ISIN = "company_isin"
     COMPANY_LEI = "company_lei"
@@ -66,13 +66,15 @@ class ColumnsConfig:
     REGRESSION_MODEL = "Regression_model"
     BASEYEAR_GHG_S1 = "base_year_ghg_s1"
     BASEYEAR_GHG_S2 = "base_year_ghg_s2"
+    BASEYEAR_GHG_S1S2 = "base_year_ghg_s1s2"
     BASEYEAR_GHG_S3 = "base_year_ghg_s3"
     REGION = "region"
     ENGAGEMENT_TARGET = "engagement_target"
     BASE_YEAR_TS = "base_year_ts"
     END_YEAR_TS = "end_year_ts"
+    TO_CALCULATE = "to_calculate"
 
-    # Scope 3 categories
+    # Scope 3 categories - from fundamental data
     GHG_S3_1 = "ghg_s3_1"
     GHG_S3_2 = "ghg_s3_2"
     GHG_S3_3 = "ghg_s3_3"
@@ -113,8 +115,8 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
     """
 
     SBTI_FACTOR = 1
-    FALLBACK_SCORE: float = 3.4
-    TEMPERATURE_FLOOR: float = 1.5  
+    DEFAULT_SCORE: float = 3.4
+    TEMPERATURE_FLOOR: float = 1.5 # -30   
   
     JSON_REGRESSION_MODEL = os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
@@ -124,16 +126,18 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
     MODEL_NUMBER: int = 1
     DEFAULT_INDUSTRY = "Others"
 
-    VALUE_TARGET_REFERENCE_ABSOLUTE = "absolute"
-    VALUE_TARGET_REFERENCE_T_SCORE = "t_score"
-    VALUE_TARGET_REFERENCE_INTENSITY = "intensity"
-    VALUE_TARGET_REFERENCE_INTENSITY_BASE = "int"
+    # VALUE_TARGET_REFERENCE_ABSOLUTE = "absolute"
+    # VALUE_TARGET_REFERENCE_T_SCORE = "t_score"
+    # VALUE_TARGET_REFERENCE_INTENSITY = "intensity"
+    VALUE_TARGET_REFERENCE_INTENSITY_BASE = "inte"
 
     SLOPE_MAP = {
         ETimeFrames.SHORT: "slopeCA5",
         ETimeFrames.MID: "slopeCA10",
         ETimeFrames.LONG: "slopeCA30",
     }
+    #test this
+    VALUE_TARGET_REFERENCE = ETargetReference
 
     INTENSITY_MAPPINGS = {
         ("Revenue", EScope.S1): "INT.emKyoto_gdp",
@@ -154,9 +158,12 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
         ("Aluminum", EScope.S1): "INT.emKyoto_gdp",
         ("Aluminum", EScope.S2): "INT.emCO2energysupply_SE",
         ("Aluminum", EScope.S3): "INT.emKyoto_gdp",
-        ("Power", EScope.S2): "INT.emCO2energysupply_SE",
         ("Power", EScope.S1): "INT.emCO2energysupply_SE",
+        ("Power", EScope.S2): "INT.emCO2energysupply_SE",
         ("Power", EScope.S3): "INT.emKyoto_gdp",
+        ("Other", EScope.S1): "INT.emKyoto_gdp",
+        ("Other", EScope.S2): "INT.emCO2energysupply_SE",
+        ("Other", EScope.S3): "INT.emKyoto_gdp",
     }
     ABSOLUTE_MAPPINGS = {
         # B06: Extraction Of Crude Petroleum And Natural Gas
@@ -219,7 +226,7 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
             S3Category.CAT_13: "ghg_s3_13",
             S3Category.CAT_14: "ghg_s3_14",
             S3Category.CAT_15: "ghg_s3_15",
-            S3Category.CAT_NAN: "ghg_s3"
+            S3Category.CAT_H_LINE: "ghg_s3"
     }
     EPSILON = 1e-6
 
