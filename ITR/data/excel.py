@@ -25,6 +25,7 @@ class ExcelProvider(DataProvider):
         self.data['target_data'][['achieved_reduction']] = self.data['target_data'][['achieved_reduction']].fillna(0.0)
         self.data['target_data'][['base_year_ghg_s1', 'base_year_ghg_s2', 'base_year_ghg_s3']] = \
             self.data['target_data'][['base_year_ghg_s1', 'base_year_ghg_s2', 'base_year_ghg_s3']].fillna(0.0)
+        self.data['target_data']['end_year'] = self.data['target_data']['end_year'].fillna(0)
         self.data['target_data']['scope'] = self.data['target_data']['scope'].replace({'S1S2S3': 'S1+S2+S3'})
         self.data['target_data']['scope'] = self.data['target_data']['scope'].replace({'S1S2': 'S1+S2'})
         # Check for optional columns in 'fundamental_data' and handle missing values
