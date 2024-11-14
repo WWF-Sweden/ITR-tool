@@ -590,7 +590,6 @@ class TemperatureScore(PortfolioAggregation):
 
         # We need to filter the scopes again, because we might have had to add a scope in the preparation step
         data = data[data[self.c.COLS.SCOPE].isin(self.scopes)]
-        data[self.c.COLS.TEMPERATURE_SCORE] = data[self.c.COLS.TEMPERATURE_SCORE].round(3)
         data.drop(columns=['to_calculate'], inplace=True)
         
         return data
@@ -814,7 +813,7 @@ class TemperatureScore(PortfolioAggregation):
                     s1s2_score = max(s1_score, s2_score)
                     s1_s2_results = 0.5
                 group.loc[group['scope'] == EScope.S1S2, 'temperature_score'] = s1s2_score
-                group.loc[group['scope'] == EScope.S1S2, 'temperature_results'] = round(s1_s2_results, 3)
+                group.loc[group['scope'] == EScope.S1S2, 'temperature_results'] = s1_s2_results
                 s1_target_ids = group[group['scope'] == EScope.S1]['target_ids'].values 
                 s2_target_ids = group[group['scope'] == EScope.S2]['target_ids'].values
                 combined_target_ids = list(set().union(*s1_target_ids, *s2_target_ids))
