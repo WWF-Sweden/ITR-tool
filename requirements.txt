@@ -13,3 +13,4 @@ six==1.16.0; (python_version >= "2.7" and python_full_version < "3.0.0") or (pyt
 typing-extensions>=4.9.0; python_version >= "3.8" 
 urllib3==2.1.0; python_version >= "3.8" 
 xlrd>=2.0.1; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.4.0")
+xlsxwriter>=3.0.2 
