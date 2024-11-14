@@ -196,10 +196,14 @@ class TargetProtocol:
         # The end year should be greater than or equal to the current year
         # Added in update Oct 22
         target_current = target.end_year >= datetime.datetime.now().year
+
+        # Target scope must be S3
+        target_scope = target.scope == EScope.S3
         
         return (
             target_end_year
             and target_current
+            and target_scope
         )
 
     def _split_s1s2s3(self,

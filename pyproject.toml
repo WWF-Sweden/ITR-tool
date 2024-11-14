@@ -41,6 +41,7 @@ openpyxl = "3.1.2"
 cleo = "^2.0.3"
 sphinx = "5.0.2"
 sphinx-rtd-theme = "^1.0.0"
+xlsxwriter = "^3.0.2"
 
 
 [tool.poetry.dev-dependencies]

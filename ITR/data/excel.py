@@ -92,7 +92,7 @@ class ExcelProvider(DataProvider):
                 target['s3_category'] = S3Category(target['s3_category']) 
                 model_targets.append(IDataProviderTarget.parse_obj(target))
             except ValidationError as e:
-                print(f"Validationerror: {e}")
+                print(f"Validationerror: {e}, target: {target}")
                 logger.warning(
                     f"(one of) the target(s) {target[self.c.TARGET_IDS]} of company {target[self.c.COMPANY_NAME]} is invalid and will be skipped"
                     

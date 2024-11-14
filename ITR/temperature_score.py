@@ -254,6 +254,7 @@ class TemperatureScore(PortfolioAggregation):
             ) -1
 
             return abs(CAR)
+            #return CAR
 
     def get_regression(
         self, target: pd.Series
@@ -329,14 +330,18 @@ class TemperatureScore(PortfolioAggregation):
                    / (target[self.c.COLS.END_YEAR] - target[self.c.COLS.BASE_YEAR])),
                 self.c.TEMPERATURE_FLOOR
             )
-        else:           
-            ts = max(
-                target[self.c.COLS.REGRESSION_PARAM]
-                * target[self.c.COLS.ANNUAL_REDUCTION_RATE]
-                * 100
-                + target[self.c.COLS.REGRESSION_INTERCEPT],
-                self.c.TEMPERATURE_FLOOR,
-            )
+        else:    
+            try:       
+                ts = max(
+                    target[self.c.COLS.REGRESSION_PARAM]
+                    * target[self.c.COLS.ANNUAL_REDUCTION_RATE]
+                    * 100
+                    + target[self.c.COLS.REGRESSION_INTERCEPT],
+                    self.c.TEMPERATURE_FLOOR,
+                )
+            except TypeError:
+                print(f"TypeError: {target[self.c.COLS.REGRESSION_PARAM]}, type: {type(target[self.c.COLS.REGRESSION_PARAM])}")
+                ts = self.default_score
         if target[self.c.COLS.SBTI_VALIDATED]:
             return ts, 0
         else:
@@ -585,7 +590,7 @@ class TemperatureScore(PortfolioAggregation):
 
         # We need to filter the scopes again, because we might have had to add a scope in the preparation step
         data = data[data[self.c.COLS.SCOPE].isin(self.scopes)]
-        data[self.c.COLS.TEMPERATURE_SCORE] = data[self.c.COLS.TEMPERATURE_SCORE].round(2)
+        data[self.c.COLS.TEMPERATURE_SCORE] = data[self.c.COLS.TEMPERATURE_SCORE].round(3)
         data.drop(columns=['to_calculate'], inplace=True)
         
         return data
@@ -809,7 +814,7 @@ class TemperatureScore(PortfolioAggregation):
                     s1s2_score = max(s1_score, s2_score)
                     s1_s2_results = 0.5
                 group.loc[group['scope'] == EScope.S1S2, 'temperature_score'] = s1s2_score
-                group.loc[group['scope'] == EScope.S1S2, 'temperature_results'] = round(s1_s2_results, 2)
+                group.loc[group['scope'] == EScope.S1S2, 'temperature_results'] = round(s1_s2_results, 3)
                 s1_target_ids = group[group['scope'] == EScope.S1]['target_ids'].values 
                 s2_target_ids = group[group['scope'] == EScope.S2]['target_ids'].values
                 combined_target_ids = list(set().union(*s1_target_ids, *s2_target_ids))
@@ -844,6 +849,7 @@ class TemperatureScore(PortfolioAggregation):
             'temperature_score': 'mean',
             'target_ids': lambda x: list(set().union(*x)),
             'target_type': 'first',
+            'scope': 'first',
             's3_category': 'first',
             'ghg_s3_15': 'first',
             'company_name': 'first'
