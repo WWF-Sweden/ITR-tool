@@ -12,7 +12,7 @@ install_requires = [
     "requests==2.32.3",
     "six==1.16.0",
     "xlrd==2.0.1",
-    "xlswriter>=3.0.2",
+    "xlsxwriter>=3.0.2",
 ]
 
 setup_kwargs = {
