@@ -253,8 +253,7 @@ class TemperatureScore(PortfolioAggregation):
                 1 / (target[self.c.COLS.END_YEAR] - target[self.c.COLS.BASE_YEAR])
             ) -1
 
-            return abs(CAR)
-            #return CAR
+            return CAR
 
     def get_regression(
         self, target: pd.Series
@@ -335,12 +334,12 @@ class TemperatureScore(PortfolioAggregation):
                 ts = max(
                     target[self.c.COLS.REGRESSION_PARAM]
                     * target[self.c.COLS.ANNUAL_REDUCTION_RATE]
-                    * 100
+                    * -100
                     + target[self.c.COLS.REGRESSION_INTERCEPT],
                     self.c.TEMPERATURE_FLOOR,
                 )
-            except TypeError:
-                print(f"TypeError: {target[self.c.COLS.REGRESSION_PARAM]}, type: {type(target[self.c.COLS.REGRESSION_PARAM])}")
+            except ValueError as e:
+                print(f"ValueError: {e}, {target[self.c.COLS.REGRESSION_PARAM]}, reduction: {target[self.c.COLS.ANNUAL_REDUCTION_RATE]}")
                 ts = self.default_score
         if target[self.c.COLS.SBTI_VALIDATED]:
             return ts, 0
