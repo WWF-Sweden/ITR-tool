@@ -334,7 +334,7 @@ class TemperatureScore(PortfolioAggregation):
                 ts = max(
                     target[self.c.COLS.REGRESSION_PARAM]
                     * target[self.c.COLS.ANNUAL_REDUCTION_RATE]
-                    * -100
+                    * 100 * -1      # According to the method doc 
                     + target[self.c.COLS.REGRESSION_INTERCEPT],
                     self.c.TEMPERATURE_FLOOR,
                 )
