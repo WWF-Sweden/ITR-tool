@@ -467,7 +467,12 @@ class TargetProtocol:
                 # Reduction ambition is measured by CAR
                 try:
                     target_data['CAR'] = target_data.apply(
-                        lambda row: abs((1 - row[self.c.COLS.REDUCTION_AMBITION]) ** (1 / row['END_YEAR_MINUS_BASE_YEAR']) - 1),
+                        lambda row: (
+                            1.0 if row[self.c.COLS.REDUCTION_AMBITION] >= 1 else abs(
+                                (1 - row[self.c.COLS.REDUCTION_AMBITION]) ** 
+                                (1 / row['END_YEAR_MINUS_BASE_YEAR']) - 1
+                            )
+                        ),
                         axis=1
                     )
                 except ZeroDivisionError:

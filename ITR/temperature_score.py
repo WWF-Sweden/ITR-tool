@@ -248,11 +248,12 @@ class TemperatureScore(PortfolioAggregation):
         
         if check:
             return None
+        elif target[self.c.COLS.REDUCTION_AMBITION] >= 1.0:
+            return 1.0
         else:
             CAR = (1-target[self.c.COLS.REDUCTION_AMBITION]) ** float(
                 1 / (target[self.c.COLS.END_YEAR] - target[self.c.COLS.BASE_YEAR])
             ) -1
-
             return CAR
 
     def get_regression(
@@ -338,8 +339,8 @@ class TemperatureScore(PortfolioAggregation):
                     + target[self.c.COLS.REGRESSION_INTERCEPT],
                     self.c.TEMPERATURE_FLOOR,
                 )
-            except ValueError as e:
-                print(f"ValueError: {e}, {target[self.c.COLS.REGRESSION_PARAM]}, reduction: {target[self.c.COLS.ANNUAL_REDUCTION_RATE]}")
+            except TypeError as e:
+                print(f"TypeError: {e}, {target[self.c.COLS.REGRESSION_PARAM]}, ambition: {target[self.c.COLS.REDUCTION_AMBITION]}")
                 ts = self.default_score
         if target[self.c.COLS.SBTI_VALIDATED]:
             return ts, 0
