@@ -130,7 +130,7 @@
 <td><p>Required, for portfolio coverage and temperature score.</p></td>
 <td><p>The column is needed in the file even if data is missing</p></td>
 </tr>
-<tr class="row-even"><td><p>Investment_value</p></td>
+<tr class="row-even"><td><p>investment_value</p></td>
 <td><p>Monetary value</p></td>
 <td><p>The monetary value invested in the company. Used for aggregation</p></td>
 <td><p>Required</p></td>
@@ -138,7 +138,7 @@
 </tr>
 <tr class="row-odd"><td><p>engagement_target</p></td>
 <td><p>TRUE, FALSE or empty</p></td>
-<td><p>Used for engagement analysis. When set to TRUE for a company it is possible to analyze what it would do for your portfolio temperature score if this company would set a well below 2 degree   Celsius (C) or a 2C target.</p></td>
+<td><p>Used for engagement analysis. When set to TRUE for a company it is possible to analyze what it would do for your portfolio temperature score if this company would set a 1.5 degree a well below 2C target.</p></td>
 <td><p>Optional</p></td>
 <td></td>
 </tr>
@@ -307,7 +307,7 @@ If a python dictionary object is used, the key will be used as a column label eg
 <tr class="row-even"><td><p>target_type</p></td>
 <td><p>Absolute, Int_to_abs, Intensity, T_score or Other</p></td>
 <td><p>Type of target. Can be absolute or intensity based GHG emission reduction target. Can be a temp score from the CDP-WWF method. Other targets that are not GHG emissions reduction targets can be mapped to Other. If intensity has been converted to absolute type must be entered as “Int_to_abs”</p></td>
-<td><p>Required (note that Scope must be S3)</p></td>
+<td><p>Required</p></td>
 <td><p>If target_type is left empty the target will not be valid. If no other target is available for that time-frame and scope combination the company will be given a default score.</p></td>
 </tr>
 <tr class="row-odd"><td><p>intensity_metric</p></td>
@@ -320,13 +320,13 @@ If a python dictionary object is used, the key will be used as a column label eg
 <td><p>A non negative decimal number</p></td>
 <td><p>The base year temperature score calculated using the CDP-WWF temperature scoring method.</p></td>
 <td><p>Required for target type “T_score”, otherwise optional</p></td>
-<td><p>Targets without scope are not valid. If no target is available for a time-frame and scope combination the company will be given a default score.</p></td>
+<td><p>Note that Scope must be S3</p></td>
 </tr>
 <tr class="row-odd"><td><p>end_year_ts</p></td>
 <td><p>A non negative decimal number</p></td>
 <td><p>The end year temperature score calculated using the CDP-WWF temperature scoring method.</p></td>
 <td><p>Required for target type “T_score”, otherwise optional</p></td>
-<td></td>
+<td><p>Note that Scope must be S3</p></td>
 </tr>
 <tr class="row-even"><td><p>scope</p></td>
 <td><p>S1, S2, S1+S2, S1+S2+S3, S3</p></td>
@@ -396,14 +396,14 @@ If a python dictionary object is used, the key will be used as a column label eg
 </tr>
 <tr class="row-even"><td><p>base_year_ghg_s1</p></td>
 <td><p>tCO2e</p></td>
-<td><p>Total reported GHG emissions for scope 1 for the company at the base year of the target. Used to convert targets covering only scope 1 or scope 2 to scope 1 + scope 2 targets.</p></td>
-<td><p>Required for targets that only   cover scope 1 or scope 2</p></td>
+<td><p>Total reported GHG emissions for scope 1 for the company at the base year of the target. Used when splitting combined scope targets to single scope targets</p></td>
+<td><p>Required for scope 1 targets.</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>base_year_ghg_s2</p></td>
 <td><p>tCO2e</p></td>
-<td><p>Total reported GHG emissions for scope 2 for the company at the base year of the target. Used to convert targets covering only scope 1 or scope 2 to scope 1 + scope 2 targets.</p></td>
-<td><p>Required for targets that only   cover scope 1 or scope 2</p></td>
+<td><p>Total reported GHG emissions for scope 2 for the company at the base year of the target. Used when splitting combined scope targets to single scope targets</p></td>
+<td><p>Required for scope 2 targets.</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>base_year_ghg_s1s2</p></td>
