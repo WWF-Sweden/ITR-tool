@@ -5,7 +5,7 @@ channels:
 dependencies:
   - git=2.28.0=0
   - pip=20.2.1=py_0
-  - python=3.7.8=h60c2a47_1_cpython
+  - python>=3.9.7
   - jupyter=1.0.0=py_2
   - pip:
-    - git+git://github.com/WWF-Sweden/ITR-tool
+    - git+https://github.com/WWF-Sweden/ITR-tool
