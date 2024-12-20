@@ -6,7 +6,6 @@ import pandas as pd
 from .configs import PortfolioAggregationConfig, ColumnsConfig
 from .interfaces import EScope
 
-
 class PortfolioAggregationMethod(Enum):
     """
     The portfolio aggregation method determines how the temperature scores for the individual companies are aggregated
@@ -176,7 +175,7 @@ class PortfolioAggregation(ABC):
                     )
                 )
             owned_emissions = data[self.c.COLS.OWNED_EMISSIONS].sum()
-
+            
             try:
                 # Calculate the MOTS value per company
                 weighted_scores = data.apply(
@@ -185,6 +184,7 @@ class PortfolioAggregation(ABC):
                     axis=1,
                 )
                 return weighted_scores
+            
             except ZeroDivisionError:
                 raise ValueError("The total owned emissions can not be zero")
         else:

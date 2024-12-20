@@ -203,17 +203,17 @@ class IDataProviderTarget(BaseModel):
     scope: EScope
     #s3_category: Optional[int]
     s3_category: Optional[S3Category]
-    coverage_s1: float
-    coverage_s2: float
-    coverage_s3: float
+    coverage_s1: Optional[float] = np.nan
+    coverage_s2: Optional[float] = np.nan
+    coverage_s3: Optional[float] = np.nan
 
-    reduction_ambition: Optional[float]
+    reduction_ambition: Optional[float] = np.nan
     
     base_year: int
-    base_year_ghg_s1: Optional[float] = 0.0
-    base_year_ghg_s2: Optional[float] = 0.0
-    base_year_ghg_s1s2: Optional[float] = 0.0
-    base_year_ghg_s3: Optional[float] = 0.0
+    base_year_ghg_s1: Optional[float] = np.nan
+    base_year_ghg_s2: Optional[float] = np.nan
+    base_year_ghg_s1s2: Optional[float] = np.nan
+    base_year_ghg_s3: Optional[float] = np.nan
     
     start_year: Optional[int]
     end_year: int

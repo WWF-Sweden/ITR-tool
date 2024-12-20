@@ -903,26 +903,17 @@ class TemperatureScore(PortfolioAggregation):
         grouped = s3_data.groupby(['company_id', 'time_frame'])
         for _ , group in grouped:
             temperature_scores = np.full(15, 3.4) # Set all scores to the default value
-            #ghg_values = np.zeros(15)
             ghg_columns = [f'ghg_s3_{i}' for i in range(1, 16)]
             ghg_values = group.iloc[0][ghg_columns].values.astype(float)
-            ghg_available = np.nansum(ghg_values) > 0.0
-            ghg_available = True
-
+           
             for _, row in group.iterrows():
                 s3_category = row['s3_category']
                 if pd.notna(s3_category) and isinstance(s3_category, S3Category):
                     index = s3_category.value - 1  # Convert category to index
                     temperature_scores[index] = row['temperature_score']
-                    ghg_column = f'ghg_s3_{s3_category.value}'
-                    ghg_value = row.get(ghg_column, 0.0)
-                    if ghg_value > 0.0:
-                        ghg_values[index] = ghg_value
-                    else:
-                        ghg_available = False
 
             # Calculate weighted or simple average
-            if (ghg_values > 0.0).all():
+            if not np.isnan(ghg_values).any().all() and np.nansum(ghg_values) > 0.0:
                 weighted_avg = np.sum(ghg_values * temperature_scores) / np.sum(ghg_values)
             else:
                 weighted_avg = temperature_scores.mean()
