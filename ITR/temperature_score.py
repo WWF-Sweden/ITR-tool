@@ -790,8 +790,15 @@ class TemperatureScore(PortfolioAggregation):
         for _, group in grouped_data:
             s1s2_score = np.nan # Initailize the s1s2_score to NaN
             s1_s2_results = 1.0 # Initialize the s1_s2_results to 1.0
-            if (group.loc[group['scope'] == EScope.S1,'to_calculate'].item() or
-                group.loc[group['scope'] == EScope.S2, 'to_calculate'].item()
+            
+            # NOTE: using `.item()` will raise a ValueError if the DataFrame has
+            # more than one row for the particular group, which might happens
+            # if the data is not properly prepared
+            #
+            # better to use `.any()` to check if there any rows, and still make
+            # the result worth it
+            if (group.loc[group['scope'] == EScope.S1,'to_calculate'].any() or
+                group.loc[group['scope'] == EScope.S2, 'to_calculate'].any()
             ):
                 # S1 and S2 scores are either calulted or default scores from earlier
                 s1_score = float(group.loc[group['scope'] == EScope.S1, 'temperature_score'].item())
