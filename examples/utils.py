@@ -67,6 +67,10 @@ def collect_company_contributions(aggregated_portfolio, amended_portfolio, analy
 
 def plot_grouped_statistics(aggregated_portfolio, company_contributions, analysis_parameters):
     import matplotlib.pyplot as plt
+    import numpy as np
+    from cycler import cycler
+    from matplotlib.cm import RdBu as _colormap
+    import matplotlib.cm
 
     timeframe, scope, grouping = analysis_parameters
     scope = str(scope[0])
@@ -80,26 +84,31 @@ def plot_grouped_statistics(aggregated_portfolio, company_contributions, analysi
     sector_temp_scores, sector_names, sector_contributions, sector_investments = \
         zip(*sorted(zip(sector_temp_scores, sector_names, sector_contributions, sector_investments), reverse=True))
 
-    fig = plt.figure(figsize=[10, 7.5])
+    fig = plt.figure(figsize=(10, 7.5))
+    
+    cmap = _colormap
+    # Generate evenly spaced values between 0 and 1
+    num_colors = 20  
+    colors = cmap(np.linspace(0, 1, num_colors)) 
+ 
+    colors = cmap(np.linspace(0, 1, num_colors)) 
     ax1 = fig.add_subplot(231)
-    ax1.set_prop_cycle(plt.cycler("color", plt.cm.tab20.colors))
+    ax1.set_prop_cycle(cycler("color", colors)) 
     ax1.pie(sector_investments, autopct='%1.0f%%', pctdistance=1.25, labeldistance=2)
     ax1.set_title("Investments", pad=15)
 
-
     ax2 = fig.add_subplot(232)
-    ax2.set_prop_cycle(plt.cycler("color", plt.cm.tab20.colors))
+    ax2.set_prop_cycle(cycler("color", colors)) 
     ax2.pie(sector_contributions, autopct='%1.0f%%', pctdistance=1.25, labeldistance=2)
     ax2.legend(labels=sector_names, bbox_to_anchor=(1.2, 1), loc='upper left')
     ax2.set_title("Contributions", pad=15)
-
     ax3 = fig.add_subplot(212)
     ax3.bar(sector_names, sector_temp_scores)
     ax3.set_title("Temperature scores per " + grouping[0])
     ax3.set_ylabel("Temperature score")
     for label in ax3.get_xticklabels():
         label.set_rotation(45)
-        label.set_ha('right')
+        label.set_horizontalalignment('right')
     ax3.axhline(y=1.5, linestyle='--', color='k')
 
 
@@ -136,7 +145,7 @@ def anonymize(portfolio, provider):
 
 def plot_grouped_heatmap(grouped_aggregations, analysis_parameters):
     import matplotlib.pyplot as plt
-    import matplotlib
+    import matplotlib.cm
 
     timeframe, scope, grouping = analysis_parameters
     scope = str(scope[0])
@@ -168,7 +177,7 @@ def plot_grouped_heatmap(grouped_aggregations, analysis_parameters):
     current_cmap = copy.copy(matplotlib.cm.get_cmap('OrRd'))
     current_cmap.set_bad(color='grey', alpha=0.4)
 
-    fig = plt.figure(figsize=[0.9*len(groups[group_1]), 0.8*len(groups[group_2])])
+    fig = plt.figure(figsize=(0.9*len(groups[group_1]), 0.8*len(groups[group_2])))
     ax = fig.add_subplot(111)
     im = ax.pcolormesh(grid, cmap=current_cmap)
     ax.set_xticks(0.5 + np.arange(0, len(groups[group_1])))
@@ -177,9 +186,11 @@ def plot_grouped_heatmap(grouped_aggregations, analysis_parameters):
     ax.set_xticklabels(groups[group_1])
     for label in ax.get_xticklabels():
         label.set_rotation(45)
-        label.set_ha('right')
+        label.set_horizontalalignment('right')
     fig.colorbar(im, ax=ax)
     ax.set_title("Temperature score per " + group_2 + " per " + group_1)
+    # TODO use the following line when the plot is used in VS Code
+    # plt.show()
 
 
 def get_contributions_per_group(aggregations, analysis_parameters, group):

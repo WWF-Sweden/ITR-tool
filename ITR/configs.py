@@ -117,7 +117,7 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
     SBTI_FACTOR = 1
     DEFAULT_SCORE: float = 3.4
     TEMPERATURE_FLOOR: float = 1.5
-    TEST_S3_CALCULATION = True # Set to True to print S3 calculation results   
+    TEST_S3_CALCULATION = False # Set to True to print S3 calculation results   
   
     JSON_REGRESSION_MODEL = os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
