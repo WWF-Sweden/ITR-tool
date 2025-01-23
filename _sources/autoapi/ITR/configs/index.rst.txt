@@ -481,6 +481,11 @@ Classes
 
       
 
+   .. py:attribute:: TEST_S3_CALCULATION
+      :annotation: = False
+
+      
+
    .. py:attribute:: JSON_REGRESSION_MODEL
       
 
@@ -512,6 +517,11 @@ Classes
       
 
    .. py:attribute:: INTENSITY_MAPPINGS
+      
+
+      
+
+   .. py:attribute:: intensity_metric_types
       
 
       

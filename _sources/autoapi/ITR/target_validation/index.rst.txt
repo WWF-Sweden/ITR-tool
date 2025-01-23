@@ -86,13 +86,6 @@ Attributes
       :return: A list containing the S1 target and the S2 target from the split.
 
 
-   .. py:method:: _cover_s1_s2(self, target: ITR.interfaces.IDataProviderTarget) -> ITR.interfaces.IDataProviderTarget
-
-      Set the S1 and S2 coverage of a S1+S2 target to the same value.
-      :param target: The input target
-      :return: The modified target (or the original if no modification was required)
-
-
    .. py:method:: _scale_reduction_ambition_by_boundary_coverage_new(target: pandas.DataFrame) -> float
       :staticmethod:
 

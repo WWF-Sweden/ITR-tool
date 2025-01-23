@@ -663,17 +663,17 @@ Classes
       
 
    .. py:attribute:: coverage_s1
-      :annotation: :float
+      :annotation: :Optional[float]
 
       
 
    .. py:attribute:: coverage_s2
-      :annotation: :float
+      :annotation: :Optional[float]
 
       
 
    .. py:attribute:: coverage_s3
-      :annotation: :float
+      :annotation: :Optional[float]
 
       
 
@@ -688,22 +688,22 @@ Classes
       
 
    .. py:attribute:: base_year_ghg_s1
-      :annotation: :Optional[float] = 0.0
+      :annotation: :Optional[float]
 
       
 
    .. py:attribute:: base_year_ghg_s2
-      :annotation: :Optional[float] = 0.0
+      :annotation: :Optional[float]
 
       
 
    .. py:attribute:: base_year_ghg_s1s2
-      :annotation: :Optional[float] = 0.0
+      :annotation: :Optional[float]
 
       
 
    .. py:attribute:: base_year_ghg_s3
-      :annotation: :Optional[float] = 0.0
+      :annotation: :Optional[float]
 
       
 

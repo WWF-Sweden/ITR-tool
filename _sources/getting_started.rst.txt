@@ -48,7 +48,7 @@ If you are starting from scratch, you can install the latest version of the pack
 
 Or you can install the latest stable release from PyPi
 
-    pip install sbti-finance-tool
+    pip install wwf-itr
 
 .. toctree::
    :maxdepth: 4
