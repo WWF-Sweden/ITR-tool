@@ -10,7 +10,7 @@ install_requires = [
     "pandas==2.2.2",
     "pydantic==1.10.14",
     "requests==2.32.3",
-    "six==1.16.0",
+    "six>=1.16.0",
     "xlrd==2.0.1",
     "xlsxwriter>=3.0.2",
 ]

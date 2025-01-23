@@ -4,6 +4,7 @@ from datetime import date
 import logging
 
 import pandas as pd
+import numpy as np
 from ITR.data.data_provider import DataProvider
 from ITR.configs import ColumnsConfig
 from ITR.interfaces import IDataProviderCompany, IDataProviderTarget, S3Category
@@ -19,12 +20,8 @@ class ExcelProvider(DataProvider):
     def __init__(self, path: str, config: Type[ColumnsConfig] = ColumnsConfig):
         super().__init__()
         self.data = pd.read_excel(path, sheet_name=None, skiprows=0)
-        # Set all missing coverage values to 0.0
-        self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3', 'reduction_ambition']] = \
-            self.data['target_data'][['coverage_s1', 'coverage_s2', 'coverage_s3', 'reduction_ambition']].fillna(0.0)
+        # Set missing values to 0.0
         self.data['target_data'][['achieved_reduction']] = self.data['target_data'][['achieved_reduction']].fillna(0.0)
-        self.data['target_data'][['base_year_ghg_s1', 'base_year_ghg_s2', 'base_year_ghg_s3']] = \
-            self.data['target_data'][['base_year_ghg_s1', 'base_year_ghg_s2', 'base_year_ghg_s3']].fillna(0.0)
         self.data['target_data']['end_year'] = self.data['target_data']['end_year'].fillna(0)
         self.data['target_data']['scope'] = self.data['target_data']['scope'].replace({'S1S2S3': 'S1+S2+S3'})
         self.data['target_data']['scope'] = self.data['target_data']['scope'].replace({'S1S2': 'S1+S2'})

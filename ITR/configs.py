@@ -116,7 +116,8 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
 
     SBTI_FACTOR = 1
     DEFAULT_SCORE: float = 3.4
-    TEMPERATURE_FLOOR: float = 1.5 # -30   
+    TEMPERATURE_FLOOR: float = 1.5
+    TEST_S3_CALCULATION = False # Set to True to print S3 calculation results   
   
     JSON_REGRESSION_MODEL = os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
@@ -165,6 +166,8 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
         ("Other", EScope.S2): "INT.emCO2energysupply_SE",
         ("Other", EScope.S3): "INT.emKyoto_gdp",
     }
+    intensity_metric_types = set(metric for metric, _ in INTENSITY_MAPPINGS.keys())
+
     ABSOLUTE_MAPPINGS = {
         # B06: Extraction Of Crude Petroleum And Natural Gas
         ("B06", EScope.S1): "Emissions|Kyoto Gases", 

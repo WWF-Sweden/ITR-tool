@@ -4,6 +4,7 @@ from typing import Optional, Tuple, Type, List, Any, cast
 import pandas as pd
 import numpy as np
 import datetime
+import os
 
 from .interfaces import (
     ScenarioInterface,
@@ -198,6 +199,7 @@ class TemperatureScore(PortfolioAggregation):
             self.grouping = grouping
 
         self.regression_model = pd.read_json(self.c.JSON_REGRESSION_MODEL)
+        self.s3_calculation_test = TemperatureScoreConfig.TEST_S3_CALCULATION
         # Save code if we choose to use several models:
         # self.regression_model = self.regression_model[
         #     self.regression_model[self.c.COLS.MODEL] == self.model
@@ -363,6 +365,7 @@ class TemperatureScore(PortfolioAggregation):
         it will return the original score
         :return: The aggregated temperature score for a company
         """
+
         if row[self.c.COLS.SCOPE] != EScope.S1S2S3 or (
             row[self.c.COLS.SCOPE] == EScope.S1S2S3
             and row[self.c.COLS.TARGET_TYPE_AR6].lower() == "t_score"
@@ -578,14 +581,18 @@ class TemperatureScore(PortfolioAggregation):
 
         data = self._prepare_data(data)
 
-        data = self._calculate_s1s2_score(data)
+        if EScope.S1S2 in self.scopes:
+            data = self._calculate_s1s2_score(data)
 
         # data = self._aggregate_s3_score(data)
+        if self.s3_calculation_test:
+            s3_data_dump = data[data[self.c.COLS.SCOPE] == EScope.S3].copy()
+            # get path to save the data
+            path = os.path.join(os.path.dirname(__file__), "../examples/data/local/s3_data_dump.xlsx")
+            s3_data_dump.to_excel(path, index=False)
         data = self._aggregate_s3_score(data)
 
         if EScope.S1S2S3 in self.scopes:
-            # self._check_column(data, self.c.COLS.GHG_SCOPE12)
-            # self._check_column(data, self.c.COLS.GHG_SCOPE3)
             data = self._calculate_company_score(data)
 
         # We need to filter the scopes again, because we might have had to add a scope in the preparation step
@@ -616,15 +623,16 @@ class TemperatureScore(PortfolioAggregation):
             .where(pd.notnull(data), None)
             .to_dict(orient="records")
         )
+        aggregation = Aggregation(
+            score=weighted_scores.sum(),
+            proportion=len(weighted_scores) / (total_companies / 100.0),
+            contributions=[
+            AggregationContribution.parse_obj(contribution)
+            for contribution in contributions
+            ],
+        )
         return (
-            Aggregation(
-                score=weighted_scores.sum(),
-                proportion=len(weighted_scores) / (total_companies / 100.0),
-                contributions=[
-                    AggregationContribution.parse_obj(contribution)
-                    for contribution in contributions
-                ],
-            ),
+            aggregation,
             data[self.c.COLS.CONTRIBUTION_RELATIVE],
             data[self.c.COLS.CONTRIBUTION],
         )
@@ -790,13 +798,6 @@ class TemperatureScore(PortfolioAggregation):
         for _, group in grouped_data:
             s1s2_score = np.nan # Initailize the s1s2_score to NaN
             s1_s2_results = 1.0 # Initialize the s1_s2_results to 1.0
-            
-            # NOTE: using `.item()` will raise a ValueError if the DataFrame has
-            # more than one row for the particular group, which might happens
-            # if the data is not properly prepared
-            #
-            # better to use `.any()` to check if there any rows, and still make
-            # the result worth it
             if (group.loc[group['scope'] == EScope.S1,'to_calculate'].any() or
                 group.loc[group['scope'] == EScope.S2, 'to_calculate'].any()
             ):
@@ -809,7 +810,7 @@ class TemperatureScore(PortfolioAggregation):
                 s2_ghg = float(group.loc[group['scope'] == EScope.S2, 'ghg_s2'].item())
                 # REQUIREMENT 6.5 Temperature Score Aggregation
                 
-                if not np.isnan(s1_ghg) and not np.isnan(s2_ghg):
+                if not np.isnan(s1_ghg) and not np.isnan(s2_ghg) and s1_ghg != 0 and s2_ghg != 0:
                     try:
                         s1s2_score = (s1_score * s1_ghg + s2_score * s2_ghg) / (s1_ghg + s2_ghg)
                         s1_s2_results = (s1_results * s1_ghg + s2_results * s2_ghg) / (s1_ghg + s2_ghg)
@@ -821,6 +822,9 @@ class TemperatureScore(PortfolioAggregation):
                     s1_s2_results = 0.5
                 group.loc[group['scope'] == EScope.S1S2, 'temperature_score'] = s1s2_score
                 group.loc[group['scope'] == EScope.S1S2, 'temperature_results'] = s1_s2_results
+                group.loc[group['scope'] == EScope.S1S2, 'target_type'] = (
+                    group.loc[group['scope'] == EScope.S1, 'target_type'].values[0]
+                )
                 s1_target_ids = group[group['scope'] == EScope.S1]['target_ids'].values 
                 s2_target_ids = group[group['scope'] == EScope.S2]['target_ids'].values
                 combined_target_ids = list(set().union(*s1_target_ids, *s2_target_ids))
@@ -850,16 +854,38 @@ class TemperatureScore(PortfolioAggregation):
         s3_data = data[data['scope'] == EScope.S3].copy()
 
         # Step 1: Calculate mean temperature score for CAT_15
+        # cat_15_data = s3_data[s3_data['s3_category'] == S3Category.CAT_15].copy()
+        # mean_cat_15 = cat_15_data.groupby(['company_id', 'time_frame']).agg({
+        #     'temperature_score': 'mean',
+        #     'target_ids': lambda x: list(set().union(*x)),
+        #     'target_type': 'first',
+        #     'scope': 'first',
+        #     's3_category': 'first',
+        #     'ghg_s3_15': 'first',
+        #     'company_name': 'first'
+        # }).reset_index()
+        # Step 1: Calculate mean temperature score for CAT_15
         cat_15_data = s3_data[s3_data['s3_category'] == S3Category.CAT_15].copy()
-        mean_cat_15 = cat_15_data.groupby(['company_id', 'time_frame']).agg({
+
+        # Define the aggregation functions for special columns
+        agg_funcs = {
             'temperature_score': 'mean',
-            'target_ids': lambda x: list(set().union(*x)),
-            'target_type': 'first',
-            'scope': 'first',
-            's3_category': 'first',
-            'ghg_s3_15': 'first',
-            'company_name': 'first'
-        }).reset_index()
+            'target_ids': lambda x: list(set().union(*x))
+        }
+
+        # Specify group by columns
+        group_cols = ['company_id', 'time_frame']
+
+        # Get all other columns that need to use 'first'
+        other_cols = [col for col in cat_15_data.columns if col not in group_cols + list(agg_funcs.keys())]
+
+        # Set 'first' as the aggregation function for other columns
+        for col in other_cols:
+            agg_funcs[col] = 'first'
+
+        # Perform the aggregation
+        mean_cat_15 = cat_15_data.groupby(group_cols).agg(agg_funcs).reset_index()
+
 
         # Step 2: Remove original CAT_15 rows and append the mean score
         s3_data = s3_data[s3_data['s3_category'] != S3Category.CAT_15]
@@ -876,24 +902,18 @@ class TemperatureScore(PortfolioAggregation):
         aggregated_rows = []
         grouped = s3_data.groupby(['company_id', 'time_frame'])
         for _ , group in grouped:
-            temperature_scores = np.full(15, 3.4)
-            ghg_values = np.zeros(15)
-            ghg_available = True
-
+            temperature_scores = np.full(15, 3.4) # Set all scores to the default value
+            ghg_columns = [f'ghg_s3_{i}' for i in range(1, 16)]
+            ghg_values = group.iloc[0][ghg_columns].values.astype(float)
+           
             for _, row in group.iterrows():
                 s3_category = row['s3_category']
                 if pd.notna(s3_category) and isinstance(s3_category, S3Category):
                     index = s3_category.value - 1  # Convert category to index
                     temperature_scores[index] = row['temperature_score']
-                    ghg_column = f'ghg_s3_{s3_category.value}'
-                    ghg_value = row.get(ghg_column, 0.0)
-                    if ghg_value > 0.0:
-                        ghg_values[index] = ghg_value
-                    else:
-                        ghg_available = False
 
             # Calculate weighted or simple average
-            if ghg_available and ghg_values.sum() > 0.0:
+            if not np.isnan(ghg_values).any().all() and np.nansum(ghg_values) > 0.0:
                 weighted_avg = np.sum(ghg_values * temperature_scores) / np.sum(ghg_values)
             else:
                 weighted_avg = temperature_scores.mean()
@@ -902,7 +922,10 @@ class TemperatureScore(PortfolioAggregation):
             aggregated_row = group.iloc[0].copy()
             aggregated_row['temperature_score'] = weighted_avg
             aggregated_row['target_ids'] = sum(group['target_ids'], [])
-            aggregated_row['s3_category'] = 'Aggregated'
+            if S3Category.CAT_H_LINE in group['s3_category'].values:
+                aggregated_row['s3_category'] = S3Category.CAT_H_LINE
+            else:
+                aggregated_row['s3_category'] = 'Aggregated'
 
             aggregated_rows.append(aggregated_row)
 
