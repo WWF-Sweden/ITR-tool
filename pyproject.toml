@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "WWF-ITR"
-version = "v0.9.3"
+version = "v0.9.4"
 description = "This package helps companies and financial institutions to assess the temperature alignment of current climate reduction targets and commitments for investment and lending portfolios. The tool can also be used to develop targets for official validation by the SBTi.'"
 authors = ["wwf <ekonomi-finans@wwf.se>"]
 license = "MIT"
