@@ -5,6 +5,7 @@ The most fundamental part of the project is the Python module, which takes care 
 You can install it easily through PIP. There are a couple ways to get started using the module. 
 The easiest option is to run our getting started notebook on `Google Colab <https://colab.research.google.com/>`__.
 Alternatively, you can also run the `notebooks <https://github.com/WWF-Sweden/ITR-tool/tree/master/examples>`__ locally.
+We recommend that you run the tool in your local environment when you are using your actual portfolio data as input. 
 
 Google Colab
 -------------
