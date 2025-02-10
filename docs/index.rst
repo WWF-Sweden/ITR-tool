@@ -13,7 +13,7 @@ commitments, and investment and lending portfolios. They can for
 instance use this information to develop their own GHG emission
 reduction targets for official validation by the Science Based Targets
 initiative (SBTi), develop engagement strategies and help with strategic
-security selection and allocation decisions.
+security selection and allocation decisions. 
 
 This chapter provides a non-technical introduction and overview of what
 the tool is for, the types of outputs it delivers, what data is
@@ -61,7 +61,7 @@ introduction <https://colab.research.google.com/notebooks/basic_features_overvie
 
 See the section 'Data Legends' for information on the various input data the tool can ingest.
 There is also an Excel file with details and examples that may be helpul. The file is
-available :download:`here <ITR 1.5 Data Legends.xlsx>`__.
+available :download:`here <ITR 1.5 Data Legends.xlsx>`.
 
 The following diagram provides an overview of the different parts of the
 full toolkit and their dependencies: 
