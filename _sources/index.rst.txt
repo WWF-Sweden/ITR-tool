@@ -59,6 +59,10 @@ in the current sequence, to get an understanding of how it works. If you
 are not familiar with Notebooks, please refer to `this
 introduction <https://colab.research.google.com/notebooks/basic_features_overview.ipynb>`__.
 
+See the section 'Data Legends' for information on the various input data the tool can ingest.
+There is also an Excel file with details and examples that may be helpul. The file is
+available `here <ITR 1.5 Data Legends.xlsx>` 
+
 The following diagram provides an overview of the different parts of the
 full toolkit and their dependencies: 
 
