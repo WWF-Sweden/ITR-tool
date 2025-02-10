@@ -1,7 +1,8 @@
 ********************
 Data Legends
 ********************
-
+There is also an Excel file with details and examples that may be helpul. The file is
+available :download:`here <ITR 1.5 Data Legends.xlsx>`.
 
 Input Data
 --------------
