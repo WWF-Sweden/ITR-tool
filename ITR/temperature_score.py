@@ -729,7 +729,7 @@ class TemperatureScore(PortfolioAggregation):
             )
         elif self.scenario.scenario_type == ScenarioType.HIGHEST_CONTRIBUTORS:
             # Cap scores of 10 highest contributors per time frame-scope combination
-            # TODO: Should this actually be per time-frame/scope combi? Aren't you engaging the company as a whole?
+     
             aggregations = self.aggregate_scores(scores)
             for time_frame in self.time_frames:
                 for scope in self.scopes:
@@ -831,11 +831,16 @@ class TemperatureScore(PortfolioAggregation):
                 idx = group.index[group['scope'] == EScope.S1S2][0] 
                 group.at[idx, 'target_ids'] = combined_target_ids
                         
-                # Explicitly infer object types to avoid future warnings
-                group = group.infer_objects()
-                    # Update the original data DataFrame
-                data.update(group)
-                    
+                # group = group.infer_objects()
+               
+                # data.update(group) Works but throws a FutureWarning
+               
+                group = group.copy() # Important!
+                cols_to_update = group.columns.tolist() # Or group.columns if no potential for missing columns
+                for index in group.index:
+                    if index in data.index: # Essential check to avoid KeyError.
+                        data.loc[index, cols_to_update] = group.loc[index, cols_to_update].values #.values is important
+   
         return data
           
     def _aggregate_s3_score(self, data: pd.DataFrame) -> pd.DataFrame:
