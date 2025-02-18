@@ -445,7 +445,7 @@ class TargetProtocol:
                         result_df['to_calculate'] = False 
                         return result_df
 
-            result_df['to_calculate'] = True # TS for selected targets are to be calculated
+            result_df.loc[:, 'to_calculate'] = True
             return result_df
                           
         except KeyError:
