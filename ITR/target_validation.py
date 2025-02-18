@@ -246,7 +246,7 @@ class TargetProtocol:
             return target
         targets = target.iloc[0].copy()
         # before splitting S1S2 targets we need to verify that there is GHG data to aggregate the scores later
-        # TODO - verify that company is one unique row
+        # TODO - verify that company is one unique row - for future cleaning module
         company = self.company_data[self.company_data[self.c.COLS.COMPANY_ID] == targets.company_id]
         if (not (pd.isna(company[self.c.COLS.GHG_SCOPE1].values[0])
             or pd.isna(company[self.c.COLS.GHG_SCOPE2].values[0]))
@@ -445,7 +445,7 @@ class TargetProtocol:
                         result_df['to_calculate'] = False 
                         return result_df
 
-            result_df['to_calculate'] = True # TS for selected targets are to be calculated
+            result_df.loc[:, 'to_calculate'] = True
             return result_df
                           
         except KeyError:
@@ -551,7 +551,7 @@ class TargetProtocol:
             columns=grid_columns + empty_columns,
         )
 
-        target_columns = extended_data.columns.tolist() #TODO - is this correct?
+        target_columns = extended_data.columns.tolist() 
         results = []
         for _, row in extended_data.iterrows():
             result = self._find_target(row, target_columns)

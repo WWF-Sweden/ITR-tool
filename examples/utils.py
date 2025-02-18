@@ -69,7 +69,7 @@ def plot_grouped_statistics(aggregated_portfolio, company_contributions, analysi
     import matplotlib.pyplot as plt
     import numpy as np
     from cycler import cycler
-    from matplotlib.cm import RdBu as _colormap
+    #from matplotlib.cm import RdBu as _colormap
     import matplotlib.cm
 
     timeframe, scope, grouping = analysis_parameters
@@ -86,7 +86,7 @@ def plot_grouped_statistics(aggregated_portfolio, company_contributions, analysi
 
     fig = plt.figure(figsize=(10, 7.5))
     
-    cmap = _colormap
+    cmap = matplotlib.colormaps['tab20c']
     # Generate evenly spaced values between 0 and 1
     num_colors = 20  
     colors = cmap(np.linspace(0, 1, num_colors)) 
