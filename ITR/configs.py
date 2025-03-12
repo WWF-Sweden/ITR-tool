@@ -254,7 +254,7 @@ class PortfolioCoverageTVPConfig(PortfolioAggregationConfig):
     USE_CUSTOM_FILE_TARGETS_PATH = False
     OUTPUT_TARGET_STATUS = "sbti_target_status"
     OUTPUT_WEIGHTED_TARGET_STATUS = "weighted_sbti_target_status"
-    VALUE_STATUS_SET = "Target set"
+    VALUE_STATUS_SET = "Targets set"
     VALUE_STATUS_COMMITTED = "Committed"
     VALUE_STATUS_REMOVED = "Commitment removed"
     
