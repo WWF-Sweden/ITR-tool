@@ -125,15 +125,13 @@ class SBTi:
                 self.c.COL_COMPANY_NAME, 
                 self.c.COL_COMPANY_ISIN, 
                 self.c.COL_COMPANY_LEI, 
-                self.c.COL_ACTION, 
                 self.c.COL_TARGET
             ]
         ]
         
         # Keep rows where Action = Target and Target = Near-term 
         df_nt_targets = targets[
-            (targets[self.c.COL_ACTION] == self.c.VALUE_ACTION_TARGET) & 
-            (targets[self.c.COL_TARGET] == self.c.VALUE_TARGET_SET)]
+           (targets[self.c.COL_TARGET] == self.c.VALUE_STATUS_SET)]
         
         # Drop duplicates in the dataframe by waterfall. 
         # Do company name last due to risk of misspelled names
@@ -188,7 +186,7 @@ class SBTi:
                 continue
             if len(targets) > 0:
                 company.sbti_validated = (
-                    self.c.VALUE_TARGET_SET in targets[self.c.COL_TARGET].values
+                    self.c.VALUE_STATUS_SET in targets[self.c.COL_TARGET].values
                 )
         return companies
 
