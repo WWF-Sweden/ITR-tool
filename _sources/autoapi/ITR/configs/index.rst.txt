@@ -577,7 +577,7 @@ Classes
       
 
    .. py:attribute:: CTA_FILE_URL
-      :annotation: = https://cdn.sciencebasedtargets.org/download/target-dashboard
+      :annotation: = https://docs.google.com/spreadsheets/d/e/2PACX-1vTn5UZIBmOxWKNFpmQGWWDczMvdBJ74l2_j0emUH9mxEKylHq...
 
       
 
@@ -596,23 +596,18 @@ Classes
 
       
 
-   .. py:attribute:: VALUE_TARGET_NO
-      :annotation: = No target
+   .. py:attribute:: VALUE_STATUS_SET
+      :annotation: = Targets set
 
       
 
-   .. py:attribute:: VALUE_TARGET_SET
-      :annotation: = Near-term
+   .. py:attribute:: VALUE_STATUS_COMMITTED
+      :annotation: = Committed
 
       
 
-   .. py:attribute:: VALUE_ACTION_COMMITTED
-      :annotation: = Commitment
-
-      
-
-   .. py:attribute:: VALUE_ACTION_TARGET
-      :annotation: = Target
+   .. py:attribute:: VALUE_STATUS_REMOVED
+      :annotation: = Commitment removed
 
       
 
@@ -622,27 +617,22 @@ Classes
       
 
    .. py:attribute:: COL_COMPANY_NAME
-      :annotation: = Company Name
+      :annotation: = company_name
 
       
 
    .. py:attribute:: COL_COMPANY_ISIN
-      :annotation: = ISIN
+      :annotation: = isin
 
       
 
    .. py:attribute:: COL_COMPANY_LEI
-      :annotation: = LEI
-
-      
-
-   .. py:attribute:: COL_ACTION
-      :annotation: = Action
+      :annotation: = lei
 
       
 
    .. py:attribute:: COL_TARGET
-      :annotation: = Target
+      :annotation: = near_term_status
 
       
 
