@@ -250,24 +250,28 @@ class PortfolioCoverageTVPConfig(PortfolioAggregationConfig):
     # If the CTA file is older than a week, the file will be downloaded again
     SKIP_CTA_FILE_IF_EXISTS = True
     # Temporary URL until the SBTi website is updated
-    CTA_FILE_URL = "https://cdn.sciencebasedtargets.org/download/target-dashboard"
+    CTA_FILE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTn5UZIBmOxWKNFpmQGWWDczMvdBJ74l2_j0emUH9mxEKylHqh3oMLhu2FXtAV7-bqDxy9Yz_hkWzu8/pub?output=xlsx"
     USE_CUSTOM_FILE_TARGETS_PATH = False
     OUTPUT_TARGET_STATUS = "sbti_target_status"
     OUTPUT_WEIGHTED_TARGET_STATUS = "weighted_sbti_target_status"
-    VALUE_TARGET_NO = "No target"
-    VALUE_TARGET_SET = "Near-term"
-    VALUE_ACTION_COMMITTED = "Commitment"
-    VALUE_ACTION_TARGET = "Target"
+    VALUE_STATUS_SET = "Targets set"
+    VALUE_STATUS_COMMITTED = "Committed"
+    VALUE_STATUS_REMOVED = "Commitment removed"
+    
+    # VALUE_TARGET_NO = "No target"
+    # VALUE_TARGET_SET = "Near-term"
+    # VALUE_ACTION_COMMITTED = "Commitment"
+    # VALUE_ACTION_TARGET = "Target"
 
     TARGET_SCORE_MAP = {
-        VALUE_TARGET_NO: 0,
-        VALUE_ACTION_COMMITTED: 0,
-        VALUE_TARGET_SET: 100,
+        VALUE_STATUS_REMOVED: 0,
+        VALUE_STATUS_COMMITTED: 0,
+        VALUE_STATUS_SET: 100,
     }
 
     # SBTi targets overview (TVP coverage)
-    COL_COMPANY_NAME = "Company Name"
-    COL_COMPANY_ISIN = "ISIN"
-    COL_COMPANY_LEI = "LEI"
-    COL_ACTION = "Action"
-    COL_TARGET = "Target"
+    COL_COMPANY_NAME = "company_name"
+    COL_COMPANY_ISIN = "isin"
+    COL_COMPANY_LEI = "lei"
+    #COL_ACTION = "Action"
+    COL_TARGET = "near_term_status"
