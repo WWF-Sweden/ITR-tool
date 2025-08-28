@@ -75,8 +75,10 @@ class TargetProtocol:
 
         self.target_data['reduction_ambition'] = self.target_data.apply(self._scale_reduction_ambition_by_boundary_coverage_new, axis=1)
 
-        #self.company_data = pd.DataFrame.from_records([c.dict() for c in companies])
         self.group_targets()
+        
+        #Drop the column sbti_validated from target_data since it's no longer needed
+        self.data = self.data.drop(columns=["sbti_validated"], errors="ignore")
         out =  pd.merge(
             left=self.data, right=self.company_data, how="outer", on=["company_id"]
         )
@@ -333,6 +335,11 @@ class TargetProtocol:
         """
         now = datetime.datetime.now()
         time_frame = target.end_year - now.year
+        # Method 6.3.6.1 test if target is of type T_SCORE and 
+        # the company is validated by sbti
+        if (target.target_type.lower() == "t_score") and target.sbti_validated:
+            time_frame += 5
+
         if time_frame < 5:
             target.time_frame = ETimeFrames.SHORT
         elif time_frame <= 10:

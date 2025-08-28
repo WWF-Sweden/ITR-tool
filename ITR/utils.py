@@ -204,6 +204,25 @@ def dataframe_to_portfolio(df_portfolio: pd.DataFrame) -> List[PortfolioCompany]
         for company in df_portfolio.to_dict(orient="records")
     ]
 
+def check_sbti_validation(
+    targets: List[IDataProviderTarget], 
+    companies: List[IDataProviderCompany]) -> List[IDataProviderTarget]:
+    """
+    Loops through targets and sets the value of sbti_validated to True
+    if the associated company's status of sbti_validated is True, otherwise False
+    We need this information to correctly use the method's time frame exception.
+    This column is dropped before merging with company data in the process method
+    of target_validation.
+
+    :param targets: A list of IDataProviderTarget instances
+    :param companies: A list of IDataProviderCompany instances
+    """
+    # Create a mapping from company_id to sbti_validated status
+    company_sbti_map = {c.company_id: getattr(c, "sbti_validated", False) for c in companies}
+    for t in targets:
+        t.sbti_validated = company_sbti_map.get(t.company_id, False)
+    return targets
+
 
 def get_data(
     data_providers: List[data.DataProvider], portfolio: List[PortfolioCompany]
@@ -224,9 +243,10 @@ def get_data(
     if len(target_data) == 0:
         raise ValueError("No targets found")
 
-    # Supplement the company data with the SBTi target status
+    # Supplement the company and target data with the SBTi target status
     company_data = SBTi().get_sbti_targets(company_data, _make_id_map(df_portfolio))
-
+    target_data = check_sbti_validation(target_data, company_data)
+    
     # Prepare the data
     portfolio_data = TargetProtocol().process(target_data, company_data)
     portfolio_data = pd.merge(
