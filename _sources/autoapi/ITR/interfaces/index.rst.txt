@@ -742,6 +742,11 @@ Classes
 
       
 
+   .. py:attribute:: sbti_validated
+      :annotation: :bool
+
+      
+
    .. py:method:: pre(cls, values)
       :classmethod:
 

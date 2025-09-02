@@ -104,10 +104,13 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#ITR.utils.dataframe_to_portfolio" title="ITR.utils.dataframe_to_portfolio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataframe_to_portfolio</span></code></a>(df_portfolio: pandas.DataFrame) → List[ITR.interfaces.PortfolioCompany]</p></td>
 <td><p>Convert a data frame to a list of portfolio company objects.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ITR.utils.get_data" title="ITR.utils.get_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data</span></code></a>(data_providers: List[ITR.data.DataProvider], portfolio: List[ITR.interfaces.PortfolioCompany]) → pandas.DataFrame</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ITR.utils.check_sbti_validation" title="ITR.utils.check_sbti_validation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_sbti_validation</span></code></a>(targets: List[ITR.interfaces.IDataProviderTarget], companies: List[ITR.interfaces.IDataProviderCompany]) → List[ITR.interfaces.IDataProviderTarget]</p></td>
+<td><p>Loops through targets and sets the value of sbti_validated to True</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ITR.utils.get_data" title="ITR.utils.get_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data</span></code></a>(data_providers: List[ITR.data.DataProvider], portfolio: List[ITR.interfaces.PortfolioCompany]) → pandas.DataFrame</p></td>
 <td><p>Get the required data from the data provider(s), validate the targets and return a 9-box grid for each company.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ITR.utils.calculate" title="ITR.utils.calculate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate</span></code></a>(portfolio_data: pandas.DataFrame, default_score: float, aggregation_method: ITR.portfolio_aggregation.PortfolioAggregationMethod, grouping: Optional[List[str]], scenario: Optional[ITR.temperature_score.Scenario], time_frames: List[ITR.interfaces.ETimeFrames], scopes: List[ITR.interfaces.EScope], anonymize: bool, aggregate: bool = True) → Tuple[pandas.DataFrame, Optional[ITR.interfaces.ScoreAggregations]]</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ITR.utils.calculate" title="ITR.utils.calculate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate</span></code></a>(portfolio_data: pandas.DataFrame, default_score: float, aggregation_method: ITR.portfolio_aggregation.PortfolioAggregationMethod, grouping: Optional[List[str]], scenario: Optional[ITR.temperature_score.Scenario], time_frames: List[ITR.interfaces.ETimeFrames], scopes: List[ITR.interfaces.EScope], anonymize: bool, aggregate: bool = True) → Tuple[pandas.DataFrame, Optional[ITR.interfaces.ScoreAggregations]]</p></td>
 <td><p>Calculate the different parts of the temperature score (actual scores, aggregations, column distribution).</p></td>
 </tr>
 </tbody>
@@ -225,6 +228,24 @@ data providers left.</p>
 </dl>
 <p>PortfolioCompany model.
 :return: A list of portfolio companies</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ITR.utils.check_sbti_validation">
+<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">check_sbti_validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">companies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderCompany" title="ITR.interfaces.IDataProviderCompany"><span class="pre">ITR.interfaces.IDataProviderCompany</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ITR.utils.check_sbti_validation" title="Permalink to this definition"></a></dt>
+<dd><p>Loops through targets and sets the value of sbti_validated to True
+if the associated company’s status of sbti_validated is True, otherwise False
+We need this information to correctly use the method’s time frame exception.
+This column is dropped before merging with company data in the process method
+of target_validation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>targets</strong> – A list of IDataProviderTarget instances</p></li>
+<li><p><strong>companies</strong> – A list of IDataProviderCompany instances</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">

@@ -19,6 +19,7 @@ Functions
    ITR.utils._flatten_user_fields
    ITR.utils._make_id_map
    ITR.utils.dataframe_to_portfolio
+   ITR.utils.check_sbti_validation
    ITR.utils.get_data
    ITR.utils.calculate
 
@@ -91,6 +92,18 @@ Attributes
    :param df_portfolio: The data frame to parse. The column names should align with the attribute names of the
    PortfolioCompany model.
    :return: A list of portfolio companies
+
+
+.. py:function:: check_sbti_validation(targets: List[ITR.interfaces.IDataProviderTarget], companies: List[ITR.interfaces.IDataProviderCompany]) -> List[ITR.interfaces.IDataProviderTarget]
+
+   Loops through targets and sets the value of sbti_validated to True
+   if the associated company's status of sbti_validated is True, otherwise False
+   We need this information to correctly use the method's time frame exception.
+   This column is dropped before merging with company data in the process method
+   of target_validation.
+
+   :param targets: A list of IDataProviderTarget instances
+   :param companies: A list of IDataProviderCompany instances
 
 
 .. py:function:: get_data(data_providers: List[ITR.data.DataProvider], portfolio: List[ITR.interfaces.PortfolioCompany]) -> pandas.DataFrame
