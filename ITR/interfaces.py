@@ -227,6 +227,12 @@ class IDataProviderTarget(BaseModel):
         description="""Some data providers use a unique identifier for each target. This identifier can then be used to 
         link companies targets to scores. E.g. targets MSCI1235 and MSCI4567 drive a score of 2.5° for Company 123""",
     )
+
+    sbti_validated: bool = Field(
+        False,
+        description='True if the SBTi target status is "Target set", false otherwise',
+    )
+    
     @classmethod
     def pre(cls, values):
         # Set default values if not provided
