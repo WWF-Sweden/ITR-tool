@@ -9,10 +9,11 @@ install_requires = [
     "openpyxl==3.1.2",
     "pandas==2.2.2",
     "pydantic>=2.0,<3.0",
-    "requests==2.32.3",
+    "requests>=2.32.4,<3.0.0",
     "six>=1.16.0",
     "xlrd==2.0.1",
     "xlsxwriter>=3.0.2",
+    "numpy>=1.26,<2.3.0",
 ]
 
 setup_kwargs = {
@@ -28,7 +29,7 @@ setup_kwargs = {
     "packages": packages,
     "package_data": package_data,
     "install_requires": install_requires,
-    "python_requires": ">=3.9.7,<4",
+    "python_requires": ">=3.10",
 }
 
 
