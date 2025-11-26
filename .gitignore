@@ -144,6 +144,7 @@ docker-compose_aws.yml
 
 # Misc
 .noseids
+.DS_Store
 
 #Proprietary data used in data provider validation
 examples/data/BBG*
