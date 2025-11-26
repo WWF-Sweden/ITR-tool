@@ -74,6 +74,14 @@ class EndToEndTest(unittest.TestCase):
             company_total_assets=100,
             company_cash_equivalents=100,
             isic="A12",
+            country="Unknown",
+            region="Unknown",
+            sector="Unknown",
+            industry_level_1="Unknown",
+            industry_level_2="Unknown",
+            industry_level_3="Unknown",
+            industry_level_4="Unknown",
+            sbti_validated=False,
         )
         # define targets
         self.target_base = self._create_target_with_defaults(company_id)
@@ -394,6 +402,7 @@ class EndToEndTest(unittest.TestCase):
                 company_id=company_id,
                 investment_value=100,
                 company_isin=company_id,
+                company_lei=company_id
             )
             pf_companies.append(pf_company)
 
