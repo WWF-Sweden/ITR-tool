@@ -32,11 +32,11 @@ packages = [{ include = "ITR" }]
 
 [tool.poetry.dependencies]
 python = "^3.9,<4"
-pydantic = "1.10.14"
+pydantic = "^2.0"
 six = "^1.16.0"
 pandas = "2.2.2"
 xlrd = "2.0.1"
-requests = "2.32.3"
+requests = ">=2.32.4,<3.0.0"
 openpyxl = "3.1.2"
 cleo = "^2.0.3"
 sphinx = "5.0.2"

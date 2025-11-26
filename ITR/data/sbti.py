@@ -173,12 +173,13 @@ class SBTi:
             if id_tuple is None:
                 continue
             isin, lei = id_tuple
-            # Check lei and length of lei to avoid zeros 
-            if not lei.lower() == 'nan' and len(lei) > 3:
+            # Check lei and length of lei to avoid zeros
+            # Handle both None and string values
+            if lei is not None and str(lei).lower() not in ('nan', 'none', '') and len(str(lei)) > 3:
                 targets = self.targets[
                     self.targets[self.c.COL_COMPANY_LEI] == lei
                 ]
-            elif not isin.lower() == 'nan':
+            elif isin is not None and str(isin).lower() not in ('nan', 'none', ''):
                 targets = self.targets[
                     self.targets[self.c.COL_COMPANY_ISIN] == isin
                 ]

@@ -4,7 +4,7 @@ from typing import Optional, Dict, List
 
 import pandas as pd
 import numpy as np
-from pydantic import BaseModel, validator, Field, ValidationError
+from pydantic import BaseModel, field_validator, Field, ValidationError
 
 
 class AggregationContribution(BaseModel):
@@ -37,20 +37,20 @@ class ScoreAggregation(BaseModel):
 
 
 class ScoreAggregationScopes(BaseModel):
-    S1: Optional[ScoreAggregation]
-    S2: Optional[ScoreAggregation]
-    S1S2: Optional[ScoreAggregation]
-    S3: Optional[ScoreAggregation]
-    S1S2S3: Optional[ScoreAggregation]
+    S1: Optional[ScoreAggregation] = None
+    S2: Optional[ScoreAggregation] = None
+    S1S2: Optional[ScoreAggregation] = None
+    S3: Optional[ScoreAggregation] = None
+    S1S2S3: Optional[ScoreAggregation] = None
 
     def __getitem__(self, item):
         return getattr(self, item)
 
 
 class ScoreAggregations(BaseModel):
-    short: Optional[ScoreAggregationScopes]
-    mid: Optional[ScoreAggregationScopes]
-    long: Optional[ScoreAggregationScopes]
+    short: Optional[ScoreAggregationScopes] = None
+    mid: Optional[ScoreAggregationScopes] = None
+    long: Optional[ScoreAggregationScopes] = None
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -64,11 +64,18 @@ class ScenarioInterface(BaseModel):
 class PortfolioCompany(BaseModel):
     company_name: str
     company_id: str
-    company_isin: Optional[str]
-    company_lei: Optional[str] 
+    company_isin: Optional[str] = None
+    company_lei: Optional[str] = None
     investment_value: float
     engagement_target: Optional[bool] = False
     user_fields: Optional[dict] = None
+    
+    @field_validator("company_isin", "company_lei", mode="before")
+    @classmethod
+    def validate_optional_strings(cls, val):
+        if pd.isnull(val) or val == "" or val == "nan":
+            return None
+        return val
 
 
 class IDataProviderCompany(BaseModel):
@@ -97,13 +104,13 @@ class IDataProviderCompany(BaseModel):
     ghg_s3_14: Optional[float] = np.nan
     ghg_s3_15: Optional[float] = np.nan
 
-    country: Optional[str]
-    region: Optional[str] 
-    sector: Optional[str] 
-    industry_level_1: Optional[str] 
-    industry_level_2: Optional[str] 
-    industry_level_3: Optional[str] 
-    industry_level_4: Optional[str] 
+    country: Optional[str] = None
+    region: Optional[str] = None
+    sector: Optional[str] = None
+    industry_level_1: Optional[str] = None
+    industry_level_2: Optional[str] = None
+    industry_level_3: Optional[str] = None
+    industry_level_4: Optional[str] = None
 
     company_revenue: Optional[float] = 0.0
     company_market_cap: Optional[float] = 0.0
@@ -197,12 +204,12 @@ class S3Category(SortableEnum):
 class IDataProviderTarget(BaseModel):
     company_id: str
     target_type: str
-    intensity_metric: Optional[str]
-    base_year_ts: Optional[float]
-    end_year_ts: Optional[float]
+    intensity_metric: Optional[str] = None
+    base_year_ts: Optional[float] = None
+    end_year_ts: Optional[float] = None
     scope: EScope
     #s3_category: Optional[int]
-    s3_category: Optional[S3Category]
+    s3_category: Optional[S3Category] = None
     coverage_s1: Optional[float] = np.nan
     coverage_s2: Optional[float] = np.nan
     coverage_s3: Optional[float] = np.nan
@@ -215,10 +222,10 @@ class IDataProviderTarget(BaseModel):
     base_year_ghg_s1s2: Optional[float] = np.nan
     base_year_ghg_s3: Optional[float] = np.nan
     
-    start_year: Optional[int]
+    start_year: Optional[int] = None
     end_year: int
-    statement_date: Optional[date]
-    time_frame: Optional[ETimeFrames]
+    statement_date: Optional[date] = None
+    time_frame: Optional[ETimeFrames] = None
     achieved_reduction: Optional[float] = 0.0
     to_calculate: Optional[bool] = False # Set to True if the target should be calculated
 
@@ -233,21 +240,23 @@ class IDataProviderTarget(BaseModel):
         description='True if the SBTi target status is "Target set", false otherwise',
     )
     
+    @field_validator("intensity_metric", mode="before")
     @classmethod
-    def pre(cls, values):
-        # Set default values if not provided
-        if 'time_frame' not in values:
-            values['time_frame'] = None
-        return values
-
-    @validator("start_year", pre=True, always=False)
-    def validate_e(cls, val):
+    def validate_intensity_metric(cls, val):
+        if pd.isnull(val) or val == "" or val == "nan":
+            return None
+        return val
+    
+    @field_validator("start_year", mode="before")
+    @classmethod
+    def validate_start_year(cls, val):
         if val == "" or val == "nan" or pd.isnull(val):
             return None
         return val
     
-    # @validator("s3_category", pre=True, always=False)
-    # def validate_f(cls, val):
+    # @field_validator("s3_category", mode="before")
+    # @classmethod
+    # def validate_s3_category(cls, val):
     #     if val is None:
     #         return None
     #     elif isinstance(val, S3Category):
@@ -260,12 +269,13 @@ class IDataProviderTarget(BaseModel):
     #     else:
     #         raise ValidationError("Invalid type for s3_category")
         
-    @validator("target_ids", pre=True)
+    @field_validator("target_ids", mode="before")
+    @classmethod
     def convert_to_list(cls, v):
         """
         targets can be combined so target_ids field must be a list
-        pre=True is used to ensure that the validator is called before the default_factory
-        with pre=True and default_factory the users can supply single strings, e.g. "Target1"
+        mode='before' is used to ensure that the validator is called before the default_factory
+        with mode='before' and default_factory the users can supply single strings, e.g. "Target1"
         """
         if isinstance(v, list):
             return v

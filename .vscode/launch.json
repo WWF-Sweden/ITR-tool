@@ -1,7 +1,13 @@
 {
-    "name": "Python: Current File",
-    "type": "python",
-    "request": "launch",
-    "program": "${workspaceFolder}/ITR.PN_test",
-    "console": "integratedTerminal"
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "python": "${workspaceFolder}/.venv/bin/python"
+        }
+    ]
 }
