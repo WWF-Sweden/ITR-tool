@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "WWF-ITR"
-version = "v1.5.3"
+version = "1.5.3"
 description = "This package helps companies and financial institutions to assess the temperature alignment of current climate reduction targets and commitments for investment and lending portfolios. The tool can also be used to develop targets for official validation by the SBTi.'"
 authors = ["wwf <ekonomi-finans@wwf.se>"]
 license = "MIT"
@@ -16,6 +16,7 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3 :: Only",
     "Topic :: Software Development",
     "Topic :: Scientific/Engineering",
@@ -45,7 +46,7 @@ sphinx-rtd-theme = "^1.0.0"
 xlsxwriter = "^3.0.2"
 
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 black = "21.10b0"
 pylint = "^2.10.2"
 ipykernel = "6.5.0"
