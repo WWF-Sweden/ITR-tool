@@ -29,7 +29,9 @@ author = "WWF Sweden"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["autoapi.extension", "sphinx_rtd_theme"]
+extensions = ["autoapi.extension",
+              "sphinx.ext.napoleon",
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -67,7 +69,6 @@ html_static_path = ["_static"]
 # }
 
 # -- Auto API
-extensions.append("autoapi.extension")
 autoapi_dirs = ["../ITR"]
 autoapi_type = "python"
 autoapi_template_dir = "_autoapi_templates"
