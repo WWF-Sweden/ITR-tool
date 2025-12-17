@@ -54,9 +54,9 @@ class TargetProtocol:
         """
         logger.info(f"started processing {len(targets)=} and {len(companies)=}")
         # Create multiindex on company, timeframe and scope for performance later on
-        self.company_data = pd.DataFrame.from_records([c.dict() for c in companies])
+        self.company_data = pd.DataFrame.from_records([c.model_dump() for c in companies])
         targets = self._prepare_targets(targets)
-        self.target_data = pd.DataFrame.from_records([c.dict() for c in targets])
+        self.target_data = pd.DataFrame.from_records([c.model_dump() for c in targets])
         self.target_data['statement_date'] = pd.to_datetime(self.target_data['statement_date'])
 
         # Create an indexed DF for performance purposes

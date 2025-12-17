@@ -142,7 +142,7 @@ def _flatten_user_fields(record: PortfolioCompany):
     :param record: The record to flatten
     :return:
     """
-    record_dict = record.dict(exclude_none=True)
+    record_dict = record.model_dump(exclude_none=True)
     if record.user_fields is not None:
         for key, value in record_dict["user_fields"].items():
             record_dict[key] = value
@@ -200,7 +200,7 @@ def dataframe_to_portfolio(df_portfolio: pd.DataFrame) -> List[PortfolioCompany]
 
         df_portfolio['user_fields'] = df_portfolio['user_fields'].apply(process_user_fields)
     return [
-        PortfolioCompany.parse_obj(company)
+        PortfolioCompany.model_validate(company)
         for company in df_portfolio.to_dict(orient="records")
     ]
 

@@ -249,8 +249,9 @@ class PortfolioCoverageTVPConfig(PortfolioAggregationConfig):
     USE_LOCAL_CTA = False
     # If the CTA file is older than a week, the file will be downloaded again
     SKIP_CTA_FILE_IF_EXISTS = True
-    # Temporary URL until the SBTi website is updated
-    CTA_FILE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTn5UZIBmOxWKNFpmQGWWDczMvdBJ74l2_j0emUH9mxEKylHqh3oMLhu2FXtAV7-bqDxy9Yz_hkWzu8/pub?output=xlsx"
+     # Temporary URL until the SBTi website is updated
+    #CTA_FILE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTn5UZIBmOxWKNFpmQGWWDczMvdBJ74l2_j0emUH9mxEKylHqh3oMLhu2FXtAV7-bqDxy9Yz_hkWzu8/pub?output=xlsx"
+    CTA_FILE_URL = "https://sb-ti.files.svdcdn.com/staging/files/companies-excel.xlsx"
     USE_CUSTOM_FILE_TARGETS_PATH = False
     OUTPUT_TARGET_STATUS = "sbti_target_status"
     OUTPUT_WEIGHTED_TARGET_STATUS = "weighted_sbti_target_status"

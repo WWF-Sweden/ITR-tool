@@ -627,7 +627,7 @@ class TemperatureScore(PortfolioAggregation):
             score=weighted_scores.sum(),
             proportion=len(weighted_scores) / (total_companies / 100.0),
             contributions=[
-            AggregationContribution.parse_obj(contribution)
+            AggregationContribution.model_validate(contribution)
             for contribution in contributions
             ],
         )

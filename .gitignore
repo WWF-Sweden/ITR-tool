@@ -155,3 +155,6 @@ examples/6_compare_temps_SP.ipynb
 ITR/PN_test.py
 ITR/s3_agg.py
 examples/data/local/*
+
+# Ignore VS Code configurations
+.vscode/

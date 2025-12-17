@@ -87,7 +87,7 @@ class ExcelProvider(DataProvider):
             try:
                 # Map the s3_category values to the S3Category enum
                 target['s3_category'] = S3Category(target['s3_category']) 
-                model_targets.append(IDataProviderTarget.parse_obj(target))
+                model_targets.append(IDataProviderTarget.model_validate(target))
             except ValidationError as e:
                 print(f"Validationerror: {e}, target: {target}")
                 logger.warning(
@@ -116,7 +116,7 @@ class ExcelProvider(DataProvider):
 
         companies = data_company.to_dict(orient="records")
         model_companies: List[IDataProviderCompany] = [
-            IDataProviderCompany.parse_obj(company) for company in companies
+            IDataProviderCompany.model_validate(company) for company in companies
         ]
         for company in model_companies:
             if company.ghg_s1 is not None or company.ghg_s2 is not None:
