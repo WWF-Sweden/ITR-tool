@@ -41,18 +41,21 @@ requests = "2.32.4"
 openpyxl = "3.1.2"
 numpy = ">=1.26,<2.1"
 cleo = "^2.0.3"
-sphinx = "5.0.2"
-sphinx-rtd-theme = "^1.0.0"
 xlsxwriter = "^3.0.2"
 
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+sphinx = ">=7.2,<8.0"
+sphinx-autoapi = ">=3.4,<4.0"
+sphinx-rtd-theme = ">=2.0,<3.0"
+astroid = ">=3.0,<4.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "21.10b0"
-pylint = "^2.10.2"
+pylint = "^3.1"
 ipykernel = "6.5.0"
-sphinx = "5.0.2"
-sphinx-autoapi = "1.8.4"
-sphinx-rtd-theme = "1.0.0"
 
 [tool.pyright]
 venv = ".venv"
