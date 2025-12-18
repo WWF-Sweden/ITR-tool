@@ -6,6 +6,9 @@ __pycache__/
 .idea/*
 *.iml
 
+# Local test files
+PN_test.py
+
 # C extensions
 *.so
 
@@ -158,4 +161,3 @@ examples/data/local/*
 
 # Ignore VS Code configurations
 .vscode/
-PN_test.py
