@@ -41,7 +41,7 @@ jobs:
           touch gh-pages/.nojekyll
 
           # Build with Sphinx (conf.py lives in docs/)
-          rm -rf docs/_build          rm -rf docs/_build docs/autoapi
+          rm -rf docs/_build docs/autoapi
           poetry run sphinx-build -b html docs docs/_build/html -T --keep-going
 
           # Copy to publish folder
@@ -51,3 +51,5 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
+          folder: gh-pages
+          clean: true
