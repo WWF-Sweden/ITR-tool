@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ITR.utils &mdash; WWF Finance Tool  documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -27,11 +29,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> WWF Finance Tool
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            WWF Finance Tool
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -63,8 +69,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">ITR.utils</span></code></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">ITR.utils</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/autoapi/ITR/utils/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -75,77 +81,70 @@
            <div itemprop="articleBody">
              
   <section id="module-ITR.utils">
-<span id="itr-utils"></span><h1><a class="reference internal" href="#module-ITR.utils" title="ITR.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ITR.utils</span></code></a><a class="headerlink" href="#module-ITR.utils" title="Permalink to this heading"></a></h1>
-<section id="module-contents">
-<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
-<section id="functions">
-<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h3>
-<table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ITR.utils.get_data_providers" title="ITR.utils.get_data_providers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data_providers</span></code></a>(data_providers_configs: List[dict], data_providers_input: List[str]) → List[ITR.data.DataProvider]</p></td>
-<td><p>Determines which data provider and in which order should be used.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ITR.utils.get_company_data" title="ITR.utils.get_company_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_company_data</span></code></a>(data_providers: list, company_ids: List[str]) → List[ITR.interfaces.IDataProviderCompany]</p></td>
-<td><p>Get the company data in a waterfall method, given a list of companies and a list of data providers. This will go</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ITR.utils.get_targets" title="ITR.utils.get_targets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_targets</span></code></a>(data_providers: list, companies: list) → List[ITR.interfaces.IDataProviderTarget]</p></td>
-<td><p>Get the targets in a waterfall method, given a list of companies and a list of data providers. This will go through</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ITR.utils._flatten_user_fields" title="ITR.utils._flatten_user_fields"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_flatten_user_fields</span></code></a>(record: ITR.interfaces.PortfolioCompany)</p></td>
-<td><p>Flatten the user fields in a portfolio company and return it as a dictionary.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ITR.utils._make_id_map" title="ITR.utils._make_id_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_make_id_map</span></code></a>(df_portfolio: pandas.DataFrame) → dict</p></td>
-<td><p>Create a mapping from company_id to ISIN and LEI (required for the SBTi matching).</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ITR.utils.dataframe_to_portfolio" title="ITR.utils.dataframe_to_portfolio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataframe_to_portfolio</span></code></a>(df_portfolio: pandas.DataFrame) → List[ITR.interfaces.PortfolioCompany]</p></td>
-<td><p>Convert a data frame to a list of portfolio company objects.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ITR.utils.check_sbti_validation" title="ITR.utils.check_sbti_validation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_sbti_validation</span></code></a>(targets: List[ITR.interfaces.IDataProviderTarget], companies: List[ITR.interfaces.IDataProviderCompany]) → List[ITR.interfaces.IDataProviderTarget]</p></td>
-<td><p>Loops through targets and sets the value of sbti_validated to True</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ITR.utils.get_data" title="ITR.utils.get_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data</span></code></a>(data_providers: List[ITR.data.DataProvider], portfolio: List[ITR.interfaces.PortfolioCompany]) → pandas.DataFrame</p></td>
-<td><p>Get the required data from the data provider(s), validate the targets and return a 9-box grid for each company.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ITR.utils.calculate" title="ITR.utils.calculate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate</span></code></a>(portfolio_data: pandas.DataFrame, default_score: float, aggregation_method: ITR.portfolio_aggregation.PortfolioAggregationMethod, grouping: Optional[List[str]], scenario: Optional[ITR.temperature_score.Scenario], time_frames: List[ITR.interfaces.ETimeFrames], scopes: List[ITR.interfaces.EScope], anonymize: bool, aggregate: bool = True) → Tuple[pandas.DataFrame, Optional[ITR.interfaces.ScoreAggregations]]</p></td>
-<td><p>Calculate the different parts of the temperature score (actual scores, aggregations, column distribution).</p></td>
-</tr>
-</tbody>
-</table>
-</section>
+<span id="itr-utils"></span><h1>ITR.utils<a class="headerlink" href="#module-ITR.utils" title="Link to this heading"></a></h1>
 <section id="attributes">
-<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this heading"></a></h3>
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ITR.utils.DATA_PROVIDER_MAP" title="ITR.utils.DATA_PROVIDER_MAP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DATA_PROVIDER_MAP</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ITR.utils.get_data_providers" title="ITR.utils.get_data_providers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data_providers</span></code></a>(→ List[ITR.data.DataProvider])</p></td>
+<td><p>Determines which data provider and in which order should be used.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ITR.utils.get_company_data" title="ITR.utils.get_company_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_company_data</span></code></a>(...)</p></td>
+<td><p>Get the company data in a waterfall method, given a list of companies and a list of data providers. This will go</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ITR.utils.get_targets" title="ITR.utils.get_targets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_targets</span></code></a>(→ List[ITR.interfaces.IDataProviderTarget])</p></td>
+<td><p>Get the targets in a waterfall method, given a list of companies and a list of data providers. This will go through</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ITR.utils._flatten_user_fields" title="ITR.utils._flatten_user_fields"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_flatten_user_fields</span></code></a>(record)</p></td>
+<td><p>Flatten the user fields in a portfolio company and return it as a dictionary.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ITR.utils._make_id_map" title="ITR.utils._make_id_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_make_id_map</span></code></a>(→ dict)</p></td>
+<td><p>Create a mapping from company_id to ISIN and LEI (required for the SBTi matching).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ITR.utils.dataframe_to_portfolio" title="ITR.utils.dataframe_to_portfolio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataframe_to_portfolio</span></code></a>(...)</p></td>
+<td><p>Convert a data frame to a list of portfolio company objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ITR.utils.check_sbti_validation" title="ITR.utils.check_sbti_validation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_sbti_validation</span></code></a>(...)</p></td>
+<td><p>Loops through targets and sets the value of sbti_validated to True</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ITR.utils.get_data" title="ITR.utils.get_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data</span></code></a>(→ pandas.DataFrame)</p></td>
+<td><p>Get the required data from the data provider(s), validate the targets and return a 9-box grid for each company.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ITR.utils.calculate" title="ITR.utils.calculate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate</span></code></a>(→ Tuple[pandas.DataFrame, ...)</p></td>
+<td><p>Calculate the different parts of the temperature score (actual scores, aggregations, column distribution).</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
 <dl class="py data">
 <dt class="sig sig-object py" id="ITR.utils.DATA_PROVIDER_MAP">
-<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">DATA_PROVIDER_MAP</span></span><em class="property"><span class="w"> </span><span class="pre">:Dict[str,</span> <span class="pre">Type[ITR.data.DataProvider]]</span></em><a class="headerlink" href="#ITR.utils.DATA_PROVIDER_MAP" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">DATA_PROVIDER_MAP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../data/index.html#ITR.data.DataProvider" title="ITR.data.DataProvider"><span class="pre">ITR.data.DataProvider</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ITR.utils.DATA_PROVIDER_MAP" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ITR.utils.get_data_providers">
-<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">get_data_providers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_providers_configs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_providers_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../data/index.html#ITR.data.DataProvider" title="ITR.data.DataProvider"><span class="pre">ITR.data.DataProvider</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ITR.utils.get_data_providers" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">get_data_providers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_providers_configs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_providers_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../data/index.html#ITR.data.DataProvider" title="ITR.data.DataProvider"><span class="pre">ITR.data.DataProvider</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ITR.utils.get_data_providers" title="Link to this definition"></a></dt>
 <dd><p>Determines which data provider and in which order should be used.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_providers_configs</strong> – A list of data provider configurations</p></li>
 <li><p><strong>data_providers_input</strong> – A list of data provider names</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a list of data providers in order.</p>
 </dd>
 </dl>
@@ -153,18 +152,18 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ITR.utils.get_company_data">
-<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">get_company_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_providers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">company_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderCompany" title="ITR.interfaces.IDataProviderCompany"><span class="pre">ITR.interfaces.IDataProviderCompany</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ITR.utils.get_company_data" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">get_company_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_providers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">company_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderCompany" title="ITR.interfaces.IDataProviderCompany"><span class="pre">ITR.interfaces.IDataProviderCompany</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ITR.utils.get_company_data" title="Link to this definition"></a></dt>
 <dd><p>Get the company data in a waterfall method, given a list of companies and a list of data providers. This will go
 through the list of data providers and retrieve the required info until either there are no companies left or there
 are no data providers left.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_providers</strong> – A list of data providers instances</p></li>
 <li><p><strong>company_ids</strong> – A list of company ids (ISINs)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A data frame containing the company data</p>
 </dd>
 </dl>
@@ -172,18 +171,18 @@ are no data providers left.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ITR.utils.get_targets">
-<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">get_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_providers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">companies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ITR.utils.get_targets" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">get_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_providers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">companies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ITR.utils.get_targets" title="Link to this definition"></a></dt>
 <dd><p>Get the targets in a waterfall method, given a list of companies and a list of data providers. This will go through
 the list of data providers and retrieve the required info until either there are no companies left or there are no
 data providers left.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_providers</strong> – A list of data providers instances</p></li>
 <li><p><strong>companies</strong> – A list of companies. Each company should be a dict and contain a company_name and company_id field</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A data frame containing the targets</p>
 </dd>
 </dl>
@@ -191,13 +190,13 @@ data providers left.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ITR.utils._flatten_user_fields">
-<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">_flatten_user_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.PortfolioCompany" title="ITR.interfaces.PortfolioCompany"><span class="pre">ITR.interfaces.PortfolioCompany</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.utils._flatten_user_fields" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">_flatten_user_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.PortfolioCompany" title="ITR.interfaces.PortfolioCompany"><span class="pre">ITR.interfaces.PortfolioCompany</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.utils._flatten_user_fields" title="Link to this definition"></a></dt>
 <dd><p>Flatten the user fields in a portfolio company and return it as a dictionary.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>record</strong> – The record to flatten</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p></p>
 </dd>
 </dl>
@@ -205,13 +204,13 @@ data providers left.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ITR.utils._make_id_map">
-<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">_make_id_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_portfolio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#ITR.utils._make_id_map" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">_make_id_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_portfolio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#ITR.utils._make_id_map" title="Link to this definition"></a></dt>
 <dd><p>Create a mapping from company_id to ISIN and LEI (required for the SBTi matching).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>df_portfolio</strong> – The complete portfolio</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A mapping from company_id to (ISIN, LEI) tuple</p>
 </dd>
 </dl>
@@ -219,10 +218,10 @@ data providers left.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ITR.utils.dataframe_to_portfolio">
-<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">dataframe_to_portfolio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_portfolio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.PortfolioCompany" title="ITR.interfaces.PortfolioCompany"><span class="pre">ITR.interfaces.PortfolioCompany</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ITR.utils.dataframe_to_portfolio" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">dataframe_to_portfolio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_portfolio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.PortfolioCompany" title="ITR.interfaces.PortfolioCompany"><span class="pre">ITR.interfaces.PortfolioCompany</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ITR.utils.dataframe_to_portfolio" title="Link to this definition"></a></dt>
 <dd><p>Convert a data frame to a list of portfolio company objects.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>df_portfolio</strong> – The data frame to parse. The column names should align with the attribute names of the</p>
 </dd>
 </dl>
@@ -232,14 +231,14 @@ data providers left.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ITR.utils.check_sbti_validation">
-<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">check_sbti_validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">companies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderCompany" title="ITR.interfaces.IDataProviderCompany"><span class="pre">ITR.interfaces.IDataProviderCompany</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ITR.utils.check_sbti_validation" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">check_sbti_validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">companies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderCompany" title="ITR.interfaces.IDataProviderCompany"><span class="pre">ITR.interfaces.IDataProviderCompany</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.IDataProviderTarget" title="ITR.interfaces.IDataProviderTarget"><span class="pre">ITR.interfaces.IDataProviderTarget</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ITR.utils.check_sbti_validation" title="Link to this definition"></a></dt>
 <dd><p>Loops through targets and sets the value of sbti_validated to True
 if the associated company’s status of sbti_validated is True, otherwise False
 We need this information to correctly use the method’s time frame exception.
 This column is dropped before merging with company data in the process method
 of target_validation.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>targets</strong> – A list of IDataProviderTarget instances</p></li>
 <li><p><strong>companies</strong> – A list of IDataProviderCompany instances</p></li>
@@ -250,16 +249,16 @@ of target_validation.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ITR.utils.get_data">
-<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_providers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../data/index.html#ITR.data.DataProvider" title="ITR.data.DataProvider"><span class="pre">ITR.data.DataProvider</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">portfolio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.PortfolioCompany" title="ITR.interfaces.PortfolioCompany"><span class="pre">ITR.interfaces.PortfolioCompany</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="headerlink" href="#ITR.utils.get_data" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_providers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../data/index.html#ITR.data.DataProvider" title="ITR.data.DataProvider"><span class="pre">ITR.data.DataProvider</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">portfolio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.PortfolioCompany" title="ITR.interfaces.PortfolioCompany"><span class="pre">ITR.interfaces.PortfolioCompany</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="headerlink" href="#ITR.utils.get_data" title="Link to this definition"></a></dt>
 <dd><p>Get the required data from the data provider(s), validate the targets and return a 9-box grid for each company.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_providers</strong> – A list of DataProvider instances</p></li>
 <li><p><strong>portfolio</strong> – A list of PortfolioCompany models</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A data frame containing the relevant company-target data</p>
 </dd>
 </dl>
@@ -267,10 +266,10 @@ of target_validation.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ITR.utils.calculate">
-<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">calculate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">portfolio_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregation_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../portfolio_aggregation/index.html#ITR.portfolio_aggregation.PortfolioAggregationMethod" title="ITR.portfolio_aggregation.PortfolioAggregationMethod"><span class="pre">ITR.portfolio_aggregation.PortfolioAggregationMethod</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scenario</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../temperature_score/index.html#ITR.temperature_score.Scenario" title="ITR.temperature_score.Scenario"><span class="pre">ITR.temperature_score.Scenario</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.ETimeFrames" title="ITR.interfaces.ETimeFrames"><span class="pre">ITR.interfaces.ETimeFrames</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scopes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.EScope" title="ITR.interfaces.EScope"><span class="pre">ITR.interfaces.EScope</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anonymize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">pandas.DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.ScoreAggregations" title="ITR.interfaces.ScoreAggregations"><span class="pre">ITR.interfaces.ScoreAggregations</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ITR.utils.calculate" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ITR.utils.</span></span><span class="sig-name descname"><span class="pre">calculate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">portfolio_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregation_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../portfolio_aggregation/index.html#ITR.portfolio_aggregation.PortfolioAggregationMethod" title="ITR.portfolio_aggregation.PortfolioAggregationMethod"><span class="pre">ITR.portfolio_aggregation.PortfolioAggregationMethod</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scenario</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../temperature_score/index.html#ITR.temperature_score.Scenario" title="ITR.temperature_score.Scenario"><span class="pre">ITR.temperature_score.Scenario</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.ETimeFrames" title="ITR.interfaces.ETimeFrames"><span class="pre">ITR.interfaces.ETimeFrames</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scopes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.EScope" title="ITR.interfaces.EScope"><span class="pre">ITR.interfaces.EScope</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anonymize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">pandas.DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../interfaces/index.html#ITR.interfaces.ScoreAggregations" title="ITR.interfaces.ScoreAggregations"><span class="pre">ITR.interfaces.ScoreAggregations</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ITR.utils.calculate" title="Link to this definition"></a></dt>
 <dd><p>Calculate the different parts of the temperature score (actual scores, aggregations, column distribution).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>portfolio_data</strong> – The portfolio data, already processed by the target validation module</p></li>
 <li><p><strong>default_score</strong> – The default score to use while calculating the temperature score</p></li>
@@ -283,13 +282,12 @@ of target_validation.</p>
 <li><p><strong>aggregate</strong> – Whether to aggregate the scores or not</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The scores, the aggregations and the column distribution (if a</p>
 </dd>
 </dl>
 </dd></dl>
 
-</section>
 </section>
 </section>
 

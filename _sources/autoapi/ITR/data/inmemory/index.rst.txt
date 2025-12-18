@@ -1,45 +1,51 @@
-:py:mod:`ITR.data.inmemory`
-===========================
+ITR.data.inmemory
+=================
 
 .. py:module:: ITR.data.inmemory
 
 
-Module Contents
----------------
-
-Classes
-~~~~~~~
-
-.. autoapisummary::
-
-   ITR.data.inmemory.InMemoryProvider
-
-
-
-
 Attributes
-~~~~~~~~~~
+----------
 
 .. autoapisummary::
 
    ITR.data.inmemory.class_definitions
 
 
-.. py:data:: class_definitions
-   
+Classes
+-------
 
-   
+.. autoapisummary::
+
+   ITR.data.inmemory.InMemoryProvider
+
+
+Module Contents
+---------------
+
+.. py:data:: class_definitions
 
 .. py:class:: InMemoryProvider(fundamental: class_definitions[InMemoryProvider.__init__.fundamental], targets: class_definitions[target], config: Type[ITR.configs.ColumnsConfig] = ColumnsConfig)
 
    Bases: :py:obj:`ITR.data.data_provider.DataProvider`
+
 
    Data provider to read in-memory dict.
 
    :param fundamental: A dictionary with the fundamental data
    :param targets: A dictionary with the target data
 
-   .. py:method:: get_targets(self, company_ids: list) -> List[ITR.interfaces.IDataProviderTarget]
+
+   .. py:attribute:: data_fundamental
+
+
+   .. py:attribute:: data_targets
+
+
+   .. py:attribute:: c
+
+
+   .. py:method:: get_targets(company_ids: list) -> List[ITR.interfaces.IDataProviderTarget]
 
       Get all relevant targets for a list of company ids (ISIN). This method should return a list of
       IDataProviderTarget instances.
@@ -48,7 +54,8 @@ Attributes
       :return: A list containing the targets
 
 
-   .. py:method:: _target_df_to_model(self, df_targets)
+
+   .. py:method:: _target_df_to_model(df_targets)
 
       transforms target Dataframe into list of IDataProviderTarget instances
 
@@ -56,7 +63,8 @@ Attributes
       :return: A list containing the targets
 
 
-   .. py:method:: get_company_data(self, company_ids: list) -> List[ITR.interfaces.IDataProviderCompany]
+
+   .. py:method:: get_company_data(company_ids: list) -> List[ITR.interfaces.IDataProviderCompany]
 
       Get all relevant data for a list of company ids (ISIN). This method should return a list of IDataProviderCompany
       instances.
@@ -65,7 +73,8 @@ Attributes
       :return: A list containing the company data
 
 
-   .. py:method:: get_sbti_targets(self, companies: list) -> list
+
+   .. py:method:: get_sbti_targets(companies: list) -> list
 
       For each of the companies, get the status of their target (Target set, Committed or No target) as it's known to
       the SBTi.

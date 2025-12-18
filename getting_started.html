@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Getting Started Using Python &mdash; WWF Finance Tool  documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -29,11 +31,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> WWF Finance Tool
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            WWF Finance Tool
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -72,8 +78,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Getting Started Using Python</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Getting Started Using Python</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/getting_started.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -84,14 +90,14 @@
            <div itemprop="articleBody">
              
   <section id="getting-started-using-python">
-<h1>Getting Started Using Python<a class="headerlink" href="#getting-started-using-python" title="Permalink to this heading"></a></h1>
+<h1>Getting Started Using Python<a class="headerlink" href="#getting-started-using-python" title="Link to this heading"></a></h1>
 <p>The most fundamental part of the project is the Python module, which takes care of all the heavy lifting.
 You can install it easily through PIP. There are a couple ways to get started using the module.
 The easiest option is to run our getting started notebook on <a class="reference external" href="https://colab.research.google.com/">Google Colab</a>.
 Alternatively, you can also run the <a class="reference external" href="https://github.com/WWF-Sweden/ITR-tool/tree/master/examples">notebooks</a> locally.
 We recommend that you run the tool in your local environment when you are using your actual portfolio data as input.</p>
 <section id="google-colab">
-<h2>Google Colab<a class="headerlink" href="#google-colab" title="Permalink to this heading"></a></h2>
+<h2>Google Colab<a class="headerlink" href="#google-colab" title="Link to this heading"></a></h2>
 <p>The easiest way to get started is by using the getting started notebook on Google Colab.
 It guides you through all the steps involved in installing the module and consequently running it, i.e. calculating a temperature scores and analyzing portfolios.
 There are five (+1) notebooks that go through the process step-by-step:</p>
@@ -116,7 +122,7 @@ methodology</a>.</p>
 <a class="reference external" href="https://colab.research.google.com/github/WWF-Sweden/ITR-tool/blob/main/examples/Simple_portfolio_coverage.ipynb">Simplified PC</a></p>
 </section>
 <section id="jupyter-notebooks">
-<h2>Jupyter Notebooks<a class="headerlink" href="#jupyter-notebooks" title="Permalink to this heading"></a></h2>
+<h2>Jupyter Notebooks<a class="headerlink" href="#jupyter-notebooks" title="Link to this heading"></a></h2>
 <p>Alternatively, you can also run the notebooks locally. To do so, you first need to set-up a new environment.
 In this example, we assume you use <a class="reference external" href="https://www.anaconda.com/">Anaconda</a> to manage your environments.
 To do this, run the following command:</p>
@@ -127,7 +133,7 @@ To do this, run the following command:</p>
 Make sure that your Python version is at least 3.9.</p>
 </section>
 <section id="python-code">
-<h2>Python code<a class="headerlink" href="#python-code" title="Permalink to this heading"></a></h2>
+<h2>Python code<a class="headerlink" href="#python-code" title="Link to this heading"></a></h2>
 <p>If you are starting from scratch, you can install the latest version of the package directly from Github as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">git</span><span class="o">+</span><span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">//</span><span class="n">WWF</span><span class="o">-</span><span class="n">Sweden</span><span class="o">/</span><span class="n">ITR</span><span class="o">-</span><span class="n">tool</span>
 </pre></div>

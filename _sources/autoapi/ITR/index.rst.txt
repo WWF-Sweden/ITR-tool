@@ -1,5 +1,5 @@
-:py:mod:`ITR`
-=============
+ITR
+===
 
 .. py:module:: ITR
 
@@ -11,27 +11,19 @@
 
 
 
-Subpackages
------------
-.. toctree::
-   :titlesonly:
-   :maxdepth: 3
-
-   data/index.rst
-
-
 Submodules
 ----------
+
 .. toctree::
-   :titlesonly:
    :maxdepth: 1
 
-   configs/index.rst
-   interfaces/index.rst
-   portfolio_aggregation/index.rst
-   portfolio_coverage_tvp/index.rst
-   target_validation/index.rst
-   temperature_score/index.rst
-   utils/index.rst
+   /autoapi/ITR/configs/index
+   /autoapi/ITR/data/index
+   /autoapi/ITR/interfaces/index
+   /autoapi/ITR/portfolio_aggregation/index
+   /autoapi/ITR/portfolio_coverage_tvp/index
+   /autoapi/ITR/target_validation/index
+   /autoapi/ITR/temperature_score/index
+   /autoapi/ITR/utils/index
 
 

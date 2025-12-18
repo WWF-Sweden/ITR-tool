@@ -1,15 +1,19 @@
-:py:mod:`ITR.utils`
-===================
+ITR.utils
+=========
 
 .. py:module:: ITR.utils
 
 
-Module Contents
----------------
+Attributes
+----------
+
+.. autoapisummary::
+
+   ITR.utils.DATA_PROVIDER_MAP
 
 
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
@@ -24,19 +28,11 @@ Functions
    ITR.utils.calculate
 
 
-
-Attributes
-~~~~~~~~~~
-
-.. autoapisummary::
-
-   ITR.utils.DATA_PROVIDER_MAP
-
+Module Contents
+---------------
 
 .. py:data:: DATA_PROVIDER_MAP
-   :annotation: :Dict[str, Type[ITR.data.DataProvider]]
-
-   
+   :type:  Dict[str, Type[ITR.data.DataProvider]]
 
 .. py:function:: get_data_providers(data_providers_configs: List[dict], data_providers_input: List[str]) -> List[ITR.data.DataProvider]
 

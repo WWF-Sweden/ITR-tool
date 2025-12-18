@@ -1,58 +1,68 @@
-:py:mod:`ITR.data.sbti`
-=======================
+ITR.data.sbti
+=============
 
 .. py:module:: ITR.data.sbti
 
 
-Module Contents
----------------
-
 Classes
-~~~~~~~
+-------
 
 .. autoapisummary::
 
    ITR.data.sbti.SBTi
 
 
-
+Module Contents
+---------------
 
 .. py:class:: SBTi(config: Type[ITR.configs.PortfolioCoverageTVPConfig] = PortfolioCoverageTVPConfig)
 
    Data provider skeleton for SBTi. This class only provides the sbti_validated field for existing companies.
 
-   .. py:method:: _check_if_cta_file_exists(self)
+
+   .. py:method:: _check_if_cta_file_exists()
 
       Check if the CTA file exists in the local file system
 
 
-   .. py:method:: _check_CTA_less_than_one_week_old(self)
+
+   .. py:method:: _check_CTA_less_than_one_week_old()
 
       Check if the CTA file is older than a week
 
 
-   .. py:method:: _use_local_cta_file(self)
+
+   .. py:method:: _use_local_cta_file()
 
 
-   .. py:method:: _download_cta_file(self)
+   .. py:method:: _download_cta_file()
 
 
-   .. py:method:: _fetch_and_save_cta_file(self)
+   .. py:method:: _fetch_and_save_cta_file()
 
 
-   .. py:method:: handle_cta_file(self)
+   .. py:method:: handle_cta_file()
 
 
-   .. py:method:: filter_cta_file(self, targets)
+   .. py:attribute:: c
+
+
+   .. py:attribute:: targets
+      :value: None
+
+
+
+   .. py:method:: filter_cta_file(targets)
 
       Filter the CTA file to create a dataframe that has one row per company
       with the columns "Action" and "Target".
       If Action = Target then only keep the rows where Target = Near-term.
 
 
-   .. py:method:: get_sbti_targets(self, companies: List[ITR.interfaces.IDataProviderCompany], id_map: dict) -> List[ITR.interfaces.IDataProviderCompany]
 
-      Check for each company if they have an SBTi validated target, first using the company LEI, 
+   .. py:method:: get_sbti_targets(companies: List[ITR.interfaces.IDataProviderCompany], id_map: dict) -> List[ITR.interfaces.IDataProviderCompany]
+
+      Check for each company if they have an SBTi validated target, first using the company LEI,
       if available, and then using the ISIN.
 
       :param companies: A list of IDataProviderCompany instances
