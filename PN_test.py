@@ -17,6 +17,7 @@ scenario.scenario_type = ScenarioType.APPROVED_TARGETS
 scenario.engagement_type = None
 scenario.aggregation_method = PortfolioAggregationMethod.WATS
 scenario.grouping = None
+
 """
 
 
