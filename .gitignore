@@ -158,3 +158,4 @@ examples/data/local/*
 
 # Ignore VS Code configurations
 .vscode/
+PN_test.py

@@ -1,4 +1,6 @@
+
 name: Docs2Pages
+
 on:
   workflow_dispatch:
   push:
@@ -9,37 +11,43 @@ jobs:
   build-docs:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18.14.1'
-          
       - name: Check out repository
-        uses: actions/checkout@v2
-      
-      - name: Set up python
-        uses: actions/setup-python@v2
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.9
-          
+          python-version: '3.12'   # or '3.11' to match local; 3.12 works with astroid 3.x
+
       - name: Install Poetry
         uses: snok/install-poetry@v1
+        with:
+          version: 1.7.1            # pin a known Poetry version (optional)
 
-      - name: Install library
-        run: poetry install
+      - name: Install docs dependencies
+        run: |
+          poetry --version
+          # Install only the docs group to ensure Sphinx/AutoAPI/astroid are present
+          poetry install --with docs
+          # If your dev group still pins old pylint/astroid, exclude it:
+          # poetry install --with docs --without dev
 
       - name: Build documentation
-        run: | 
+        run: |
+          # Prepare gh-pages directory
           if [ ! -d "gh-pages" ]; then
             mkdir gh-pages
-            touch gh-pages/.nojekyll
           fi
           touch gh-pages/.nojekyll
-          cd docs/
-          poetry run sphinx-build -b html . _build
-          cp -r _build/* ../gh-pages/        
+
+          # Build with Sphinx (conf.py lives in docs/)
+          rm -rf docs/_build          rm -rf docs/_build docs/autoapi
+          poetry run sphinx-build -b html docs docs/_build/html -T -W --keep-going
+
+          # Copy to publish folder
+          cp -r docs/_build/html/* gh-pages/
+
       - name: Deploy documentation
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: gh-pages
