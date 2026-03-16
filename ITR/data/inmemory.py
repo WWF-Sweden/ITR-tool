@@ -1,8 +1,9 @@
 from typing import Type, List
+import logging
 from pydantic import ValidationError
 import pandas as pd
 from ITR.data.data_provider import DataProvider
-from ITR.interfaces import IDataProviderCompany, IDataProviderTarget
+from ITR.interfaces import IDataProviderCompany, IDataProviderTarget, S3Category
 from ITR.configs import ColumnsConfig
 
 class_definitions = {
@@ -87,16 +88,34 @@ class InMemoryProvider(DataProvider):
         :param df_targets: pandas Dataframe with targets
         :return: A list containing the targets
         """
+        logger = logging.getLogger(__name__)
         targets = df_targets.to_dict(orient="records")
         model_targets: List[IDataProviderTarget] = []
 
         for target in targets:
             try:
+                # Replace NaN/NaT with None so Pydantic handles Optional fields correctly
+                cleaned = {}
+                for k, v in target.items():
+                    try:
+                        if v is None or (not isinstance(v, (list, dict, str)) and pd.isna(v)):
+                            cleaned[k] = None
+                        else:
+                            cleaned[k] = v
+                    except (ValueError, TypeError):
+                        cleaned[k] = v
+                target = cleaned
+                # Convert float years to int (Excel reads int columns as float)
+                for year_col in ['base_year', 'end_year', 'start_year']:
+                    if year_col in target and target[year_col] is not None:
+                        target[year_col] = int(target[year_col])
+                # Map s3_category if present
+                if 's3_category' in target and target['s3_category'] is not None:
+                    target['s3_category'] = S3Category(int(target['s3_category']))
                 model_targets.append(IDataProviderTarget.model_validate(target))
-            except ValidationError as e:
-                print(
-                    "(one of) the target(s) of company %s is invalid and will be skipped"
-                    % target[self.c.COMPANY_NAME]
+            except (ValidationError, TypeError) as e:
+                logger.warning(
+                    f"Target validation failed and will be skipped: {e}"
                 )
                 continue
 

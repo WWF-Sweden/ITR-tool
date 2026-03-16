@@ -33,12 +33,12 @@ packages = [{ include = "ITR" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-pydantic = ">=2.0,<2.12"
+pydantic = ">=2.0,<3.0"
 six = "^1.16.0"
-pandas = "2.2.2"
-xlrd = "2.0.1"
-requests = "2.32.4"
-openpyxl = "3.1.2"
+pandas = "^2.2.2"
+xlrd = "^2.0.1"
+requests = "^2.32"
+openpyxl = "^3.1.2"
 numpy = ">=1.26,<2.1"
 cleo = "^2.0.3"
 xlsxwriter = "^3.0.2"
@@ -53,9 +53,9 @@ sphinx-rtd-theme = ">=2.0,<3.0"
 astroid = ">=3.0,<4.0"
 
 [tool.poetry.group.dev.dependencies]
-black = "21.10b0"
+black = "^24.0"
 pylint = "^3.1"
-ipykernel = "6.5.0"
+ipykernel = "^6.5"
 
 [tool.pyright]
 venv = ".venv"

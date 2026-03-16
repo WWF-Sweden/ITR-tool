@@ -6,13 +6,13 @@ packages = ["ITR", "ITR.data"]
 package_data = {"": ["*"], "ITR": ["inputs/*"]}
 
 install_requires = [
-    "openpyxl==3.1.2",
-    "pandas==2.2.2",
-    "pydantic>=2.0,<2.12",
-    "requests==2.32.4",
-    "six>=1.16.0",
-    "xlrd==2.0.1",
-    "xlsxwriter>=3.0.2",
+    "openpyxl>=3.1.2,<4.0",
+    "pandas>=2.2.2,<3.0",
+    "pydantic>=2.0,<3.0",
+    "requests>=2.32,<3.0",
+    "six>=1.16.0,<2.0",
+    "xlrd>=2.0.1,<3.0",
+    "xlsxwriter>=3.0.2,<4.0",
     "numpy>=1.26,<2.1",
 ]
 
