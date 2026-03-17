@@ -4,8 +4,12 @@ Tests behavior with missing data, unusual inputs, and boundary conditions.
 """
 import copy
 import datetime
+import os
+import sys
 import unittest
 from typing import List
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from ITR.interfaces import (
     EScope,
