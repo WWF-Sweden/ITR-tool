@@ -7,7 +7,7 @@ import datetime
 import os
 import sys
 import unittest
-from typing import List
+from typing import Any, List
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -52,7 +52,7 @@ class EdgeCasesTest(unittest.TestCase):
     MID_END_YEAR = datetime.datetime.now().year + 5
 
     def _make_company(self, company_id: str, **kwargs) -> IDataProviderCompany:
-        defaults = dict(
+        defaults: dict[str, Any] = dict(
             company_name=company_id,
             company_id=company_id,
             isic="A12",
@@ -70,7 +70,7 @@ class EdgeCasesTest(unittest.TestCase):
         return IDataProviderCompany(**defaults)
 
     def _make_target(self, company_id: str, **kwargs) -> IDataProviderTarget:
-        defaults = dict(
+        defaults: dict[str, Any] = dict(
             company_id=company_id,
             target_type="abs",
             scope=EScope.S1S2,

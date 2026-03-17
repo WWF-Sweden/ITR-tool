@@ -240,6 +240,8 @@ class EndToEndTest(unittest.TestCase):
         agg_scores = temp_score.aggregate_scores(scores)
 
         # verify that results exist
+        assert agg_scores.mid is not None
+        assert agg_scores.mid.S1S2 is not None
         self.assertAlmostEqual(
             agg_scores.mid.S1S2.all.score, self.BASE_COMP_SCORE_GROUP, places=4
         )
@@ -355,6 +357,8 @@ class EndToEndTest(unittest.TestCase):
         agg_scores = temp_score.aggregate_scores(scores)
 
         # verify that results exist
+        assert agg_scores.mid is not None
+        assert agg_scores.mid.S1S2 is not None
         self.assertEqual(agg_scores.mid.S1S2.all.score, self.BASE_COMP_SCORE)
 
     # Run some regression tests
@@ -402,6 +406,8 @@ class EndToEndTest(unittest.TestCase):
         scores = temp_score.calculate(portfolio_data)
         agg_scores = temp_score.aggregate_scores(scores)
 
+        assert agg_scores.mid is not None
+        assert agg_scores.mid.S1S2 is not None
         self.assertAlmostEqual(agg_scores.mid.S1S2.all.score, self.BASE_COMP_SCORE)
 
     def test_grouping(self):
@@ -443,6 +449,8 @@ class EndToEndTest(unittest.TestCase):
         scores = temp_score.calculate(portfolio_data)
         agg_scores = temp_score.aggregate_scores(scores)
 
+        assert agg_scores.mid is not None
+        assert agg_scores.mid.S1S2 is not None
         for ind_level in industry_levels:
             self.assertAlmostEqual(
                 agg_scores.mid.S1S2.grouped[ind_level].score, self.BASE_COMP_SCORE
