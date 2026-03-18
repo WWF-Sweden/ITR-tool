@@ -157,6 +157,12 @@ def _make_id_map(df_portfolio: pd.DataFrame) -> dict:
     :param df_portfolio: The complete portfolio
     :return: A mapping from company_id to (ISIN, LEI) tuple
     """
+    # Ensure ISIN and LEI columns exist (may be absent when all values are None
+    # due to exclude_none=True in model_dump)
+    for col in [ColumnsConfig.COMPANY_ISIN, ColumnsConfig.COMPANY_LEI]:
+        if col not in df_portfolio.columns:
+            df_portfolio[col] = None
+
     return {
         company_id: (company[ColumnsConfig.COMPANY_ISIN], company[ColumnsConfig.COMPANY_LEI])
         for company_id, company in df_portfolio[

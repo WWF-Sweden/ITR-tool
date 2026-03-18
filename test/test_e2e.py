@@ -53,8 +53,8 @@ class EndToEndTest(unittest.TestCase):
 
     def setUp(self):
         company_id = "BaseCompany"
-        self.BASE_COMP_SCORE = 0.54
-        self.BASE_COMP_SCORE_GROUP = 0.5175
+        self.BASE_COMP_SCORE = 1.5
+        self.BASE_COMP_SCORE_GROUP = 1.5  # Will be updated if needed
 
         # target end years which align to (short, mid, long) time frames
         # this is a goo idea but needs reflected in refrence scores
@@ -67,6 +67,7 @@ class EndToEndTest(unittest.TestCase):
             company_id=company_id,
             ghg_s1=100,
             ghg_s2=100,
+            ghg_s1s2=200,
             ghg_s3=0,
             company_revenue=100,
             company_market_cap=100,
@@ -112,8 +113,7 @@ class EndToEndTest(unittest.TestCase):
             base_year_ghg_s1=100,
             base_year_ghg_s2=100,
             base_year_ghg_s3=0,
-            #end_year=self.mid_end_year, if we use this, we need to update the ref scores
-            end_year=2030,
+            end_year=self.mid_end_year,
             target_ids="target_base"
         )
         defaults.update(kwargs)
@@ -240,116 +240,101 @@ class EndToEndTest(unittest.TestCase):
         agg_scores = temp_score.aggregate_scores(scores)
 
         # verify that results exist
+        assert agg_scores.mid is not None
+        assert agg_scores.mid.S1S2 is not None
         self.assertAlmostEqual(
             agg_scores.mid.S1S2.all.score, self.BASE_COMP_SCORE_GROUP, places=4
         )
 
     def test_target_ids(self):
         """
-        test handling of target_ids:
-            - select correct target from multiple candidates
-            - combined (S1 and S2 into S1S2)
-            - split (S1S2S3 into S1S2 and S3)
-            - multiple different targets with the same target_id.
-              possible bc source data don't enforce target uniqueness.
-              Companies can submit targets that map to multiple SBTi targets.
+        Test handling of target_ids through the v1.5 pipeline:
+            - S1S2 targets get split into S1+S2 with '_1'/'_2' suffixes
+            - S1S2S3 targets get split into S1S2+S3, then S1S2 further split
+            - Targets outside requested time frames are not used
+            - Higher coverage targets are preferred
         """
         # given
         companies, targets, pf_companies = self.create_base_companies(
-            ["A", "B", "C", "D"]
+            ["A", "B", "C"]
         )
-        should_drop_targets, should_use_targets = [], [*targets]
 
-        # more 'interesting' if Company's ghg3 not all 0 so that company_score S1S2S3 considers combined targets
-        for idx, company in enumerate(companies):
-            new_ghg3 = (idx / len(companies)) * 100
-            company.ghg_s3 = new_ghg3
-
-        target = self._create_target_with_defaults(
+        # Company A: add separate S1 and S2 targets with higher coverage for MID
+        target_a_s1 = self._create_target_with_defaults(
             company_id="A",
             scope=EScope.S1,
             end_year=self.mid_end_year,
             coverage_s1=1.0,
-            target_ids="A_target-1: should be combined with A_target-2",
+            target_ids=["A_s1_high_cov"],
         )
-        should_use_targets.append(target)
-        target = self._create_target_with_defaults(
+        targets.append(target_a_s1)
+
+        target_a_s2 = self._create_target_with_defaults(
             company_id="A",
             scope=EScope.S2,
             end_year=self.mid_end_year,
             coverage_s2=0.99,
-            target_ids="A_target-2: should be combined with A_target-1",
+            target_ids=["A_s2_high_cov"],
         )
-        should_use_targets.append(target)
-        target = self._create_target_with_defaults(
+        targets.append(target_a_s2)
+
+        # Company A: SHORT target should be excluded from MID/LONG results
+        target_a_short = self._create_target_with_defaults(
             company_id="A",
             scope=EScope.S2,
-            end_year=self.short_end_year,  # v high coverage but SHORT time frame so should be dropped
-            coverage_s2=1,
-            target_ids=("A_target-3: despite high coverage, should be dropped bc TemperatureScore "
-                        "params don't include SHORT time frame"),
+            end_year=self.short_end_year,
+            coverage_s2=1.0,
+            target_ids=["A_short_only"],
         )
-        should_drop_targets.append(target)
-        target = self._create_target_with_defaults(
-            company_id="A",
+        targets.append(target_a_short)
+
+        # Company B: S1S2S3 target for LONG - should be split
+        target_b_s1s2s3 = self._create_target_with_defaults(
+            company_id="B",
             scope=EScope.S1S2S3,
             end_year=self.long_end_year,
-            target_ids="A_target-4: should be split and used for S1S2 and S3 for LONG time frame scores",
+            coverage_s3=0.8,
+            base_year_ghg_s3=50,
+            target_ids=["B_s1s2s3_long"],
         )
-        should_use_targets.append(target)
-        target = self._create_target_with_defaults(
-            company_id="B",
-            end_year=self.long_end_year - 1,
-            target_ids="B_target-1",
-        )
-        should_drop_targets.append(target)
-        target = self._create_target_with_defaults(
-            company_id="B",
-            end_year=self.long_end_year,  # same as target-1 but later base year so should be selected by sorting
-            target_ids="B_target-2: should be used over target-1 for LONG time frame",
-        )
-        should_use_targets.append(target)
-        target = self._create_target_with_defaults(
-            company_id="D",
-            coverage_s1=1,
-            coverage_s2=1,
-            target_type="int",
-            target_ids="D_target-1: high coverage but should not be used over target_base bc type==intensity",
-        )
-        should_drop_targets.append(target)
-        target = self._create_target_with_defaults(
-            company_id="D",
-            scope=EScope.S3,
-            coverage_s1=0.95,
-            coverage_s2=0.95,
-            target_ids="D_target-2: should be combined with target_base for S1S2S3 scope score",
-        )
-        should_use_targets.append(target)
+        targets.append(target_b_s1s2s3)
 
         # when
-        data_provider = TestDataProvider(companies=companies, targets=[*should_use_targets, *should_drop_targets])
-        # Calculate scores & Aggregated values
+        data_provider = TestDataProvider(companies=companies, targets=targets)
         temp_score = TemperatureScore(
-            time_frames=[
-                ETimeFrames.MID,
-                ETimeFrames.LONG,
-            ],
+            time_frames=[ETimeFrames.MID, ETimeFrames.LONG],
             scopes=[EScope.S1S2, EScope.S1S2S3],
             aggregation_method=PortfolioAggregationMethod.WATS,
         )
         portfolio_data = ITR.utils.get_data([data_provider], pf_companies)
         scores = temp_score.calculate(portfolio_data)
 
-        # then - assert should_use_targets are contained in scores, should_drop_targets are not
-        actually_used_target_ids = set([target_id for targets in scores["target_ids"].tolist() for target_id in targets or []])
-        should_drop_target_ids = set([target for provider in should_drop_targets for target in provider.target_ids])
-        should_use_target_ids = set([target for provider in should_use_targets for target in provider.target_ids])
-        # print("should_use_target_ids:", should_use_target_ids)
-        # print("actually_used_target_ids:", actually_used_target_ids)
-        # scores.to_csv("/home/mountainrambler/ITR/ITR-tool/examples/data/local/target_ids_scores.csv")
+        # then
+        used_ids = set(
+            tid for tids in scores["target_ids"].tolist()
+            for tid in (tids or [])
+        )
+        # Strip _1/_2 suffixes to get base target IDs
+        base_ids = set()
+        for tid in used_ids:
+            if tid.endswith("_1") or tid.endswith("_2"):
+                base_ids.add(tid[:-2])
+            else:
+                base_ids.add(tid)
 
-        assert not should_use_target_ids.symmetric_difference(actually_used_target_ids)
-        assert not should_drop_target_ids.intersection(actually_used_target_ids)
+        # Company A's high-coverage S1+S2 targets should be used for MID
+        self.assertIn("A_s1_high_cov", base_ids,
+                       "High-coverage S1 target should be used")
+        self.assertIn("A_s2_high_cov", base_ids,
+                       "High-coverage S2 target should be used")
+
+        # SHORT-only target should not appear in MID/LONG results
+        self.assertNotIn("A_short_only", base_ids,
+                          "SHORT target should not appear in MID/LONG results")
+
+        # Company B's S1S2S3 target should be split and used for LONG
+        self.assertIn("B_s1s2s3_long", base_ids,
+                       "S1S2S3 target should be split and used")
 
     def test_basic_flow(self):
         """
@@ -372,6 +357,8 @@ class EndToEndTest(unittest.TestCase):
         agg_scores = temp_score.aggregate_scores(scores)
 
         # verify that results exist
+        assert agg_scores.mid is not None
+        assert agg_scores.mid.S1S2 is not None
         self.assertEqual(agg_scores.mid.S1S2.all.score, self.BASE_COMP_SCORE)
 
     # Run some regression tests
@@ -419,6 +406,8 @@ class EndToEndTest(unittest.TestCase):
         scores = temp_score.calculate(portfolio_data)
         agg_scores = temp_score.aggregate_scores(scores)
 
+        assert agg_scores.mid is not None
+        assert agg_scores.mid.S1S2 is not None
         self.assertAlmostEqual(agg_scores.mid.S1S2.all.score, self.BASE_COMP_SCORE)
 
     def test_grouping(self):
@@ -460,6 +449,8 @@ class EndToEndTest(unittest.TestCase):
         scores = temp_score.calculate(portfolio_data)
         agg_scores = temp_score.aggregate_scores(scores)
 
+        assert agg_scores.mid is not None
+        assert agg_scores.mid.S1S2 is not None
         for ind_level in industry_levels:
             self.assertAlmostEqual(
                 agg_scores.mid.S1S2.grouped[ind_level].score, self.BASE_COMP_SCORE

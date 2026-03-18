@@ -858,6 +858,10 @@ class TemperatureScore(PortfolioAggregation):
         # Separate Scope 3 data
         s3_data = data[data['scope'] == EScope.S3].copy()
 
+        # If there's no s3_category column or no S3 data, nothing to aggregate
+        if 's3_category' not in s3_data.columns or s3_data.empty:
+            return data
+
         # Step 1: Calculate mean temperature score for CAT_15
         # cat_15_data = s3_data[s3_data['s3_category'] == S3Category.CAT_15].copy()
         # mean_cat_15 = cat_15_data.groupby(['company_id', 'time_frame']).agg({

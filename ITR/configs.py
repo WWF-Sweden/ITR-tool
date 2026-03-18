@@ -234,9 +234,11 @@ class TemperatureScoreConfig(PortfolioAggregationConfig):
     EPSILON = 1e-6
 
 class PortfolioCoverageTVPConfig(PortfolioAggregationConfig):
+    # Store CTA file in user's home directory to ensure fresh data and avoid permission issues
+    # Falls back to bundled file if download fails (e.g., firewall restrictions)
     FILE_TARGETS = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        "inputs",
+        os.path.expanduser("~"),
+        ".itr-tool",
         "current-Companies-Taking-Action.xlsx",
     )
     # To avoid CTA file being downloaded every time and use a local file instead, set USE_LOCAL_CTA = True and set the

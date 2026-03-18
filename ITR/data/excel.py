@@ -73,6 +73,7 @@ class ExcelProvider(DataProvider):
         :return: A list containing the targets
         """
         logger = logging.getLogger(__name__)
+        df_targets = df_targets.copy()  # Avoid mutating the original DataFrame
          # 1) Check if 'statement_date' looks like a date
         df_targets['statement_date'] = pd.to_datetime(df_targets['statement_date'], format='%Y', errors='coerce')
 
@@ -85,16 +86,29 @@ class ExcelProvider(DataProvider):
         model_targets: List[IDataProviderTarget] = []
         for target in targets:
             try:
+                # Replace NaN/NaT with None so Pydantic handles Optional fields correctly
+                cleaned = {}
+                for k, v in target.items():
+                    try:
+                        if v is None or (not isinstance(v, (list, dict, str)) and pd.isna(v)):
+                            cleaned[k] = None
+                        else:
+                            cleaned[k] = v
+                    except (ValueError, TypeError):
+                        cleaned[k] = v
+                target = cleaned
+                # Convert float years to int (Excel reads int columns as float)
+                for year_col in ['base_year', 'end_year', 'start_year']:
+                    if year_col in target and target[year_col] is not None:
+                        target[year_col] = int(target[year_col])
                 # Map the s3_category values to the S3Category enum
-                target['s3_category'] = S3Category(target['s3_category']) 
+                if 's3_category' in target and target['s3_category'] is not None:
+                    target['s3_category'] = S3Category(int(target['s3_category']))
                 model_targets.append(IDataProviderTarget.model_validate(target))
-            except ValidationError as e:
-                print(f"Validationerror: {e}, target: {target}")
+            except (ValidationError, TypeError) as e:
                 logger.warning(
-                    f"(one of) the target(s) {target[self.c.TARGET_IDS]} of company {target[self.c.COMPANY_NAME]} is invalid and will be skipped"
-                    
+                    f"Target validation failed and will be skipped: {e}"
                 )
-                pass
         return model_targets
 
     def get_company_data(self, company_ids: List[str]) -> List[IDataProviderCompany]:

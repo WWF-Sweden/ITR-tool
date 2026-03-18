@@ -57,6 +57,13 @@ class TargetProtocol:
         self.company_data = pd.DataFrame.from_records([c.model_dump() for c in companies])
         targets = self._prepare_targets(targets)
         self.target_data = pd.DataFrame.from_records([c.model_dump() for c in targets])
+        if self.target_data.empty:
+            logger.warning("No valid targets after preparation")
+            # Return an empty merge so downstream code gets the right columns
+            self.data = pd.DataFrame(columns=[self.c.COLS.COMPANY_ID, self.c.COLS.TIME_FRAME, self.c.COLS.SCOPE])
+            return pd.merge(
+                left=self.data, right=self.company_data, how="outer", on=["company_id"]
+            )
         self.target_data['statement_date'] = pd.to_datetime(self.target_data['statement_date'])
 
         # Create an indexed DF for performance purposes
@@ -567,6 +574,11 @@ class TargetProtocol:
         results = [df.dropna(how='all', axis=1) for df in results]
         self.data = pd.concat(results, ignore_index=True)
 
+        # Restore any schema columns that were dropped by dropna
+        for col in target_columns:
+            if col not in self.data.columns:
+                self.data[col] = None
+
         return self.data
     
     def sort_on_vintage(self, target_data: pd.DataFrame) -> pd.DataFrame:
@@ -584,7 +596,10 @@ class TargetProtocol:
             level=[self.c.COLS.COMPANY_ID, self.c.COLS.TIME_FRAME, self.c.COLS.SCOPE]
         )['statement_year'].transform('max')
 
-        latest_data = target_data[target_data['statement_year'] == latest_years]
+        # Keep rows matching the latest year, or all rows in groups where all dates are NaN
+        latest_data = target_data[
+            (target_data['statement_year'] == latest_years) | latest_years.isna()
+        ]
 
         latest_data = latest_data.drop(columns=['statement_year'])
 
@@ -612,6 +627,10 @@ class TargetProtocol:
 
         # Use the boolean mask to filter for Scope 1 and Scope 2
         scope_1_2_data = data[scope_1_2_mask]
+
+        # If there are no S1/S2/S1S2 targets, nothing to sort
+        if scope_1_2_data.empty:
+            return data
 
         # Group by COMPANY_ID and TIME_FRAME
         grouped_data = scope_1_2_data.groupby(level=[self.c.COLS.COMPANY_ID, self.c.COLS.TIME_FRAME])

@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 import warnings
 import os
+import shutil
 
 
 from ITR.configs import PortfolioCoverageTVPConfig
@@ -19,6 +20,37 @@ class SBTi:
         Check if the CTA file exists in the local file system
         """
         return os.path.isfile(self.c.FILE_TARGETS)
+
+    def _get_bundled_cta_path(self):
+        """
+        Get the path to the bundled CTA file in the package
+        """
+        return os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            "..",
+            "inputs",
+            "current-Companies-Taking-Action.xlsx",
+        )
+
+    def _use_bundled_fallback(self):
+        """
+        Copy the bundled CTA file to the target location as a fallback
+        """
+        bundled_path = self._get_bundled_cta_path()
+        if os.path.isfile(bundled_path):
+            try:
+                target_dir = os.path.dirname(self.c.FILE_TARGETS)
+                os.makedirs(target_dir, exist_ok=True)
+                shutil.copy2(bundled_path, self.c.FILE_TARGETS)
+                print(f'WARNING: Using bundled CTA file as fallback. Data may be outdated.')
+                print(f'Copied bundled file to: {self.c.FILE_TARGETS}')
+                return True
+            except Exception as e:
+                print(f'Error copying bundled CTA file: {e}')
+                return False
+        else:
+            print(f'ERROR: Bundled CTA file not found at {bundled_path}')
+            return False
 
 
     def _check_CTA_less_than_one_week_old(self):
@@ -60,34 +92,53 @@ class SBTi:
             get_file = True
 
         if get_file:
+            download_successful = False
             try:
                 self._fetch_and_save_cta_file()
+                download_successful = True
             
             except requests.HTTPError as err:
                 if err.response.status_code == 403:
                     print(f'403 Error fetching the CTA file: {err}')
                 else:
-                    print(f'Error fetching the CTA file: {err}')
+                    print(f'HTTP Error fetching the CTA file: {err}')
+            except requests.RequestException as err:
+                print(f'Network error fetching the CTA file: {err}')
+                print(f'This may be due to firewall restrictions or network connectivity issues.')
+            except Exception as err:
+                print(f'Unexpected error fetching the CTA file: {err}')
+            
+            # If download failed and file still doesn't exist, use bundled fallback
+            if not download_successful and not self._check_if_cta_file_exists():
+                print(f'Attempting to use bundled CTA file as fallback...')
+                if not self._use_bundled_fallback():
+                    raise RuntimeError(
+                        'Failed to download CTA file and no fallback available. '
+                        'Please check network connectivity or set USE_LOCAL_CTA=True '
+                        'with a valid FILE_TARGETS_CUSTOM_PATH.'
+                    )
         else:            
             print(f'CTA file already exists in {self.c.FILE_TARGETS}, skipping download.')
 
     def _fetch_and_save_cta_file(self):
-        try:
-            headers = {
-                'x-request': 'download',
-                'User-Agent': 'ITR-tool/0.9.2 (Python; ekonomi-finans@wwf.se)',
-                'From': 'ekonomi-finans@wwf.se'
-            }
-            # read from the remote CTA file url
-            response = requests.get(self.c.CTA_FILE_URL, headers=headers)
-            # raise if the status code is not 200
-            response.raise_for_status()
+        # Ensure the directory exists
+        target_dir = os.path.dirname(self.c.FILE_TARGETS)
+        os.makedirs(target_dir, exist_ok=True)
+        
+        headers = {
+            'x-request': 'download',
+            'User-Agent': 'ITR-tool/0.9.2 (Python; ekonomi-finans@wwf.se)',
+            'From': 'ekonomi-finans@wwf.se'
+        }
+        # read from the remote CTA file url
+        response = requests.get(self.c.CTA_FILE_URL, headers=headers, timeout=30)
+        # raise if the status code is not 200
+        response.raise_for_status()
 
-            with open(self.c.FILE_TARGETS, 'wb') as output:
-                output.write(response.content)
-                print(f'Status code from fetching the CTA file: {response.status_code}, 200 = OK')
-        except requests.HTTPError as err:
-            print(f'Error fetching the CTA file: {err}')
+        with open(self.c.FILE_TARGETS, 'wb') as output:
+            output.write(response.content)
+            print(f'Successfully downloaded CTA file (Status: {response.status_code})')
+            print(f'Saved to: {self.c.FILE_TARGETS}')
 
     def handle_cta_file(self):
         if self.c.USE_LOCAL_CTA:
