@@ -26,6 +26,18 @@ Module Contents
 
 
 
+   .. py:method:: _get_bundled_cta_path()
+
+      Get the path to the bundled CTA file in the package
+
+
+
+   .. py:method:: _use_bundled_fallback()
+
+      Copy the bundled CTA file to the target location as a fallback
+
+
+
    .. py:method:: _check_CTA_less_than_one_week_old()
 
       Check if the CTA file is older than a week
