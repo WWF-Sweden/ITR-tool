@@ -27,3 +27,18 @@ Submodules
    /autoapi/ITR/utils/index
 
 
+Attributes
+----------
+
+.. autoapisummary::
+
+   ITR.__version__
+
+
+Package Contents
+----------------
+
+.. py:data:: __version__
+   :value: '1.5.4'
+
+
