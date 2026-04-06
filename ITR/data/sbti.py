@@ -1,4 +1,4 @@
-from typing import List, Type
+from typing import List, Type, Optional
 import requests
 import pandas as pd
 import warnings
@@ -127,7 +127,7 @@ class SBTi:
         
         headers = {
             'x-request': 'download',
-            'User-Agent': 'ITR-tool/0.9.2 (Python; ekonomi-finans@wwf.se)',
+            'User-Agent': 'ITR-tool/1.6.0 (Python; ekonomi-finans@wwf.se)',
             'From': 'ekonomi-finans@wwf.se'
         }
         # read from the remote CTA file url
@@ -140,16 +140,42 @@ class SBTi:
             print(f'Successfully downloaded CTA file (Status: {response.status_code})')
             print(f'Saved to: {self.c.FILE_TARGETS}')
 
+    def _is_offline(self):
+        env_val = os.environ.get("ITR_OFFLINE", "").strip().lower()
+        if env_val:
+            return env_val in ("1", "true", "yes")
+        return self.c.OFFLINE
+
     def handle_cta_file(self):
+        if self._is_offline():
+            if self._check_if_cta_file_exists():
+                print(f'ITR_OFFLINE: Using existing CTA file at {self.c.FILE_TARGETS}')
+            elif self.c.USE_LOCAL_CTA and os.path.isfile(self.c.FILE_TARGETS_CUSTOM_PATH):
+                self.c.FILE_TARGETS = self.c.FILE_TARGETS_CUSTOM_PATH
+                print(f'ITR_OFFLINE: Using local CTA file at {self.c.FILE_TARGETS}')
+            elif self._use_bundled_fallback():
+                pass  # bundled fallback prints its own messages
+            else:
+                raise RuntimeError(
+                    'ITR_OFFLINE is set but no CTA file is available locally or bundled. '
+                    'Please provide a CTA file via cta_file_path or disable offline mode.'
+                )
+            return
         if self.c.USE_LOCAL_CTA:
             self._use_local_cta_file()
         else:
             self._download_cta_file()
 
     def __init__(
-        self, config: Type[PortfolioCoverageTVPConfig] = PortfolioCoverageTVPConfig
+        self, 
+        config: Type[PortfolioCoverageTVPConfig] = PortfolioCoverageTVPConfig,
+        cta_file_path: Optional[str] = None,
     ):
         self.c = config
+
+        if cta_file_path is not None:
+            self.c.USE_LOCAL_CTA = True
+            self.c.FILE_TARGETS_CUSTOM_PATH = cta_file_path
 
         # Handle CTA file
         self.handle_cta_file()
