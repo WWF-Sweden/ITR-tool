@@ -135,7 +135,7 @@ Module Contents
 
 
 
-.. py:class:: TemperatureScore(time_frames: List[ITR.interfaces.ETimeFrames], scopes: List[ITR.interfaces.EScope], default_score: float = TemperatureScoreConfig.DEFAULT_SCORE, model: int = TemperatureScoreConfig.MODEL_NUMBER, scenario: Optional[Scenario] = None, aggregation_method: ITR.portfolio_aggregation.PortfolioAggregationMethod = PortfolioAggregationMethod.WATS, grouping: Optional[List] = None, config: Type[ITR.configs.TemperatureScoreConfig] = TemperatureScoreConfig)
+.. py:class:: TemperatureScore(time_frames: List[ITR.interfaces.ETimeFrames], scopes: List[ITR.interfaces.EScope], default_score: float = TemperatureScoreConfig.DEFAULT_SCORE, model: int = TemperatureScoreConfig.MODEL_NUMBER, scenario: Optional[Scenario] = None, aggregation_method: ITR.portfolio_aggregation.PortfolioAggregationMethod = PortfolioAggregationMethod.WATS, grouping: Optional[List] = None, config: Type[ITR.configs.TemperatureScoreConfig] = TemperatureScoreConfig, cta_file_path: Optional[str] = None)
 
    Bases: :py:obj:`ITR.portfolio_aggregation.PortfolioAggregation`
 
@@ -166,6 +166,11 @@ Module Contents
 
    .. py:attribute:: default_score
       :value: 3.4
+
+
+
+   .. py:attribute:: cta_file_path
+      :value: None
 
 
 
@@ -277,6 +282,16 @@ Module Contents
 
       :param data: The original data set as a pandas data frame
       :return: The data frame, with an updated s1s2s3 temperature score
+
+
+
+   .. py:method:: _enrich_sbti_validated(data: pandas.DataFrame) -> pandas.DataFrame
+
+      Enrich the data with SBTi validation status from the CTA file.
+      Only called when SBTI_FACTOR != 1.
+
+      :param data: The data frame to enrich
+      :return: The enriched data frame
 
 
 

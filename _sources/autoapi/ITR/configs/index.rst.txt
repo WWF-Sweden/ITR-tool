@@ -552,6 +552,11 @@ Module Contents
 
 
 
+   .. py:attribute:: OFFLINE
+      :value: False
+
+
+
    .. py:attribute:: SKIP_CTA_FILE_IF_EXISTS
       :value: True
 
@@ -559,11 +564,6 @@ Module Contents
 
    .. py:attribute:: CTA_FILE_URL
       :value: 'https://sb-ti.files.svdcdn.com/staging/files/companies-excel.xlsx'
-
-
-
-   .. py:attribute:: USE_CUSTOM_FILE_TARGETS_PATH
-      :value: False
 
 
 

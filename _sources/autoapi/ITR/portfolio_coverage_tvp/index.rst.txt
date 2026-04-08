@@ -15,7 +15,7 @@ Classes
 Module Contents
 ---------------
 
-.. py:class:: PortfolioCoverageTVP(config: Type[ITR.configs.PortfolioCoverageTVPConfig] = PortfolioCoverageTVPConfig)
+.. py:class:: PortfolioCoverageTVP(config: Type[ITR.configs.PortfolioCoverageTVPConfig] = PortfolioCoverageTVPConfig, cta_file_path: Optional[str] = None)
 
    Bases: :py:obj:`ITR.portfolio_aggregation.PortfolioAggregation`
 
@@ -25,15 +25,31 @@ Module Contents
    :param config: A class defining the constants that are used throughout this class. This parameter is only required
                    if you'd like to overwrite a constant. This can be done by extending the PortfolioCoverageTVPConfig
                    class and overwriting one of the parameters.
+   :param cta_file_path: Optional path to a user-provided CTA file. If set, the file will be used instead of
+                   downloading from the internet.
 
 
    .. py:attribute:: c
       :type:  Type[ITR.configs.PortfolioCoverageTVPConfig]
 
 
+   .. py:attribute:: cta_file_path
+      :value: None
+
+
+
+   .. py:method:: _enrich_sbti_validated(company_data: pandas.DataFrame) -> pandas.DataFrame
+
+      Load the CTA file and enrich the company data with the sbti_validated status.
+      Skipped if sbti_validated is already populated in the data.
+
+
+
    .. py:method:: get_portfolio_coverage(company_data: pandas.DataFrame, portfolio_aggregation_method: ITR.portfolio_aggregation.PortfolioAggregationMethod) -> Optional[float]
 
       Get the TVP portfolio coverage (i.e. what part of the portfolio has a SBTi validated target).
+      Loads the CTA file and enriches company data with sbti_validated status before computing coverage,
+      unless sbti_validated is already populated.
 
       :param company_data: The company as it is returned from the data provider's get_company_data call.
       :param portfolio_aggregation_method: PortfolioAggregationMethod: The aggregation method to use

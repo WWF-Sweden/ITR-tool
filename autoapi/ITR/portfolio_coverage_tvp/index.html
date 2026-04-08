@@ -96,14 +96,18 @@
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="ITR.portfolio_coverage_tvp.PortfolioCoverageTVP">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ITR.portfolio_coverage_tvp.</span></span><span class="sig-name descname"><span class="pre">PortfolioCoverageTVP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../configs/index.html#ITR.configs.PortfolioCoverageTVPConfig" title="ITR.configs.PortfolioCoverageTVPConfig"><span class="pre">ITR.configs.PortfolioCoverageTVPConfig</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">PortfolioCoverageTVPConfig</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.portfolio_coverage_tvp.PortfolioCoverageTVP" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ITR.portfolio_coverage_tvp.</span></span><span class="sig-name descname"><span class="pre">PortfolioCoverageTVP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../configs/index.html#ITR.configs.PortfolioCoverageTVPConfig" title="ITR.configs.PortfolioCoverageTVPConfig"><span class="pre">ITR.configs.PortfolioCoverageTVPConfig</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">PortfolioCoverageTVPConfig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cta_file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.portfolio_coverage_tvp.PortfolioCoverageTVP" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="../portfolio_aggregation/index.html#ITR.portfolio_aggregation.PortfolioAggregation" title="ITR.portfolio_aggregation.PortfolioAggregation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ITR.portfolio_aggregation.PortfolioAggregation</span></code></a></p>
 <p>Lookup the companies in the given portfolio and determine whether they have a SBTi approved target.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>config</strong> – A class defining the constants that are used throughout this class. This parameter is only required
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> – A class defining the constants that are used throughout this class. This parameter is only required
 if you’d like to overwrite a constant. This can be done by extending the PortfolioCoverageTVPConfig
-class and overwriting one of the parameters.</p>
+class and overwriting one of the parameters.</p></li>
+<li><p><strong>cta_file_path</strong> – Optional path to a user-provided CTA file. If set, the file will be used instead of
+downloading from the internet.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py attribute">
@@ -111,10 +115,24 @@ class and overwriting one of the parameters.</p>
 <span class="sig-name descname"><span class="pre">c</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../configs/index.html#ITR.configs.PortfolioCoverageTVPConfig" title="ITR.configs.PortfolioCoverageTVPConfig"><span class="pre">ITR.configs.PortfolioCoverageTVPConfig</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ITR.portfolio_coverage_tvp.PortfolioCoverageTVP.c" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ITR.portfolio_coverage_tvp.PortfolioCoverageTVP.cta_file_path">
+<span class="sig-name descname"><span class="pre">cta_file_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#ITR.portfolio_coverage_tvp.PortfolioCoverageTVP.cta_file_path" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ITR.portfolio_coverage_tvp.PortfolioCoverageTVP._enrich_sbti_validated">
+<span class="sig-name descname"><span class="pre">_enrich_sbti_validated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">company_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="headerlink" href="#ITR.portfolio_coverage_tvp.PortfolioCoverageTVP._enrich_sbti_validated" title="Link to this definition"></a></dt>
+<dd><p>Load the CTA file and enrich the company data with the sbti_validated status.
+Skipped if sbti_validated is already populated in the data.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="ITR.portfolio_coverage_tvp.PortfolioCoverageTVP.get_portfolio_coverage">
 <span class="sig-name descname"><span class="pre">get_portfolio_coverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">company_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">portfolio_aggregation_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../portfolio_aggregation/index.html#ITR.portfolio_aggregation.PortfolioAggregationMethod" title="ITR.portfolio_aggregation.PortfolioAggregationMethod"><span class="pre">ITR.portfolio_aggregation.PortfolioAggregationMethod</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#ITR.portfolio_coverage_tvp.PortfolioCoverageTVP.get_portfolio_coverage" title="Link to this definition"></a></dt>
-<dd><p>Get the TVP portfolio coverage (i.e. what part of the portfolio has a SBTi validated target).</p>
+<dd><p>Get the TVP portfolio coverage (i.e. what part of the portfolio has a SBTi validated target).
+Loads the CTA file and enriches company data with sbti_validated status before computing coverage,
+unless sbti_validated is already populated.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">

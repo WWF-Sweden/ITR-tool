@@ -15,7 +15,7 @@ Classes
 Module Contents
 ---------------
 
-.. py:class:: SBTi(config: Type[ITR.configs.PortfolioCoverageTVPConfig] = PortfolioCoverageTVPConfig)
+.. py:class:: SBTi(config: Type[ITR.configs.PortfolioCoverageTVPConfig] = PortfolioCoverageTVPConfig, cta_file_path: Optional[str] = None)
 
    Data provider skeleton for SBTi. This class only provides the sbti_validated field for existing companies.
 
@@ -51,6 +51,9 @@ Module Contents
 
 
    .. py:method:: _fetch_and_save_cta_file()
+
+
+   .. py:method:: _is_offline()
 
 
    .. py:method:: handle_cta_file()
