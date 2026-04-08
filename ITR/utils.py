@@ -4,7 +4,6 @@ import ast
 from typing import List, Optional, Tuple, Type, Dict
 
 from ITR.configs import ColumnsConfig
-from ITR.data.sbti import SBTi
 from ITR.interfaces import IDataProviderTarget, IDataProviderCompany
 
 
@@ -249,10 +248,6 @@ def get_data(
     if len(target_data) == 0:
         raise ValueError("No targets found")
 
-    # Supplement the company and target data with the SBTi target status
-    company_data = SBTi().get_sbti_targets(company_data, _make_id_map(df_portfolio))
-    target_data = check_sbti_validation(target_data, company_data)
-    
     # Prepare the data
     portfolio_data = TargetProtocol().process(target_data, company_data)
     portfolio_data = pd.merge(

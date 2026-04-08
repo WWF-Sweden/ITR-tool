@@ -342,9 +342,8 @@ class TargetProtocol:
         """
         now = datetime.datetime.now()
         time_frame = target.end_year - now.year
-        # Method 6.3.6.1: if target is of type T_SCORE and 
-        # the company is validated by sbti, then add five years to timeframe
-        if (target.target_type.lower() == "t_score") and target.sbti_validated:
+        # Method 6.3.6.1: if target is of type T_SCORE, add five years to timeframe
+        if target.target_type.lower() == "t_score":
             time_frame += 5
 
         if time_frame < 5:

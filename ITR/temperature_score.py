@@ -180,12 +180,14 @@ class TemperatureScore(PortfolioAggregation):
         aggregation_method: PortfolioAggregationMethod = PortfolioAggregationMethod.WATS,
         grouping: Optional[List] = None,
         config: Type[TemperatureScoreConfig] = TemperatureScoreConfig,
+        cta_file_path: Optional[str] = None,
     ):
         super().__init__(config)
         self.model = model
         self.c: Type[TemperatureScoreConfig] = config
         self.scenario: Optional[Scenario] = scenario
         self.default_score = default_score
+        self.cta_file_path = cta_file_path
 
         self.time_frames = time_frames
         self.scopes = scopes
@@ -556,6 +558,34 @@ class TemperatureScore(PortfolioAggregation):
         )
         return data
 
+    def _enrich_sbti_validated(self, data: pd.DataFrame) -> pd.DataFrame:
+        """
+        Enrich the data with SBTi validation status from the CTA file.
+        Only called when SBTI_FACTOR != 1.
+
+        :param data: The data frame to enrich
+        :return: The enriched data frame
+        """
+        # Skip if sbti_validated is already populated
+        if self.c.COLS.SBTI_VALIDATED in data.columns and data[self.c.COLS.SBTI_VALIDATED].any():
+            return data
+
+        from .data.sbti import SBTi
+        from .interfaces import IDataProviderCompany
+
+        sbti = SBTi(cta_file_path=self.cta_file_path)
+        id_map = utils._make_id_map(
+            data.drop_duplicates(subset=self.c.COLS.COMPANY_ID)
+        )
+        companies = [
+            IDataProviderCompany(company_id=cid, company_name="", isic="")
+            for cid in data[self.c.COLS.COMPANY_ID].unique()
+        ]
+        companies = sbti.get_sbti_targets(companies, id_map)
+        validated_map = {c.company_id: c.sbti_validated for c in companies}
+        data[self.c.COLS.SBTI_VALIDATED] = data[self.c.COLS.COMPANY_ID].map(validated_map)
+        return data
+
     def calculate(
         self,
         data: Optional[pd.DataFrame] = None,
@@ -578,6 +608,9 @@ class TemperatureScore(PortfolioAggregation):
                 raise ValueError(
                     "You need to pass and either a data set or a list of data providers and companies"
                 )
+
+        if self.c.SBTI_FACTOR != 1:
+            data = self._enrich_sbti_validated(data)
 
         data = self._prepare_data(data)
 
