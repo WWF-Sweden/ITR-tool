@@ -200,6 +200,12 @@ Module Contents
 
 
 
+   .. py:attribute:: invalid_targets
+      :type:  List[dict]
+      :value: []
+
+
+
    .. py:method:: get_target_mapping(target: pandas.Series) -> Optional[str]
 
       Map the target onto an AR6 target (None if not available).

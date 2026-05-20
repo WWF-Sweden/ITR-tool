@@ -1,0 +1,43 @@
+ITR.example_utils
+=================
+
+.. py:module:: ITR.example_utils
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   ITR.example_utils.print_aggregations
+   ITR.example_utils.print_percentage_default_scores
+   ITR.example_utils.print_scenario_gain
+   ITR.example_utils.print_grouped_scores
+   ITR.example_utils.collect_company_contributions
+   ITR.example_utils.plot_grouped_statistics
+   ITR.example_utils.anonymize
+   ITR.example_utils.plot_grouped_heatmap
+   ITR.example_utils.get_contributions_per_group
+
+
+Module Contents
+---------------
+
+.. py:function:: print_aggregations(aggregations)
+
+.. py:function:: print_percentage_default_scores(aggregations)
+
+.. py:function:: print_scenario_gain(actual_aggregations, scenario_aggregations)
+
+.. py:function:: print_grouped_scores(aggregations)
+
+.. py:function:: collect_company_contributions(aggregated_portfolio, amended_portfolio, analysis_parameters)
+
+.. py:function:: plot_grouped_statistics(aggregated_portfolio, company_contributions, analysis_parameters)
+
+.. py:function:: anonymize(portfolio, provider)
+
+.. py:function:: plot_grouped_heatmap(grouped_aggregations, analysis_parameters)
+
+.. py:function:: get_contributions_per_group(aggregations, analysis_parameters, group)
+

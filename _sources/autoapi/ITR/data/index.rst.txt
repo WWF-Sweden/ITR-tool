@@ -169,6 +169,12 @@ Package Contents
    .. py:attribute:: c
 
 
+   .. py:attribute:: invalid_targets
+      :type:  List[dict]
+      :value: []
+
+
+
    .. py:method:: _process_row(row)
 
 

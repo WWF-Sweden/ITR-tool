@@ -10,6 +10,7 @@ Attributes
 .. autoapisummary::
 
    ITR.utils.DATA_PROVIDER_MAP
+   ITR.utils.invalid_targets
 
 
 Functions
@@ -33,6 +34,11 @@ Module Contents
 
 .. py:data:: DATA_PROVIDER_MAP
    :type:  Dict[str, Type[ITR.data.DataProvider]]
+
+.. py:data:: invalid_targets
+   :type:  List[dict]
+   :value: []
+
 
 .. py:function:: get_data_providers(data_providers_configs: List[dict], data_providers_input: List[str]) -> List[ITR.data.DataProvider]
 

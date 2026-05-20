@@ -59,6 +59,12 @@ Module Contents
       :type:  pandas.DataFrame
 
 
+   .. py:attribute:: invalid_targets
+      :type:  List[dict]
+      :value: []
+
+
+
    .. py:method:: process(targets: List[ITR.interfaces.IDataProviderTarget], companies: List[ITR.interfaces.IDataProviderCompany]) -> pandas.DataFrame
 
       Process the targets and companies, validate all targets and return a data frame that combines all targets and company data into a 9-box grid.
@@ -79,6 +85,16 @@ Module Contents
 
       :param target: The target to validate
       :return: True if it's a valid target, false if it isn't
+
+
+
+   .. py:method:: _validate_with_reasons(target: ITR.interfaces.IDataProviderTarget) -> List[str]
+
+      Validate a target and return a list of reasons it is invalid.
+      An empty list means the target is valid.
+
+      :param target: The target to validate
+      :return: List of human-readable reasons for invalidity, empty if valid
 
 
 
@@ -108,7 +124,7 @@ Module Contents
 
 
 
-   .. py:method:: _scale_reduction_ambition_by_boundary_coverage_new(target: pandas.DataFrame) -> float
+   .. py:method:: _scale_reduction_ambition_by_boundary_coverage_new(target: pandas.Series) -> float
       :staticmethod:
 
 

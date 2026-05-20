@@ -19,6 +19,7 @@ Submodules
 
    /autoapi/ITR/configs/index
    /autoapi/ITR/data/index
+   /autoapi/ITR/example_utils/index
    /autoapi/ITR/interfaces/index
    /autoapi/ITR/portfolio_aggregation/index
    /autoapi/ITR/portfolio_coverage_tvp/index
@@ -39,6 +40,6 @@ Package Contents
 ----------------
 
 .. py:data:: __version__
-   :value: '1.6.0'
+   :value: '1.7.0'
 
 
