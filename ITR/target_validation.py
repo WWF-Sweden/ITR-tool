@@ -41,6 +41,7 @@ class TargetProtocol:
         self.intensity_metric_types = TemperatureScoreConfig.intensity_metric_types
         self.company_data: pd.DataFrame = pd.DataFrame()
         self.data: pd.DataFrame = pd.DataFrame()
+        self.invalid_targets: List[dict] = []
 
     def process(
         self, targets: List[IDataProviderTarget], companies: List[IDataProviderCompany]
@@ -103,12 +104,31 @@ class TargetProtocol:
         :param target: The target to validate
         :return: True if it's a valid target, false if it isn't
         """
+        return len(self._validate_with_reasons(target)) == 0
+
+    def _validate_with_reasons(self, target: IDataProviderTarget) -> List[str]:
+        """
+        Validate a target and return a list of reasons it is invalid.
+        An empty list means the target is valid.
+
+        :param target: The target to validate
+        :return: List of human-readable reasons for invalidity, empty if valid
+        """
+        reasons: List[str] = []
         # If the target is set using the CDP_WWF temperature scoring methodology
         if target.target_type.lower() == "t_score":
-            return self._validate_t_score(target)
+            if target.start_year is None or pd.isnull(target.start_year):
+                target.start_year = target.base_year
+            if not target.end_year > target.start_year:
+                reasons.append(f"end year ({target.end_year}) is not after start year ({target.start_year})")
+            if not target.end_year >= datetime.datetime.now().year:
+                reasons.append(f"end year ({target.end_year}) is in the past")
+            if target.scope != EScope.S3:
+                reasons.append(f"t_score target must have scope S3, got {target.scope.value}")
+            return reasons
+
         # Only absolute targets or intensity targets with a valid intensity metric are allowed.
-        # As of v1.5 we have target type 'int_to_abs' which is an intensity target that has been converted to an absolute target
-        target_type = (
+        valid_type = (
             "abs" in target.target_type.lower()
             or "int_to_abs" in target.target_type.lower()
             or (
@@ -116,60 +136,58 @@ class TargetProtocol:
                 and target.intensity_metric in self.intensity_metric_types
             )
         )
+        if not valid_type:
+            reasons.append(f"unrecognised target type '{target.target_type}'")
+
         # There must be a number in the reduction ambition field, even zero is okay.
-        target_reduction_ambition = not pd.isna(target.reduction_ambition)
+        if pd.isna(target.reduction_ambition):
+            reasons.append("missing reduction ambition")
 
         # The target should not have achieved its reduction yet.
-        target_progress = (
+        if not (
             pd.isnull(target.achieved_reduction)
             or target.achieved_reduction is None
             or target.achieved_reduction < 1
-        )
+        ):
+            reasons.append("target already fully achieved (achieved_reduction >= 1)")
 
         # The end year should be greater than the start year.
         if target.start_year is None or pd.isnull(target.start_year):
             target.start_year = target.base_year
-
-        target_end_year = target.end_year > target.start_year
+        if not target.end_year > target.start_year:
+            reasons.append(f"end year ({target.end_year}) is not after start year ({target.start_year})")
 
         # The end year should be greater than or equal to the current year
-        target_current = target.end_year >= datetime.datetime.now().year
+        if not target.end_year >= datetime.datetime.now().year:
+            reasons.append(f"end year ({target.end_year}) is in the past")
 
         # Check that base year ghg data is available for the scope of the target
-        s1 = target.scope != EScope.S1 or (
-            pd.notna(target.coverage_s1)
-            and pd.notna(target.base_year_ghg_s1) 
-        )
-        s2 = target.scope != EScope.S2 or (
-            pd.notna(target.coverage_s2)
-            and pd.notna(target.base_year_ghg_s2)  
-        )
-        s1s2 = target.scope != EScope.S1S2 or (
-            pd.notna(target.base_year_ghg_s1)
-            and pd.notna(target.base_year_ghg_s2) 
-        )
-        # Note that base year s3 ghg is checked in the method _find_s3_targets
-        # for individual s3 category targets that have been split from s1s2s3 targets
-        s1s2s3 = target.scope != EScope.S1S2S3 or (
-            pd.notna(target.base_year_ghg_s1)
-            and pd.notna(target.base_year_ghg_s2) 
-        )
-        s3 = target.scope != EScope.S3 or (
-            pd.notna(target.coverage_s3)
-            and pd.notna(target.base_year_ghg_s3)
-        )
-        return (
-            target_type
-            and target_reduction_ambition 
-            and target_progress 
-            and target_end_year 
-            and target_current 
-            and s1 
-            and s2
-            and s1s2
-            and s1s2s3
-            and s3
-        )
+        if target.scope == EScope.S1 and not (
+            pd.notna(target.coverage_s1) and pd.notna(target.base_year_ghg_s1)
+        ):
+            reasons.append("S1 scope requires coverage_s1 and base_year_ghg_s1")
+
+        if target.scope == EScope.S2 and not (
+            pd.notna(target.coverage_s2) and pd.notna(target.base_year_ghg_s2)
+        ):
+            reasons.append("S2 scope requires coverage_s2 and base_year_ghg_s2")
+
+        if target.scope == EScope.S1S2 and not (
+            pd.notna(target.base_year_ghg_s1) and pd.notna(target.base_year_ghg_s2)
+        ):
+            reasons.append("S1+S2 scope requires base_year_ghg_s1 and base_year_ghg_s2")
+
+        if target.scope == EScope.S1S2S3 and not (
+            pd.notna(target.base_year_ghg_s1) and pd.notna(target.base_year_ghg_s2)
+        ):
+            reasons.append("S1+S2+S3 scope requires base_year_ghg_s1 and base_year_ghg_s2")
+
+        if target.scope == EScope.S3 and not (
+            pd.notna(target.coverage_s3) and pd.notna(target.base_year_ghg_s3)
+        ):
+            reasons.append("S3 scope requires coverage_s3 and base_year_ghg_s3")
+
+        return reasons
     
     def _validate_t_score(self, target: IDataProviderTarget) -> bool:
         """
@@ -281,7 +299,7 @@ class TargetProtocol:
         
     @staticmethod
     def _scale_reduction_ambition_by_boundary_coverage_new(
-        target: pd.DataFrame,
+        target: pd.Series,
         ) -> float:
         """
         Change in ITR method 1.5: all targets have their ambition scaled by their boundary coverage.
@@ -367,9 +385,32 @@ class TargetProtocol:
         :param targets:
         :return:
         """
+        self.invalid_targets = []
         target_input_count = len(targets)
-        targets = list(filter(self._validate, targets))
-        logger.info(f"dropped {(target_input_count - len(targets))=:,} invalid targets")
+
+        # Build company name lookup from company_data
+        name_lookup: dict = {}
+        if not self.company_data.empty and 'company_name' in self.company_data.columns:
+            name_lookup = dict(zip(
+                self.company_data['company_id'].astype(str),
+                self.company_data['company_name']
+            ))
+
+        valid_targets = []
+        for target in targets:
+            reasons = self._validate_with_reasons(target)
+            if reasons:
+                self.invalid_targets.append({
+                    'company_id': target.company_id,
+                    'company_name': name_lookup.get(str(target.company_id), target.company_id),
+                    'target_ids': ', '.join(str(t) for t in target.target_ids) if target.target_ids else '',
+                    'reason': '; '.join(reasons),
+                })
+            else:
+                valid_targets.append(target)
+
+        logger.info(f"dropped {(target_input_count - len(valid_targets))=:,} invalid targets")
+        targets = valid_targets
         targets = [self._assign_time_frame(target) for target in targets]
 
         targets = list(

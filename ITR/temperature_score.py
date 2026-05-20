@@ -202,6 +202,7 @@ class TemperatureScore(PortfolioAggregation):
 
         self.regression_model = pd.read_json(self.c.JSON_REGRESSION_MODEL)
         self.s3_calculation_test = TemperatureScoreConfig.TEST_S3_CALCULATION
+        self.invalid_targets: List[dict] = []
         # Save code if we choose to use several models:
         # self.regression_model = self.regression_model[
         #     self.regression_model[self.c.COLS.MODEL] == self.model
@@ -480,6 +481,9 @@ class TemperatureScore(PortfolioAggregation):
             self.c.COLS.TARGET_REFERENCE_NUMBER
         #].replace({np.nan: self.c.VALUE_TARGET_REFERENCE_ABSOLUTE})
         ].replace({np.nan: ETargetReference.ABSOLUTE.value})
+        data[self.c.COLS.TARGET_REFERENCE_NUMBER] = (
+            data[self.c.COLS.TARGET_REFERENCE_NUMBER].str.strip().str.lower()
+        )
        
         # Replacing NaN with empty list in column target_ids
         data[self.c.COLS.TARGET_IDS] = data[self.c.COLS.TARGET_IDS].apply(
@@ -604,6 +608,7 @@ class TemperatureScore(PortfolioAggregation):
         if data is None:
             if data_providers is not None and portfolio is not None:
                 data = utils.get_data(data_providers, portfolio)
+                self.invalid_targets = list(utils.invalid_targets)
             else:
                 raise ValueError(
                     "You need to pass and either a data set or a list of data providers and companies"
@@ -631,6 +636,7 @@ class TemperatureScore(PortfolioAggregation):
         # We need to filter the scopes again, because we might have had to add a scope in the preparation step
         data = data[data[self.c.COLS.SCOPE].isin(self.scopes)]
         data.drop(columns=['to_calculate'], inplace=True)
+        data[self.c.COLS.TEMPERATURE_SCORE] = data[self.c.COLS.TEMPERATURE_SCORE].round(2)
         
         return data
 

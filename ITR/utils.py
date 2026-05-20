@@ -26,6 +26,8 @@ DATA_PROVIDER_MAP: Dict[str, Type[data.DataProvider]] = {
     "urgentem": data.Urgentem,
 }
 
+invalid_targets: List[dict] = []
+
 
 def get_data_providers(
     data_providers_configs: List[dict], data_providers_input: List[str]
@@ -249,7 +251,18 @@ def get_data(
         raise ValueError("No targets found")
 
     # Prepare the data
-    portfolio_data = TargetProtocol().process(target_data, company_data)
+    tp = TargetProtocol()
+    portfolio_data = tp.process(target_data, company_data)
+
+    # Collect all invalid targets: parse failures from providers + business logic failures from TargetProtocol
+    global invalid_targets
+    all_invalid: List[dict] = []
+    for dp in data_providers:
+        if hasattr(dp, 'invalid_targets'):
+            all_invalid.extend(dp.invalid_targets)
+    all_invalid.extend(tp.invalid_targets)
+    invalid_targets = all_invalid
+
     portfolio_data = pd.merge(
         left=portfolio_data,
         right=df_portfolio.drop("company_name", axis=1),
