@@ -39,6 +39,7 @@ class ExcelProvider(DataProvider):
             print(f"An error occurred: {e}")
        
         self.c = config
+        self.invalid_targets: List[dict] = []
 
     def _process_row(self, row):
         if row['scope'] in ['S3', 'S1+S2+S3']:
@@ -82,6 +83,14 @@ class ExcelProvider(DataProvider):
 
         # 3) If 'start_year' is empty, use 'base_year'
         df_targets.loc[df_targets['statement_date'].isna(), 'statement_date'] = pd.to_datetime(df_targets['base_year'], format='%Y', errors='coerce')
+        # Build company name lookup from fundamental_data
+        name_lookup: dict = {}
+        if 'fundamental_data' in self.data and 'company_name' in self.data['fundamental_data'].columns:
+            name_lookup = dict(zip(
+                self.data['fundamental_data']['company_id'].astype(str),
+                self.data['fundamental_data']['company_name']
+            ))
+
         targets = df_targets.to_dict(orient="records")
         model_targets: List[IDataProviderTarget] = []
         for target in targets:
@@ -106,6 +115,23 @@ class ExcelProvider(DataProvider):
                     target['s3_category'] = S3Category(int(target['s3_category']))
                 model_targets.append(IDataProviderTarget.model_validate(target))
             except (ValidationError, TypeError) as e:
+                company_id = str(target.get('company_id', '') or '') if isinstance(target, dict) else ''
+                target_ids = target.get('target_ids', '') if isinstance(target, dict) else ''
+                if isinstance(target_ids, list):
+                    target_ids = ', '.join(str(x) for x in target_ids)
+                elif target_ids is None:
+                    target_ids = ''
+                if isinstance(e, ValidationError):
+                    fields = [str(err['loc'][0]) for err in e.errors() if err.get('loc')]
+                    reason = f"missing or invalid field(s): {', '.join(fields)}"
+                else:
+                    reason = str(e)
+                self.invalid_targets.append({
+                    'company_id': company_id,
+                    'company_name': name_lookup.get(company_id, company_id),
+                    'target_ids': str(target_ids),
+                    'reason': reason,
+                })
                 logger.warning(
                     f"Target validation failed and will be skipped: {e}"
                 )

@@ -140,6 +140,7 @@ def anonymize(portfolio, provider):
         if company_name not in portfolio_companies:
             provider.data['fundamental_data'] = provider.data['fundamental_data'].loc[provider.data['fundamental_data']['company_name'] != company_name]
             provider.data['target_data'] = provider.data['target_data'].loc[provider.data['target_data']['company_name'] != company_name]
+
     return portfolio, provider
 
 
@@ -189,6 +190,12 @@ def plot_grouped_heatmap(grouped_aggregations, analysis_parameters):
         label.set_horizontalalignment('right')
     fig.colorbar(im, ax=ax)
     ax.set_title("Temperature score per " + group_2 + " per " + group_1)
+    for i in range(grid.shape[0]):
+        for j in range(grid.shape[1]):
+            if not np.isnan(grid[i, j]):
+                ax.text(j + 0.5, i + 0.5, f"{grid[i, j]:.2f}",
+                        ha='center', va='center', fontsize=8,
+                        color='black')
     # TODO use the following line when the plot is used in VS Code
     # plt.show()
 
