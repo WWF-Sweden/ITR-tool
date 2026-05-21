@@ -716,7 +716,7 @@ class TemperatureScore(PortfolioAggregation):
                     group_name_joined = (
                         group_names
                         if type(group_names) == str
-                        else "-".join([str(group_name) for group_name in group_names])
+                        else "|||".join([str(group_name) for group_name in group_names])
                     )
                     (
                         score_aggregation.grouped[group_name_joined],

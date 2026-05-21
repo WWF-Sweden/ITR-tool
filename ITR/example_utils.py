@@ -158,7 +158,7 @@ def plot_grouped_heatmap(grouped_aggregations, analysis_parameters):
 
     groups = {group_1: [], group_2: []}
     for combination in combinations:
-        item_group_1, item_group_2 = combination.split('-')
+        item_group_1, item_group_2 = combination.split('|||', 1)
         if item_group_1 not in groups[group_1]:
             groups[group_1].append(item_group_1)
         if item_group_2 not in groups[group_2]:
@@ -169,9 +169,9 @@ def plot_grouped_heatmap(grouped_aggregations, analysis_parameters):
     grid = np.zeros((len(groups[group_2]), len(groups[group_1])))
     for i, item_group_2 in enumerate(groups[group_2]):
         for j, item_group_1 in enumerate(groups[group_1]):
-            key = item_group_1+'-'+item_group_2
+            key = item_group_1+'|||'+item_group_2
             if key in combinations:
-                grid[i, j] = aggregations[item_group_1+'-'+item_group_2].score
+                grid[i, j] = aggregations[item_group_1+'|||'+item_group_2].score
             else:
                 grid[i, j] = np.nan
 
