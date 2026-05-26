@@ -116,22 +116,28 @@ class PortfolioAggregation(ABC):
 
         # Total emissions weighted temperature score (TETS)
         elif portfolio_aggregation_method == PortfolioAggregationMethod.TETS:
+            use_S1   = data[self.c.COLS.SCOPE].isin([EScope.S1])
+            use_S2   = data[self.c.COLS.SCOPE].isin([EScope.S2])
             use_S1S2 = data[self.c.COLS.SCOPE].isin([EScope.S1S2, EScope.S1S2S3])
-            use_S3 = data[self.c.COLS.SCOPE].isin([EScope.S3, EScope.S1S2S3])
-            if use_S3.any():
-                self._check_column(data, self.c.COLS.GHG_SCOPE3)
+            use_S3   = data[self.c.COLS.SCOPE].isin([EScope.S3, EScope.S1S2S3])
+            if use_S1.any():
+                self._check_column(data, self.c.COLS.GHG_SCOPE1)
+            if use_S2.any():
+                self._check_column(data, self.c.COLS.GHG_SCOPE2)
             if use_S1S2.any():
                 self._check_column(data, self.c.COLS.GHG_SCOPE12)
+            if use_S3.any():
+                self._check_column(data, self.c.COLS.GHG_SCOPE3)
             # Calculate the total emissions of all companies
-            emissions = (use_S1S2 * data[self.c.COLS.GHG_SCOPE12]).sum() + (
-                use_S3 * data[self.c.COLS.GHG_SCOPE3]
-            ).sum()
+            ghg_weights = (
+                use_S1   * data[self.c.COLS.GHG_SCOPE1]
+                + use_S2   * data[self.c.COLS.GHG_SCOPE2]
+                + use_S1S2 * data[self.c.COLS.GHG_SCOPE12]
+                + use_S3   * data[self.c.COLS.GHG_SCOPE3]
+            )
+            emissions = ghg_weights.sum()
             try:
-                weighted_scores = (
-                    (use_S1S2 * data[self.c.COLS.GHG_SCOPE12] + use_S3 * data[self.c.COLS.GHG_SCOPE3])
-                    / emissions
-                    * data[input_column]
-                )
+                weighted_scores = (ghg_weights / emissions) * data[input_column]
                 return weighted_scores
             except ZeroDivisionError:
                 raise ValueError("The total emissions should be higher than zero")
@@ -156,8 +162,14 @@ class PortfolioAggregation(ABC):
             try:
                 self._check_column(data, self.c.COLS.INVESTMENT_VALUE)
                 self._check_column(data, value_column)
+                use_S1   = data[self.c.COLS.SCOPE].isin([EScope.S1])
+                use_S2   = data[self.c.COLS.SCOPE].isin([EScope.S2])
                 use_S1S2 = data[self.c.COLS.SCOPE].isin([EScope.S1S2, EScope.S1S2S3])
-                use_S3 = data[self.c.COLS.SCOPE].isin([EScope.S3, EScope.S1S2S3])
+                use_S3   = data[self.c.COLS.SCOPE].isin([EScope.S3, EScope.S1S2S3])
+                if use_S1.any():
+                    self._check_column(data, self.c.COLS.GHG_SCOPE1)
+                if use_S2.any():
+                    self._check_column(data, self.c.COLS.GHG_SCOPE2)
                 if use_S1S2.any():
                     self._check_column(data, self.c.COLS.GHG_SCOPE12)
                 if use_S3.any():
@@ -165,8 +177,10 @@ class PortfolioAggregation(ABC):
                 data[self.c.COLS.OWNED_EMISSIONS] = (
                     data[self.c.COLS.INVESTMENT_VALUE] / data[value_column]
                 ) * (
-                    use_S1S2 * data[self.c.COLS.GHG_SCOPE12]
-                    + use_S3 * data[self.c.COLS.GHG_SCOPE3]
+                    use_S1   * data[self.c.COLS.GHG_SCOPE1]
+                    + use_S2   * data[self.c.COLS.GHG_SCOPE2]
+                    + use_S1S2 * data[self.c.COLS.GHG_SCOPE12]
+                    + use_S3   * data[self.c.COLS.GHG_SCOPE3]
                 )
             except ZeroDivisionError:
                 raise ValueError(

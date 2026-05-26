@@ -3,7 +3,7 @@ This package helps companies and financial institutions to assess the temperatur
 targets, commitments, and investment and lending portfolios, and to use this information to develop
 targets for official validation by the SBTi.
 """
-__version__ = "1.7.1"
+__version__ = "1.7.2"
 
 from . import data
 from . import utils
