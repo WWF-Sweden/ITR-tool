@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import Optional, Tuple, Type, List, Any, cast
 
+import logging
 import pandas as pd
 import numpy as np
 import datetime
@@ -693,6 +694,33 @@ class TemperatureScore(PortfolioAggregation):
             & (data[self.c.COLS.SCOPE] == scope)
         ].copy()
         filtered_data[self.grouping] = filtered_data[self.grouping].fillna("unknown")
+        
+        dup_mask = filtered_data[self.c.COLS.COMPANY_NAME].duplicated(keep=False)
+        if dup_mask.any():
+            dup_companies = filtered_data.loc[dup_mask, self.c.COLS.COMPANY_NAME].unique().tolist()
+            logging.warning(
+                "Duplicate company entries detected for %d company/companies in "
+                "time_frame=%s, scope=%s: %s. "
+                "Consolidating by company_name — investment_value is summed, "
+                "temperature_score is investment-weighted, other columns take first value.",
+                len(dup_companies), time_frame.value, scope.name, dup_companies,
+            )
+            _key = [self.c.COLS.COMPANY_NAME]
+            filtered_data["_iv_ts"] = (
+                filtered_data[self.c.COLS.INVESTMENT_VALUE]
+                * filtered_data[self.c.COLS.TEMPERATURE_SCORE]
+            )
+            _agg: dict = {self.c.COLS.INVESTMENT_VALUE: "sum", "_iv_ts": "sum"}
+            _agg.update({
+                c: "first" for c in filtered_data.columns
+                if c not in _key + list(_agg)
+            })
+            filtered_data = filtered_data.groupby(_key, as_index=False, sort=False).agg(_agg)
+            filtered_data[self.c.COLS.TEMPERATURE_SCORE] = (
+                filtered_data["_iv_ts"] / filtered_data[self.c.COLS.INVESTMENT_VALUE]
+            )
+            filtered_data.drop(columns=["_iv_ts"], inplace=True)
+        
         total_companies = len(filtered_data)
         if not filtered_data.empty:
             (
