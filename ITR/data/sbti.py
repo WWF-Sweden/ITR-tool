@@ -185,31 +185,36 @@ class SBTi:
         warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
        
         path = os.path.realpath(self.c.FILE_TARGETS)
-        self.targets = pd.read_excel(path)
+        self.targets = self._normalize_cta_file(pd.read_excel(path))
 
         
-    def filter_cta_file(self, targets):
-        """
-        Filter the CTA file to create a dataframe that has one row per company
-        with the columns "Action" and "Target".
-        If Action = Target then only keep the rows where Target = Near-term.
-        """
-
-        # Create a new dataframe with only the columns "Action" and "Target"
-        # and the columns that are needed for identifying the company
-        targets = targets[
-            [
-                self.c.COL_COMPANY_NAME, 
-                self.c.COL_COMPANY_ISIN, 
-                self.c.COL_COMPANY_LEI, 
-                self.c.COL_TARGET
-            ]
+    def _normalize_cta_file(self, targets):
+        """Validate required columns and normalize current and previous status labels."""
+        required = [
+            self.c.COL_COMPANY_NAME, self.c.COL_COMPANY_ISIN,
+            self.c.COL_COMPANY_LEI, self.c.COL_TARGET,
         ]
-        
-        # Keep rows where Action = Target and Target = Near-term 
+        missing = [col for col in required if col not in targets.columns]
+        if missing:
+            raise ValueError("CTA file is missing required columns: " + ", ".join(missing))
+
+        targets = targets[required].copy()
+        status = targets[self.c.COL_TARGET].astype("string").str.strip().str.casefold()
+        # Empty cells indicate no near-term status and do not count as validated.
+        unknown = status.notna() & status.ne("") & ~status.isin(self.c.TARGET_STATUS_ALIASES)
+        if unknown.any():
+            values = sorted(targets.loc[unknown, self.c.COL_TARGET].astype(str).unique())
+            raise ValueError("CTA file contains unknown near-term status values: " + ", ".join(values))
+        targets[self.c.COL_TARGET] = status.map(self.c.TARGET_STATUS_ALIASES)
+        return targets
+
+    def filter_cta_file(self, targets):
+        """Keep validated near-term targets and deduplicate company identifiers."""
+        targets = self._normalize_cta_file(targets)
         df_nt_targets = targets[
-           (targets[self.c.COL_TARGET] == self.c.VALUE_STATUS_SET)]
-        
+            targets[self.c.COL_TARGET] == self.c.VALUE_STATUS_SET
+        ].copy()
+
         # Drop duplicates in the dataframe by waterfall. 
         # Do company name last due to risk of misspelled names
         # First drop duplicates on LEI, then on ISIN, then on company name

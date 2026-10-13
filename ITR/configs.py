@@ -258,15 +258,18 @@ class PortfolioCoverageTVPConfig(PortfolioAggregationConfig):
     CTA_FILE_URL = "https://sb-ti.files.svdcdn.com/staging/files/companies-excel.xlsx"
     OUTPUT_TARGET_STATUS = "sbti_target_status"
     OUTPUT_WEIGHTED_TARGET_STATUS = "weighted_sbti_target_status"
-    VALUE_STATUS_SET = "Targets set"
-    VALUE_STATUS_COMMITTED = "Committed"
-    VALUE_STATUS_REMOVED = "Commitment removed"
-    
-    # VALUE_TARGET_NO = "No target"
-    # VALUE_TARGET_SET = "Near-term"
-    # VALUE_ACTION_COMMITTED = "Commitment"
-    # VALUE_ACTION_TARGET = "Target"
+    VALUE_STATUS_SET = "Validated Targets"
+    VALUE_STATUS_COMMITTED = "Commitment to Set Targets"
+    VALUE_STATUS_REMOVED = "Commitment Removed"
 
+    # Accept current and previous labels after stripping whitespace and casefolding.
+    TARGET_STATUS_ALIASES = {
+        "validated targets": VALUE_STATUS_SET,
+        "targets set": VALUE_STATUS_SET,
+        "commitment to set targets": VALUE_STATUS_COMMITTED,
+        "committed": VALUE_STATUS_COMMITTED,
+        "commitment removed": VALUE_STATUS_REMOVED,
+    }
     TARGET_SCORE_MAP = {
         VALUE_STATUS_REMOVED: 0,
         VALUE_STATUS_COMMITTED: 0,
@@ -277,5 +280,4 @@ class PortfolioCoverageTVPConfig(PortfolioAggregationConfig):
     COL_COMPANY_NAME = "company_name"
     COL_COMPANY_ISIN = "isin"
     COL_COMPANY_LEI = "lei"
-    #COL_ACTION = "Action"
     COL_TARGET = "near_term_status"
