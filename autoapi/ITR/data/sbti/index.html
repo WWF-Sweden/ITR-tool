@@ -154,15 +154,19 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ITR.data.sbti.SBTi.targets">
-<span class="sig-name descname"><span class="pre">targets</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#ITR.data.sbti.SBTi.targets" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">targets</span></span><a class="headerlink" href="#ITR.data.sbti.SBTi.targets" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ITR.data.sbti.SBTi._normalize_cta_file">
+<span class="sig-name descname"><span class="pre">_normalize_cta_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">targets</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.data.sbti.SBTi._normalize_cta_file" title="Link to this definition"></a></dt>
+<dd><p>Validate required columns and normalize current and previous status labels.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ITR.data.sbti.SBTi.filter_cta_file">
 <span class="sig-name descname"><span class="pre">filter_cta_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">targets</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ITR.data.sbti.SBTi.filter_cta_file" title="Link to this definition"></a></dt>
-<dd><p>Filter the CTA file to create a dataframe that has one row per company
-with the columns “Action” and “Target”.
-If Action = Target then only keep the rows where Target = Near-term.</p>
+<dd><p>Keep validated near-term targets and deduplicate company identifiers.</p>
 </dd></dl>
 
 <dl class="py method">

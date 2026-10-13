@@ -63,15 +63,17 @@ Module Contents
 
 
    .. py:attribute:: targets
-      :value: None
+
+
+   .. py:method:: _normalize_cta_file(targets)
+
+      Validate required columns and normalize current and previous status labels.
 
 
 
    .. py:method:: filter_cta_file(targets)
 
-      Filter the CTA file to create a dataframe that has one row per company
-      with the columns "Action" and "Target".
-      If Action = Target then only keep the rows where Target = Near-term.
+      Keep validated near-term targets and deduplicate company identifiers.
 
 
 

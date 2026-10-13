@@ -121,15 +121,24 @@ refer to the **[link to guidance]** for more detail on how to do this.
 SBTi status
 -----------
 
-The SBTi status of a company indicates whether or not the company has
-set a science based target has been approved by the SBTi. This tool uses
-the Excel file that is generated when pressing the download button
-`here <https://sciencebasedtargets.org/companies-taking-action/>`__.
-This list is updated weekly, to ensure your list is up to date, the user
-can download the latest list from the SBTi site here:
-https://sciencebasedtargets.org/companies-taking-action/ and replace the
-Excel file in the tool with the downloaded file. To do this go to
-..\\ITR\\inputs directory and replace the
-*current-Companies-Taking-Action-xxx.xslx* file with the newer file.
+The tool downloads the per-company CTA Excel file from
+https://sb-ti.files.svdcdn.com/staging/files/companies-excel.xlsx.
+It uses ``company_name``, ``isin``, ``lei`` and ``near_term_status``.
+Companies with ``Validated Targets`` in ``near_term_status`` count towards
+portfolio coverage; the previous label ``Targets set`` is also supported.
+``Commitment to Set Targets`` (previously ``Committed``),
+``Commitment Removed`` and empty status cells do not count as validated.
+Status labels are matched without case sensitivity or surrounding whitespace.
+Missing required columns or unknown nonempty statuses raise a descriptive error.
 
+Companies are matched using LEI when available in the portfolio, otherwise ISIN.
+Validated companies receive a score of 100 and other companies receive 0.
+The selected portfolio aggregation method supplies the weights; for WATS these
+are investment values from the portfolio data.
 
+The downloaded file is cached at
+``~/.itr-tool/current-Companies-Taking-Action.xlsx`` and normally refreshed
+after one week. If downloading fails, the tool uses an existing cached file
+or, when unavailable, a bundled fallback file that may be outdated.
+To use a specific local file, pass ``cta_file_path`` to ``PortfolioCoverageTVP``.
+This provides current status coverage, not a reconstruction of historical status.

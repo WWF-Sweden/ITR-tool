@@ -578,18 +578,21 @@ Module Contents
 
 
    .. py:attribute:: VALUE_STATUS_SET
-      :value: 'Targets set'
+      :value: 'Validated Targets'
 
 
 
    .. py:attribute:: VALUE_STATUS_COMMITTED
-      :value: 'Committed'
+      :value: 'Commitment to Set Targets'
 
 
 
    .. py:attribute:: VALUE_STATUS_REMOVED
-      :value: 'Commitment removed'
+      :value: 'Commitment Removed'
 
+
+
+   .. py:attribute:: TARGET_STATUS_ALIASES
 
 
    .. py:attribute:: TARGET_SCORE_MAP

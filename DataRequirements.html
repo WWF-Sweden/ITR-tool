@@ -214,16 +214,25 @@ refer to the <strong>[link to guidance]</strong> for more detail on how to do th
 </section>
 <section id="sbti-status">
 <h2>SBTi status<a class="headerlink" href="#sbti-status" title="Link to this heading"></a></h2>
-<p>The SBTi status of a company indicates whether or not the company has
-set a science based target has been approved by the SBTi. This tool uses
-the Excel file that is generated when pressing the download button
-<a class="reference external" href="https://sciencebasedtargets.org/companies-taking-action/">here</a>.
-This list is updated weekly, to ensure your list is up to date, the user
-can download the latest list from the SBTi site here:
-<a class="reference external" href="https://sciencebasedtargets.org/companies-taking-action/">https://sciencebasedtargets.org/companies-taking-action/</a> and replace the
-Excel file in the tool with the downloaded file. To do this go to
-..\ITR\inputs directory and replace the
-<em>current-Companies-Taking-Action-xxx.xslx</em> file with the newer file.</p>
+<p>The tool downloads the per-company CTA Excel file from
+<a class="reference external" href="https://sb-ti.files.svdcdn.com/staging/files/companies-excel.xlsx">https://sb-ti.files.svdcdn.com/staging/files/companies-excel.xlsx</a>.
+It uses <code class="docutils literal notranslate"><span class="pre">company_name</span></code>, <code class="docutils literal notranslate"><span class="pre">isin</span></code>, <code class="docutils literal notranslate"><span class="pre">lei</span></code> and <code class="docutils literal notranslate"><span class="pre">near_term_status</span></code>.
+Companies with <code class="docutils literal notranslate"><span class="pre">Validated</span> <span class="pre">Targets</span></code> in <code class="docutils literal notranslate"><span class="pre">near_term_status</span></code> count towards
+portfolio coverage; the previous label <code class="docutils literal notranslate"><span class="pre">Targets</span> <span class="pre">set</span></code> is also supported.
+<code class="docutils literal notranslate"><span class="pre">Commitment</span> <span class="pre">to</span> <span class="pre">Set</span> <span class="pre">Targets</span></code> (previously <code class="docutils literal notranslate"><span class="pre">Committed</span></code>),
+<code class="docutils literal notranslate"><span class="pre">Commitment</span> <span class="pre">Removed</span></code> and empty status cells do not count as validated.
+Status labels are matched without case sensitivity or surrounding whitespace.
+Missing required columns or unknown nonempty statuses raise a descriptive error.</p>
+<p>Companies are matched using LEI when available in the portfolio, otherwise ISIN.
+Validated companies receive a score of 100 and other companies receive 0.
+The selected portfolio aggregation method supplies the weights; for WATS these
+are investment values from the portfolio data.</p>
+<p>The downloaded file is cached at
+<code class="docutils literal notranslate"><span class="pre">~/.itr-tool/current-Companies-Taking-Action.xlsx</span></code> and normally refreshed
+after one week. If downloading fails, the tool uses an existing cached file
+or, when unavailable, a bundled fallback file that may be outdated.
+To use a specific local file, pass <code class="docutils literal notranslate"><span class="pre">cta_file_path</span></code> to <code class="docutils literal notranslate"><span class="pre">PortfolioCoverageTVP</span></code>.
+This provides current status coverage, not a reconstruction of historical status.</p>
 </section>
 </section>
 
