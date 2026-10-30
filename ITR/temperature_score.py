@@ -103,7 +103,7 @@ class Scenario:
         ):
             return 1.5
         else:
-            return np.NaN
+            return np.nan
 
     def get_default_score(self, default_score: float) -> float:
         if self.scenario_type == ScenarioType.TARGETS:
@@ -366,10 +366,12 @@ class TemperatureScore(PortfolioAggregation):
 
         :param company_data: The original data, grouped by company, time frame and scope category
         :param row: The row to calculate the temperature score for (if the scope of the row isn't s1s2s3, 
-        it will return the original score
+            it will return the original score)
         :return: The aggregated temperature score for a company
         """
-
+        if not company_data.index.is_unique:
+            raise ValueError("Expected one row per company, time frame, and scope")
+        
         if row[self.c.COLS.SCOPE] != EScope.S1S2S3 or (
             row[self.c.COLS.SCOPE] == EScope.S1S2S3
             and row[self.c.COLS.TARGET_TYPE_AR6].lower() == "t_score"
@@ -889,14 +891,17 @@ class TemperatureScore(PortfolioAggregation):
                     s1_s2_results = 0.5
                 group.loc[group['scope'] == EScope.S1S2, 'temperature_score'] = s1s2_score
                 group.loc[group['scope'] == EScope.S1S2, 'temperature_results'] = s1_s2_results
-                group.loc[group['scope'] == EScope.S1S2, 'target_type'] = (
-                    group.loc[group['scope'] == EScope.S1, 'target_type'].values[0]
+                target_type = cast(
+                    str,
+                    group.loc[group['scope'] == EScope.S1, 'target_type'].iloc[0],
                 )
+                group.loc[group['scope'] == EScope.S1S2, 'target_type'] = target_type
                 s1_target_ids = group[group['scope'] == EScope.S1]['target_ids'].values 
                 s2_target_ids = group[group['scope'] == EScope.S2]['target_ids'].values
                 combined_target_ids = list(set().union(*s1_target_ids, *s2_target_ids))
                 idx = group.index[group['scope'] == EScope.S1S2][0] 
-                group.at[idx, 'target_ids'] = combined_target_ids
+                # Store the list of target IDs in a single object-dtype cell.
+                group.at[idx, 'target_ids'] = combined_target_ids  # pyright: ignore[reportArgumentType]
                         
                 # group = group.infer_objects()
                
@@ -980,7 +985,7 @@ class TemperatureScore(PortfolioAggregation):
         for _ , group in grouped:
             temperature_scores = np.full(15, 3.4) # Set all scores to the default value
             ghg_columns = [f'ghg_s3_{i}' for i in range(1, 16)]
-            ghg_values = group.iloc[0][ghg_columns].values.astype(float)
+            ghg_values = group.iloc[0][ghg_columns].to_numpy(dtype=float, na_value=np.nan)
            
             for _, row in group.iterrows():
                 s3_category = row['s3_category']
@@ -989,8 +994,8 @@ class TemperatureScore(PortfolioAggregation):
                     temperature_scores[index] = row['temperature_score']
 
             # Calculate weighted or simple average
-            if not np.isnan(ghg_values).any().all() and np.nansum(ghg_values) > 0.0:
-                weighted_avg = np.sum(ghg_values * temperature_scores) / np.sum(ghg_values)
+            if np.isfinite(ghg_values).all() and ghg_values.sum() > 0:
+                weighted_avg = np.average(temperature_scores, weights=ghg_values)
             else:
                 weighted_avg = temperature_scores.mean()
 

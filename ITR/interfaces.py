@@ -236,7 +236,7 @@ class IDataProviderTarget(BaseModel):
     )
 
     sbti_validated: bool = Field(
-        False,
+        default=False,
         description='True if the SBTi target status is "Target set", false otherwise',
     )
     

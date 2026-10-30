@@ -1,77 +1,64 @@
-# ITR-tool
-WWF version of the SBTi-Finance-tool, based on the CDP-WWF Temperature rating methodology
+# WWF ITR Tool
 
-> Visit https://wwf-sweden.github.io/ITR-tool/ for the full documentation
+Calculate company and portfolio temperature scores using the
+[CDP-WWF Temperature Scoring Methodology v1.5](https://wwfint.awsassets.panda.org/downloads/cdp-wwf-temperature-scoring-methodology---september-2024.pdf),
+and measure portfolio coverage by SBTi-validated near-term targets.
 
-> If you have any additional questions or comments send a mail to: ekonomi-finans@wwf.se
+**[Start with the shared documentation](https://wwf-sweden.github.io/ITR-tool/index.html)**
+for the app, Docker, notebooks and Python.
 
-## About the tool
+| How you want to work | Start here |
+| --- | --- |
+| Try a browser demo with sample data | [Online app](https://wwf-itr.streamlit.app/) and [app setup guide](https://wwf-sweden.github.io/ITR-tool/getting_started_app.html) |
+| Use a graphical interface locally | [Docker or local Streamlit](https://wwf-sweden.github.io/ITR-tool/getting_started_app.html#run-locally-with-docker) |
+| Learn and adapt an analysis step by step | [Notebooks: Colab or local Jupyter](https://wwf-sweden.github.io/ITR-tool/notebooks.html) |
+| Integrate scoring into your code | [Python quickstart](https://wwf-sweden.github.io/ITR-tool/getting_started.html) |
 
-This package helps companies and financial institutions to assess the temperature alignment of current
-targets, commitments, and investment and lending portfolios, and to use this information to develop
-targets for official validation by the SBTi.
+Use sample or public data in the online demo and Colab. For confidential
+portfolio data, use a local environment.
 
-The WWF Finance toolkit can be used in different ways:
+## Python package
 
-- Users can integrate the Python package in their codebase
-- Using Notebooks, either locally or on Google Colab
+This repository contains the `wwf-itr` scoring engine, imported as `ITR`,
+the notebooks and the shared Sphinx documentation. The Streamlit app is in
+[WWF-ITR-APP](https://github.com/WWF-Sweden/WWF-ITR-APP).
+Installing the engine alone does not install the app.
 
-## Structure
+Use Python 3.10 or later in a virtual environment:
 
-The folder structure for this project is as follows:
-
-    .
-    ├── .github                 # Github specific files (Github Actions workflows)
-    ├── docs                    # Documentation files (Sphinx)
-    ├── config                  # Config files for the Docker container
-    ├── ITR                     # The main Python package for the temperature alignment tool
-    └── test                    # Automated unit tests for the SBTi package (Nose2 tests)
-
-## Installation
-
-The ITR package may be installed using PIP. If you'd like to install it locally use the following command. For testing or production please see the deployment section for further instructions
-
-```bash
-pip install -e .
+```sh
+python -m pip install wwf-itr
 ```
 
-For installing the latest stable release in PyPi run:
+For source development, clone this repository and run `python -m pip install -e .`
+from its root, or use `poetry install` for the development environment.
+See [Contributing](https://wwf-sweden.github.io/ITR-tool/contributing.html)
+for checks, release steps and building docs.
 
-```bash
-pip install wwf-itr
+## Data and examples
+
+Use [Data Requirements](https://wwf-sweden.github.io/ITR-tool/DataRequirements.html)
+and [Data Legends](https://wwf-sweden.github.io/ITR-tool/Legends.html) for templates,
+columns, weighting inputs and SBTi CTA data. Target-based scoring and
+aggregation of ready-made scores use different inputs.
+
+The [standalone portfolio coverage notebook](examples/Simple_portfolio_coverage.ipynb)
+calculates WATS coverage from a portfolio and CTA data without installing
+`wwf-itr`. It does not calculate temperature scores or reconstruct historical
+SBTi status.
+
+## Repository structure
+
+```text
+.github/workflows/  GitHub Actions
+docs/              Sphinx documentation sources and data templates
+ITR/               Python scoring engine
+examples/          Jupyter notebooks and sample data
+test/              Automated tests
 ```
 
-## Development
+Report engine/notebook problems in [ITR-tool issues](https://github.com/WWF-Sweden/ITR-tool/issues)
+and app/Docker problems in [app issues](https://github.com/WWF-Sweden/WWF-ITR-APP/issues).
+Questions: ekonomi-finans@wwf.se.
 
-To set up the local dev environment with all dependencies, [install poetry](https://python-poetry.org/docs/#osx--linux--bashonwindows-install-instructions) and run
-
-```bash
-poetry install
-```
-
-This will create a virtual environment inside the project folder under `.venv`.
-
-### Testing
-
-Each class should be unit tested. The unit tests are written using the Nose2 framework.
-The setup.py script should have already installed Nose2, so now you may run the tests as follows:
-
-```bash
-nose2 -v
-```
-
-### Publish to PyPi
-
-The package should be published to PyPi when any changes to main are merged.
-
-Update package
-
-1. bump version in `pyproject.toml` based on semantic versioning principles
-2. run `poetry build`
-3. run `poetry publish`
-4. check whether package has been successfully uploaded
-
-**Initial Setup**
-
-- Create account on [PyPi](https://pypi.org/)
-
+See [LICENSE](LICENSE). Results are informational and are not financial or investment advice.
