@@ -19,8 +19,8 @@ import sphinx_rtd_theme
 
 # -- Project information -----------------------------------------------------
 
-project = "WWF Finance Tool"
-copyright = "2024, WWF Sweden"
+project = "WWF ITR Tool"
+copyright = "2026, WWF Sweden"
 author = "WWF Sweden"
 
 
@@ -72,3 +72,6 @@ html_static_path = ["_static"]
 autoapi_dirs = ["../ITR"]
 autoapi_type = "python"
 autoapi_template_dir = "_autoapi_templates"
+
+# Keep wide reference tables usable on smaller screens.
+html_css_files = ["theme_overrides.css"]

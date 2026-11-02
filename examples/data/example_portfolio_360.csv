@@ -1,0 +1,361 @@
+company_name,company_id,company_isin,company_lei,investment_value,engagement_target
+Fictional Aster Utilities 001,FICT0001,,213800NO6Q7Q7HMOMT20,581816.64,True
+Fictional Aster Materials 002,FICT0002,US98387E2054,,9845034.48,False
+Fictional Aster Industrials 003,FICT0003,GB00BC9ZLX92,2138007NXVPPRAXXHT76,16687086.32,False
+Fictional Aster Consumer Discretionary 004,FICT0004,,2138002ILUNMGNPSGG46,6581712.76,False
+Fictional Aster Consumer Staples 005,FICT0005,GB0007323586,,2356014.24,False
+Fictional Aster Information Technology 006,FICT0006,GB00BYSXWW41,213800TUH2ZU68PZZN12,998888.73,False
+Fictional Aster Health Care 007,FICT0007,,213800J1QD8BIB2ICW19,123218.38,False
+Fictional Aster Real Estate 008,FICT0008,GB00BHJYC057,,5648353.27,False
+Fictional Aster Communication Services 009,FICT0009,BE0003739530,2138008J191VLSGY5A09,3434993.6,False
+Fictional Aster Energy 010,FICT0010,,2138003GAT25WW1RN369,10202917.06,True
+Fictional Aster Transportation 011,FICT0011,GB00B4YZN328,,5329404.11,False
+Fictional Aster Financials 012,FICT0012,GB00BFZZM640,21380068SP9V65KPQN68,2447553.44,False
+Fictional Boreal Utilities 013,FICT0013,,213800167WOVOK5ZC776,121002.22,False
+Fictional Boreal Materials 014,FICT0014,INE110V01015,,110326.97,False
+Fictional Boreal Industrials 015,FICT0015,SE0017768716,21380059QU7IM1ONDJ56,27142103.38,False
+Fictional Boreal Consumer Discretionary 016,FICT0016,,2138002RKCU2OM4Y7O48,15429113.04,False
+Fictional Boreal Consumer Staples 017,FICT0017,GB00BMTV7393,,2568988.46,False
+Fictional Boreal Information Technology 018,FICT0018,USG4808VAC49,213800FTDIBBB57YBS41,22226200.72,False
+Fictional Boreal Health Care 019,FICT0019,,2138003A5Q1M7ANOUD76,34746200.08,True
+Fictional Boreal Real Estate 020,FICT0020,GB00BGXQNP29,,189126.02,False
+Fictional Boreal Communication Services 021,FICT0021,GB00BYX5K988,213800Q3CJUERBGD1E44,2156608.81,False
+Fictional Boreal Energy 022,FICT0022,,0EEB8GF0W0NPCIHZX097,347523.96,False
+Fictional Boreal Transportation 023,FICT0023,DK0060497295,,14933011.29,False
+Fictional Boreal Financials 024,FICT0024,SE0021021193,2549000VXMQVEWSP3F98,20962284.05,False
+Fictional Cobalt Utilities 025,FICT0025,,213800VDC1BKJEZ8PV53,920246.18,False
+Fictional Cobalt Materials 026,FICT0026,GB00B39J2M42,,366960.14,False
+Fictional Cobalt Industrials 027,FICT0027,SE0000117970,213800WRGLW3CY4MHW53,5027621.19,False
+Fictional Cobalt Consumer Discretionary 028,FICT0028,,2138001CNF45JP5XZK38,4833135.47,True
+Fictional Cobalt Consumer Staples 029,FICT0029,US0584981064,,478626.88,False
+Fictional Cobalt Information Technology 030,FICT0030,GRS346003007,2138003J1IUF4RSQ4K72,13820999.53,False
+Fictional Cobalt Health Care 031,FICT0031,,2138008K14474WPKZ244,157064.72,False
+Fictional Cobalt Real Estate 032,FICT0032,GB00B4JV1B90,,36715069.99,False
+Fictional Cobalt Communication Services 033,FICT0033,XS1180324037,213800EVBYLGF87O9I05,12497374.64,False
+Fictional Cobalt Energy 034,FICT0034,,2138008339ULDGZRB345,11891669.46,False
+Fictional Cobalt Transportation 035,FICT0035,GB00B00K4418,,296351.22,False
+Fictional Cobalt Financials 036,FICT0036,KYG4771L1059,2138004RIVUTW3RGKO74,14997033.27,False
+Fictional Dovetail Utilities 037,FICT0037,,2138004G59FXEAZ6IO10,31597503.7,True
+Fictional Dovetail Materials 038,FICT0038,GB0001859296,,4645984.46,False
+Fictional Dovetail Industrials 039,FICT0039,GB0002405495,2138001YYBULX5SZ2H24,919309.37,False
+Fictional Dovetail Consumer Discretionary 040,FICT0040,,21380045JG57LJEFFE13,253019.09,False
+Fictional Dovetail Consumer Staples 041,FICT0041,GB0004270301,,4363611.72,False
+Fictional Dovetail Information Technology 042,FICT0042,GB00B2PDGW16,2138001KJNGUJ34G7X91,6587742.21,False
+Fictional Dovetail Health Care 043,FICT0043,,2138001AD31KKD29Z495,3987688.67,False
+Fictional Dovetail Real Estate 044,FICT0044,GB0007669376,,214457.87,False
+Fictional Dovetail Communication Services 045,FICT0045,GB00B04V1276,2138007CEIRKZMNI2979,720109.82,False
+Fictional Dovetail Energy 046,FICT0046,,213800RBAFZIBCV7XR29,462289.25,True
+Fictional Dovetail Transportation 047,FICT0047,GB00BYYW3C20,,7493758.64,False
+Fictional Dovetail Financials 048,FICT0048,GB00BJFFLV09,2138004WCNBFJEEOXV26,4705699.75,False
+Fictional Elmcrest Utilities 049,FICT0049,,21380031XTLI9X5MTY92,49398605.74,False
+Fictional Elmcrest Materials 050,FICT0050,GB00B63H8491,,1313053.39,False
+Fictional Elmcrest Industrials 051,FICT0051,US3453708600,20S05OYHG0MQM4VUIC57,17802095.43,False
+Fictional Elmcrest Consumer Discretionary 052,FICT0052,,2138007JNS19JHNA2336,182726.86,False
+Fictional Elmcrest Consumer Staples 053,FICT0053,GB00BLNN3L44,,512783.49,False
+Fictional Elmcrest Information Technology 054,FICT0054,INE17NX01018,2549004HHAT5B9E7QH12,129082.58,False
+Fictional Elmcrest Health Care 055,FICT0055,,213800413RZM6IS8GM09,2670584.26,True
+Fictional Elmcrest Real Estate 056,FICT0056,GB0000811801,,4202121.24,False
+Fictional Elmcrest Communication Services 057,FICT0057,NO0006000900,213800M7T3CYVZ3ZRT12,44963377.78,False
+Fictional Elmcrest Energy 058,FICT0058,,2138003H1BZGR6KM5823,19254149.85,False
+Fictional Elmcrest Transportation 059,FICT0059,GB00BKRC5K31,,114459.8,False
+Fictional Elmcrest Financials 060,FICT0060,JE00B6T5S470,213800JKJ5HJWYS4GR61,1887063.78,False
+Fictional Fjord Utilities 061,FICT0061,,213800COXGZCORLJZA85,3599937.41,False
+Fictional Fjord Materials 062,FICT0062,GB0000365774,,2413414.91,False
+Fictional Fjord Industrials 063,FICT0063,GB00BMMV6B79,213800H9ZTUCXHVD1E79,670962.08,False
+Fictional Fjord Consumer Discretionary 064,FICT0064,,2138001JXGCFKBXYB828,33059511.92,True
+Fictional Fjord Consumer Staples 065,FICT0065,GB0001411924,,567127.36,False
+Fictional Fjord Information Technology 066,FICT0066,SE0018040677,2138001VSY1B4U9JLM82,12616127.79,False
+Fictional Fjord Health Care 067,FICT0067,,2138002W9Q21PF751R30,124721.88,False
+Fictional Fjord Real Estate 068,FICT0068,GB0009296665,,24514865.81,False
+Fictional Fjord Communication Services 069,FICT0069,GB00B7TW1V39,213800FGYMMNE9OKFD14,309127.59,False
+Fictional Fjord Energy 070,FICT0070,,2138001H6FCSZBP26351,24747188.43,False
+Fictional Fjord Transportation 071,FICT0071,US65290E1010,,1836644.54,False
+Fictional Fjord Financials 072,FICT0072,GB00BRJ9BJ26,2138007AJRLHRVQZLD07,17697458.43,False
+Fictional Glimmer Utilities 073,FICT0073,,08IRJODWFYBI7QWRGS31,234371.29,True
+Fictional Glimmer Materials 074,FICT0074,GB00B41H7391,,46909452.52,False
+Fictional Glimmer Industrials 075,FICT0075,SA0007879543,21380028ATJ79OTA9W17,425774.01,False
+Fictional Glimmer Consumer Discretionary 076,FICT0076,,213800PFUQT4HHFYZJ63,146394.95,False
+Fictional Glimmer Consumer Staples 077,FICT0077,GB00BDDN1T20,,2657250.85,False
+Fictional Glimmer Information Technology 078,FICT0078,ZAE000015889,21380044BQ8812EEKT59,20813580.65,False
+Fictional Glimmer Health Care 079,FICT0079,,2138003GUZRFIN3UT430,520109.1,False
+Fictional Glimmer Real Estate 080,FICT0080,DK0015998017,,47558482.66,False
+Fictional Glimmer Communication Services 081,FICT0081,GB0008847096,2138002P5RNKC5W2JZ46,374833.37,False
+Fictional Glimmer Energy 082,FICT0082,,2138007WU5DJFZFDDV59,48353803.7,True
+Fictional Glimmer Transportation 083,FICT0083,GB00B87ZTG26,,337629.83,False
+Fictional Glimmer Financials 084,FICT0084,GB00BNR4T868,213800CNEIDZBL17KU22,41633221.74,False
+Fictional Haven Utilities 085,FICT0085,,2138007LH7OP4V112978,2917476.73,False
+Fictional Haven Materials 086,FICT0086,GB00BZ4BQC70,,437197.34,False
+Fictional Haven Industrials 087,FICT0087,GB0007739609,2138001I27OUBAF22K83,184629.7,False
+Fictional Haven Consumer Discretionary 088,FICT0088,,2138004DGL1J6VQO6S92,2728176.91,False
+Fictional Haven Consumer Staples 089,FICT0089,GB00BRKD9Z53,,2299671.26,False
+Fictional Haven Information Technology 090,FICT0090,GB0008711763,213800TJGBW5VFHQEV54,9397429.72,False
+Fictional Haven Health Care 091,FICT0091,,21380068TTB6Z9ZEU548,17121477.32,True
+Fictional Haven Real Estate 092,FICT0092,FR0000130577,,780915.09,False
+Fictional Haven Communication Services 093,FICT0093,PTCOR0AE0006,213800J5M11TDEP3LQ76,37645907.21,False
+Fictional Haven Energy 094,FICT0094,,2138005O9XJIJN4JPN90,506069.83,False
+Fictional Haven Transportation 095,FICT0095,GB0006683238,,1181486.82,False
+Fictional Haven Financials 096,FICT0096,DE000WCH8881,0NURKC5Q3CJYZPPK5046,185286.15,False
+Fictional Ivory Utilities 097,FICT0097,,2138001E12GWLLDQQF16,1336022.39,False
+Fictional Ivory Materials 098,FICT0098,IE00BJ5FQX74,,9822429.15,False
+Fictional Ivory Industrials 099,FICT0099,GB00B046YG73,2138008TDMNV6ODDI497,21332492.19,False
+Fictional Ivory Consumer Discretionary 100,FICT0100,,213800G2ZE7MOWPI6K52,1312635.25,True
+Fictional Ivory Consumer Staples 101,FICT0101,GB00B27YGJ97,,8337105.05,False
+Fictional Ivory Information Technology 102,FICT0102,GRS393503008,213800KT8MEUJEJ2KW41,34953116.13,False
+Fictional Ivory Health Care 103,FICT0103,,2138003Y9ULD24PD3J93,34621352.55,False
+Fictional Ivory Real Estate 104,FICT0104,GB0006776081,,1191957.96,False
+Fictional Ivory Communication Services 105,FICT0105,GB00B7KR2P84,2138001S47XKWIB7TH90,24097416.11,False
+Fictional Ivory Energy 106,FICT0106,,2138003SBD2Z7WV2MP70,41741738.53,False
+Fictional Ivory Transportation 107,FICT0107,SE0018014151,,246972.21,False
+Fictional Ivory Financials 108,FICT0108,GB00B0KM9T71,2138003NEBX5VRP3EX50,14647684.05,False
+Fictional Juniper Utilities 109,FICT0109,,213800FIIXJAMEVRIH48,1679790.66,True
+Fictional Juniper Materials 110,FICT0110,PTCABOAE0009,,1630526.92,False
+Fictional Juniper Industrials 111,FICT0111,GB0008782301,21380089BTRXTD8S3R66,103776.11,False
+Fictional Juniper Consumer Discretionary 112,FICT0112,,213800B32KQM8CENCR16,642398.47,False
+Fictional Juniper Consumer Staples 113,FICT0113,GB00BLDRH360,,508196.3,False
+Fictional Juniper Information Technology 114,FICT0114,US6936561009,123WALMHY1GZXG2YDL90,585570.56,False
+Fictional Juniper Health Care 115,FICT0115,,2138005RN5XYLTF8G138,14611796.32,False
+Fictional Juniper Real Estate 116,FICT0116,IM00B5VQMV65,,21225050.65,False
+Fictional Juniper Communication Services 117,FICT0117,GB00BD7XPJ64,2138004GX1VAUMH66L31,9222189.31,False
+Fictional Juniper Energy 118,FICT0118,,2138008OGI7VYG8FGR19,680475.7,True
+Fictional Juniper Transportation 119,FICT0119,GB0005622542,,26616509.14,False
+Fictional Juniper Financials 120,FICT0120,SE0000191090,2138008KECUUB9VR4798,26664186.75,False
+Fictional Kestrel Utilities 121,FICT0121,,,5933540.88,False
+Fictional Kestrel Materials 122,FICT0122,,,343334.96,False
+Fictional Kestrel Industrials 123,FICT0123,,,522522.1,False
+Fictional Kestrel Consumer Discretionary 124,FICT0124,,,3552043.14,False
+Fictional Kestrel Consumer Staples 125,FICT0125,,,135748.74,False
+Fictional Kestrel Information Technology 126,FICT0126,,,698200.08,False
+Fictional Kestrel Health Care 127,FICT0127,,,322035.55,True
+Fictional Kestrel Real Estate 128,FICT0128,,,142870.33,False
+Fictional Kestrel Communication Services 129,FICT0129,,,134244.2,False
+Fictional Kestrel Energy 130,FICT0130,,,334211.01,False
+Fictional Kestrel Transportation 131,FICT0131,,,1620216.59,False
+Fictional Kestrel Financials 132,FICT0132,,,34691704.69,False
+Fictional Larkspur Utilities 133,FICT0133,,,14551960.13,False
+Fictional Larkspur Materials 134,FICT0134,,,6742585.07,False
+Fictional Larkspur Industrials 135,FICT0135,,,382219.92,False
+Fictional Larkspur Consumer Discretionary 136,FICT0136,,,48339172.75,True
+Fictional Larkspur Consumer Staples 137,FICT0137,,,2537228.15,False
+Fictional Larkspur Information Technology 138,FICT0138,,,43476917.26,False
+Fictional Larkspur Health Care 139,FICT0139,,,18504720.21,False
+Fictional Larkspur Real Estate 140,FICT0140,,,22178284.23,False
+Fictional Larkspur Communication Services 141,FICT0141,,,983617.71,False
+Fictional Larkspur Energy 142,FICT0142,,,105098.34,False
+Fictional Larkspur Transportation 143,FICT0143,,,131299.42,False
+Fictional Larkspur Financials 144,FICT0144,,,162290.18,False
+Fictional Aster Utilities 145,FICT0145,,,532599.38,True
+Fictional Aster Materials 146,FICT0146,,,4178426.75,False
+Fictional Aster Industrials 147,FICT0147,,,119278.05,False
+Fictional Aster Consumer Discretionary 148,FICT0148,,,2586762.53,False
+Fictional Aster Consumer Staples 149,FICT0149,,,1822916.49,False
+Fictional Aster Information Technology 150,FICT0150,,,986329.53,False
+Fictional Aster Health Care 151,FICT0151,,,34719672.74,False
+Fictional Aster Real Estate 152,FICT0152,,,3758389.21,False
+Fictional Aster Communication Services 153,FICT0153,,,19695058.87,False
+Fictional Aster Energy 154,FICT0154,,,18838689.91,True
+Fictional Aster Transportation 155,FICT0155,,,996603.08,False
+Fictional Aster Financials 156,FICT0156,,,201382.17,False
+Fictional Boreal Utilities 157,FICT0157,,,507737.74,False
+Fictional Boreal Materials 158,FICT0158,,,662215.01,False
+Fictional Boreal Industrials 159,FICT0159,,,15853385.57,False
+Fictional Boreal Consumer Discretionary 160,FICT0160,,,9998436.89,False
+Fictional Boreal Consumer Staples 161,FICT0161,,,1217253.29,False
+Fictional Boreal Information Technology 162,FICT0162,,,627810.1,False
+Fictional Boreal Health Care 163,FICT0163,,,18465410.54,True
+Fictional Boreal Real Estate 164,FICT0164,,,10000246.04,False
+Fictional Boreal Communication Services 165,FICT0165,,,232918.99,False
+Fictional Boreal Energy 166,FICT0166,,,2763275.08,False
+Fictional Boreal Transportation 167,FICT0167,,,1531464.47,False
+Fictional Boreal Financials 168,FICT0168,,,2238674.2,False
+Fictional Cobalt Utilities 169,FICT0169,,,26291145.76,False
+Fictional Cobalt Materials 170,FICT0170,,,5689313.08,False
+Fictional Cobalt Industrials 171,FICT0171,,,3002345.79,False
+Fictional Cobalt Consumer Discretionary 172,FICT0172,,,7553822.76,True
+Fictional Cobalt Consumer Staples 173,FICT0173,,,336679.1,False
+Fictional Cobalt Information Technology 174,FICT0174,,,165657.77,False
+Fictional Cobalt Health Care 175,FICT0175,,,34729540.88,False
+Fictional Cobalt Real Estate 176,FICT0176,,,46455144.78,False
+Fictional Cobalt Communication Services 177,FICT0177,,,1286638.49,False
+Fictional Cobalt Energy 178,FICT0178,,,238104.47,False
+Fictional Cobalt Transportation 179,FICT0179,,,2851380.55,False
+Fictional Cobalt Financials 180,FICT0180,,,39345768.05,False
+Fictional Dovetail Utilities 181,FICT0181,,,29756534.49,True
+Fictional Dovetail Materials 182,FICT0182,,,576425.74,False
+Fictional Dovetail Industrials 183,FICT0183,,,6993088.66,False
+Fictional Dovetail Consumer Discretionary 184,FICT0184,,,259335.61,False
+Fictional Dovetail Consumer Staples 185,FICT0185,,,8173724.33,False
+Fictional Dovetail Information Technology 186,FICT0186,,,295612.94,False
+Fictional Dovetail Health Care 187,FICT0187,,,157596.72,False
+Fictional Dovetail Real Estate 188,FICT0188,,,539075.72,False
+Fictional Dovetail Communication Services 189,FICT0189,,,251357.32,False
+Fictional Dovetail Energy 190,FICT0190,,,705057.34,True
+Fictional Dovetail Transportation 191,FICT0191,,,22180969.57,False
+Fictional Dovetail Financials 192,FICT0192,,,43048454.84,False
+Fictional Elmcrest Utilities 193,FICT0193,,,538896.29,False
+Fictional Elmcrest Materials 194,FICT0194,,,457861.78,False
+Fictional Elmcrest Industrials 195,FICT0195,,,797538.86,False
+Fictional Elmcrest Consumer Discretionary 196,FICT0196,,,18894125.93,False
+Fictional Elmcrest Consumer Staples 197,FICT0197,,,2364025.64,False
+Fictional Elmcrest Information Technology 198,FICT0198,,,42454599.75,False
+Fictional Elmcrest Health Care 199,FICT0199,,,10497086.3,True
+Fictional Elmcrest Real Estate 200,FICT0200,,,130536.93,False
+Fictional Elmcrest Communication Services 201,FICT0201,,,2316983.4,False
+Fictional Elmcrest Energy 202,FICT0202,,,1122642.32,False
+Fictional Elmcrest Transportation 203,FICT0203,,,803376.0,False
+Fictional Elmcrest Financials 204,FICT0204,,,5186829.35,False
+Fictional Fjord Utilities 205,FICT0205,,,5127066.03,False
+Fictional Fjord Materials 206,FICT0206,,,16072833.77,False
+Fictional Fjord Industrials 207,FICT0207,,,1722721.98,False
+Fictional Fjord Consumer Discretionary 208,FICT0208,,,2324195.43,True
+Fictional Fjord Consumer Staples 209,FICT0209,,,10444291.88,False
+Fictional Fjord Information Technology 210,FICT0210,,,101826.13,False
+Fictional Fjord Health Care 211,FICT0211,,,1234413.31,False
+Fictional Fjord Real Estate 212,FICT0212,,,191653.04,False
+Fictional Fjord Communication Services 213,FICT0213,,,8583054.49,False
+Fictional Fjord Energy 214,FICT0214,,,8870688.16,False
+Fictional Fjord Transportation 215,FICT0215,,,2274632.94,False
+Fictional Fjord Financials 216,FICT0216,,,376045.72,False
+Fictional Glimmer Utilities 217,FICT0217,,,25703188.72,True
+Fictional Glimmer Materials 218,FICT0218,,,4428424.51,False
+Fictional Glimmer Industrials 219,FICT0219,,,7508908.78,False
+Fictional Glimmer Consumer Discretionary 220,FICT0220,,,799009.17,False
+Fictional Glimmer Consumer Staples 221,FICT0221,,,1976588.43,False
+Fictional Glimmer Information Technology 222,FICT0222,,,2020497.53,False
+Fictional Glimmer Health Care 223,FICT0223,,,5230987.93,False
+Fictional Glimmer Real Estate 224,FICT0224,,,5779293.03,False
+Fictional Glimmer Communication Services 225,FICT0225,,,287447.94,False
+Fictional Glimmer Energy 226,FICT0226,,,1290313.01,True
+Fictional Glimmer Transportation 227,FICT0227,,,2397886.47,False
+Fictional Glimmer Financials 228,FICT0228,,,19325665.74,False
+Fictional Haven Utilities 229,FICT0229,,,117890.74,False
+Fictional Haven Materials 230,FICT0230,,,23431595.76,False
+Fictional Haven Industrials 231,FICT0231,,,351239.98,False
+Fictional Haven Consumer Discretionary 232,FICT0232,,,6250691.61,False
+Fictional Haven Consumer Staples 233,FICT0233,,,1171462.89,False
+Fictional Haven Information Technology 234,FICT0234,,,7406236.23,False
+Fictional Haven Health Care 235,FICT0235,,,372083.34,True
+Fictional Haven Real Estate 236,FICT0236,,,178059.06,False
+Fictional Haven Communication Services 237,FICT0237,,,106382.69,False
+Fictional Haven Energy 238,FICT0238,,,26515153.35,False
+Fictional Haven Transportation 239,FICT0239,,,23620124.34,False
+Fictional Haven Financials 240,FICT0240,,,15188429.2,False
+Fictional Ivory Utilities 241,FICT0241,,,369645.28,False
+Fictional Ivory Materials 242,FICT0242,,,2319042.38,False
+Fictional Ivory Industrials 243,FICT0243,,,35993185.14,False
+Fictional Ivory Consumer Discretionary 244,FICT0244,,,8306777.64,True
+Fictional Ivory Consumer Staples 245,FICT0245,,,411278.48,False
+Fictional Ivory Information Technology 246,FICT0246,,,1604819.45,False
+Fictional Ivory Health Care 247,FICT0247,,,5925703.13,False
+Fictional Ivory Real Estate 248,FICT0248,,,122952.64,False
+Fictional Ivory Communication Services 249,FICT0249,,,223415.47,False
+Fictional Ivory Energy 250,FICT0250,,,816195.47,False
+Fictional Ivory Transportation 251,FICT0251,,,109554.12,False
+Fictional Ivory Financials 252,FICT0252,,,11033910.78,False
+Fictional Juniper Utilities 253,FICT0253,,,19007468.32,True
+Fictional Juniper Materials 254,FICT0254,,,1303672.71,False
+Fictional Juniper Industrials 255,FICT0255,,,1871984.48,False
+Fictional Juniper Consumer Discretionary 256,FICT0256,,,761847.16,False
+Fictional Juniper Consumer Staples 257,FICT0257,,,528358.7,False
+Fictional Juniper Information Technology 258,FICT0258,,,1760898.11,False
+Fictional Juniper Health Care 259,FICT0259,,,30662352.55,False
+Fictional Juniper Real Estate 260,FICT0260,,,4441770.23,False
+Fictional Juniper Communication Services 261,FICT0261,,,5159946.7,False
+Fictional Juniper Energy 262,FICT0262,,,625185.54,True
+Fictional Juniper Transportation 263,FICT0263,,,509285.96,False
+Fictional Juniper Financials 264,FICT0264,,,126345.27,False
+Fictional Kestrel Utilities 265,FICT0265,,,209257.66,False
+Fictional Kestrel Materials 266,FICT0266,,,4991360.33,False
+Fictional Kestrel Industrials 267,FICT0267,,,29429688.97,False
+Fictional Kestrel Consumer Discretionary 268,FICT0268,,,16232041.23,False
+Fictional Kestrel Consumer Staples 269,FICT0269,,,1321139.86,False
+Fictional Kestrel Information Technology 270,FICT0270,,,197487.7,False
+Fictional Kestrel Health Care 271,FICT0271,,,5235148.71,True
+Fictional Kestrel Real Estate 272,FICT0272,,,30420716.05,False
+Fictional Kestrel Communication Services 273,FICT0273,,,15999139.56,False
+Fictional Kestrel Energy 274,FICT0274,,,35414580.85,False
+Fictional Kestrel Transportation 275,FICT0275,,,1217245.46,False
+Fictional Kestrel Financials 276,FICT0276,,,742410.45,False
+Fictional Larkspur Utilities 277,FICT0277,,,4501171.28,False
+Fictional Larkspur Materials 278,FICT0278,,,187144.57,False
+Fictional Larkspur Industrials 279,FICT0279,,,2490357.67,False
+Fictional Larkspur Consumer Discretionary 280,FICT0280,,,674636.56,True
+Fictional Larkspur Consumer Staples 281,FICT0281,,,5062958.8,False
+Fictional Larkspur Information Technology 282,FICT0282,,,20759877.99,False
+Fictional Larkspur Health Care 283,FICT0283,,,2376428.41,False
+Fictional Larkspur Real Estate 284,FICT0284,,,11881810.52,False
+Fictional Larkspur Communication Services 285,FICT0285,,,2124703.13,False
+Fictional Larkspur Energy 286,FICT0286,,,161126.89,False
+Fictional Larkspur Transportation 287,FICT0287,,,5857125.96,False
+Fictional Larkspur Financials 288,FICT0288,,,21927581.57,False
+Fictional Aster Utilities 289,FICT0289,,,3677768.63,True
+Fictional Aster Materials 290,FICT0290,,,409570.37,False
+Fictional Aster Industrials 291,FICT0291,,,36336711.5,False
+Fictional Aster Consumer Discretionary 292,FICT0292,,,6821521.43,False
+Fictional Aster Consumer Staples 293,FICT0293,,,12281062.29,False
+Fictional Aster Information Technology 294,FICT0294,,,278219.87,False
+Fictional Aster Health Care 295,FICT0295,,,519482.71,False
+Fictional Aster Real Estate 296,FICT0296,,,384427.78,False
+Fictional Aster Communication Services 297,FICT0297,,,21609059.08,False
+Fictional Aster Energy 298,FICT0298,,,302004.08,True
+Fictional Aster Transportation 299,FICT0299,,,11897639.96,False
+Fictional Aster Financials 300,FICT0300,,,5443286.57,False
+Fictional Boreal Utilities 301,FICT0301,,,2540559.34,False
+Fictional Boreal Materials 302,FICT0302,,,1345515.09,False
+Fictional Boreal Industrials 303,FICT0303,,,3174391.26,False
+Fictional Boreal Consumer Discretionary 304,FICT0304,,,41986661.94,False
+Fictional Boreal Consumer Staples 305,FICT0305,,,5080146.97,False
+Fictional Boreal Information Technology 306,FICT0306,,,861598.55,False
+Fictional Boreal Health Care 307,FICT0307,,,3681229.28,True
+Fictional Boreal Real Estate 308,FICT0308,,,248537.77,False
+Fictional Boreal Communication Services 309,FICT0309,,,296146.79,False
+Fictional Boreal Energy 310,FICT0310,,,41853066.68,False
+Fictional Boreal Transportation 311,FICT0311,,,293593.47,False
+Fictional Boreal Financials 312,FICT0312,,,108740.05,False
+Fictional Cobalt Utilities 313,FICT0313,,,3338932.67,False
+Fictional Cobalt Materials 314,FICT0314,,,29050330.63,False
+Fictional Cobalt Industrials 315,FICT0315,,,582506.7,False
+Fictional Cobalt Consumer Discretionary 316,FICT0316,,,120689.85,True
+Fictional Cobalt Consumer Staples 317,FICT0317,,,333412.22,False
+Fictional Cobalt Information Technology 318,FICT0318,,,731997.97,False
+Fictional Cobalt Health Care 319,FICT0319,,,109722.25,False
+Fictional Cobalt Real Estate 320,FICT0320,,,1820567.08,False
+Fictional Cobalt Communication Services 321,FICT0321,,,306888.64,False
+Fictional Cobalt Energy 322,FICT0322,,,312515.85,False
+Fictional Cobalt Transportation 323,FICT0323,,,149804.32,False
+Fictional Cobalt Financials 324,FICT0324,,,2172114.72,False
+Fictional Dovetail Utilities 325,FICT0325,,,4580423.45,True
+Fictional Dovetail Materials 326,FICT0326,,,12741203.69,False
+Fictional Dovetail Industrials 327,FICT0327,,,557656.66,False
+Fictional Dovetail Consumer Discretionary 328,FICT0328,,,5355379.08,False
+Fictional Dovetail Consumer Staples 329,FICT0329,,,627666.63,False
+Fictional Dovetail Information Technology 330,FICT0330,,,6604797.68,False
+Fictional Dovetail Health Care 331,FICT0331,,,1451399.09,False
+Fictional Dovetail Real Estate 332,FICT0332,,,4378739.41,False
+Fictional Dovetail Communication Services 333,FICT0333,,,7087368.67,False
+Fictional Dovetail Energy 334,FICT0334,,,445761.01,True
+Fictional Dovetail Transportation 335,FICT0335,,,9745877.88,False
+Fictional Dovetail Financials 336,FICT0336,,,1457859.29,False
+Fictional Elmcrest Utilities 337,FICT0337,,,8608109.89,False
+Fictional Elmcrest Materials 338,FICT0338,,,6381724.97,False
+Fictional Elmcrest Industrials 339,FICT0339,,,2461962.9,False
+Fictional Elmcrest Consumer Discretionary 340,FICT0340,,,421944.82,False
+Fictional Elmcrest Consumer Staples 341,FICT0341,,,250940.01,False
+Fictional Elmcrest Information Technology 342,FICT0342,,,11539407.96,False
+Fictional Elmcrest Health Care 343,FICT0343,,,1119032.85,True
+Fictional Elmcrest Real Estate 344,FICT0344,,,185424.04,False
+Fictional Elmcrest Communication Services 345,FICT0345,,,10941890.59,False
+Fictional Elmcrest Energy 346,FICT0346,,,513375.94,False
+Fictional Elmcrest Transportation 347,FICT0347,,,4191665.66,False
+Fictional Elmcrest Financials 348,FICT0348,,,2748621.66,False
+Fictional Fjord Utilities 349,FICT0349,,,37181319.61,False
+Fictional Fjord Materials 350,FICT0350,,,416718.05,False
+Fictional Fjord Industrials 351,FICT0351,,,1140822.52,False
+Fictional Fjord Consumer Discretionary 352,FICT0352,,,432130.3,True
+Fictional Fjord Consumer Staples 353,FICT0353,,,2852451.6,False
+Fictional Fjord Information Technology 354,FICT0354,,,41893179.03,False
+Fictional Fjord Health Care 355,FICT0355,,,2076415.63,False
+Fictional Fjord Real Estate 356,FICT0356,,,17863625.06,False
+Fictional Fjord Communication Services 357,FICT0357,,,41533063.75,False
+Fictional Fjord Energy 358,FICT0358,,,125043.62,False
+Fictional Fjord Transportation 359,FICT0359,,,39517638.12,False
+Fictional Fjord Financials 360,FICT0360,,,2068343.49,False

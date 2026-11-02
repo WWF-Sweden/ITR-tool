@@ -1,57 +1,91 @@
-********************
 Contributing
-********************
-Any contribution is highly appreciated. The most common way to contribute to the project is through coding, however contributions to
-the documentation are also very welcome.
+============
+
+Code, documentation, examples, reproducible bug reports and feature
+requests are welcome. Report engine/notebook issues in
+`ITR-tool <https://github.com/WWF-Sweden/ITR-tool/issues>`_ and app issues in
+`WWF-ITR-APP <https://github.com/WWF-Sweden/WWF-ITR-APP/issues>`_.
+Do not include confidential portfolio data in public reports.
 
 Submitting a bug report or a feature request
-==============================================
-To keep track of open issues and feature requests, we will use `Github's issue tracker <https://github.com//WWF-Sweden/ITR-tool/issues/>`_.
+--------------------------------------------
 
-If you encounter any bugs or missing features, please do not hesitate to open a ticket. Before submitting a report, please check that the issue has not already been reported.
-For ease of comprehension, please ensure your report includes the following characteristics:
-
-* Reproducible: It should be possible for others to reproduce the issue, ideally through a small code snippet in the description of the issue
-* Labelled: Add a label that describes the contents of the ticket, e.g. "bug", "feature request" or "documentation"
+Include the package version or image tag, Python/OS version where relevant,
+steps to reproduce, expected behaviour and error text. Provide a small
+non-confidential example and check existing issues first.
 
 Contributing code
-====================
-Our preferred way for contributing code is to fork the repository, make changes on your personal fork and then create a pull request to merge your changes back into the main repository. 
-Before a pull request can be approved it needs to be reviewed by two core contributors, then these automated checks need to be passed (see "Coding Guidelines" section below).
+-----------------
 
-.. note:: Please assign the issue you are working on to yourself so we can avoid duplicate efforts.
+Use a branch or fork and submit a pull request. Keep user-facing
+documentation and examples aligned with behavioural changes. Run checks
+appropriate to the change and describe what was verified in the PR.
 
 Getting started
------------------
-Before getting started it is important to have a clean Python environment. The recommended Python version is 3.9 or higher. 
-An anaconda environment file is provided in the root of the project, as is a PIP requirements.txt file. 
-The easiest way to work on the Python module is by installing it in development mode. This can be done using the following command::
+~~~~~~~~~~~~~~~
 
-    pip install -e .[dev]
+Use Python 3.10 or later and Poetry. From the ITR-tool repository root:
 
-This will install the module as a reference to your current directory.
-The Jupyter notebooks in the "examples" directory have been setup to use auto-reload. Thus, if you now make any changes to your local code, they will be automatically reflected in the notebook.
+.. code-block:: console
+
+   poetry install
+
+The development dependencies and optional docs group are defined in
+``pyproject.toml``. The configuration uses an in-project virtual environment.
+For an editable pip installation of the engine, use
+``python -m pip install -e .``; this does not install Poetry's development
+or documentation groups.
 
 Coding guidelines
--------------------
-In general the code follows three principals, `OOP <https://en.wikipedia.org/wiki/Object-oriented_programming>`_, `PEP8 (code style) <https://www.python.org/dev/peps/pep-0008/>`_ and `PEP 484 (type hinting) <https://www.python.org/dev/peps/pep-0484/>`_.
-In addition, we use Flake8 to lint the code, MyPy to check the type hints and Nose2 to do unit testing. These checks are done automatically when attempting to merge a pull request into master.
+~~~~~~~~~~~~~~~~~
+
+Follow the surrounding code style and include type information where
+useful. Tests are in ``test``; use the repository's unittest-compatible
+test modules for relevant changes. Do not assume the old workflows
+targeting ``master`` run on current ``main`` pull requests; inspect the
+actual workflows under ``.github/workflows``.
 
 Releasing
-===============
-To release a new version of the module you need to take two steps, create a new PyPi release and generate the documentation.
+---------
 
+Maintain consistent version values in package metadata and
+``ITR/__init__.py``. Build and publish a reviewed release using the
+project's release process; merging source alone does not establish that
+a new package is available on PyPI. With Poetry, the package commands are:
+
+.. code-block:: console
+
+   poetry build
+   poetry publish
+
+After publishing, verify the version on PyPI. The app locks its engine
+dependency in its own ``requirements.txt``; its dependency-update PR and
+container publication are separate from the Python release. Check both
+repositories before describing a release as available to all users.
 
 Generate documentation
-------------------------
-To generate the documentation, you should follow these steps in the "WWF-Sweden" repository (the one containing the Python module).
+~~~~~~~~~~~~~~~~~~~~~~
 
-1. The documentation is automatically generated by docs2pages.yaml. It takes the .rst from /docs and generates html in the branch gh-pages.
+Edit the Sphinx sources under ``docs`` in ITR-tool. To build locally:
+
+.. code-block:: console
+
+   poetry install --with docs
+   poetry run sphinx-build -b html docs docs/_build/html -W --keep-going
+
+Open ``docs/_build/html/index.html`` to review the result. Check navigation,
+downloads, code examples and existing public anchors. Generated HTML is
+not the source to edit. The ``Docs2Pages`` workflow builds from ``docs``
+and deploys to the ``gh-pages`` branch on pushes to ``main`` or manual
+dispatch. Changes on a documentation branch do not themselves update
+the public site; app-repository changes do not rebuild ITR-tool docs.
+
+Before release, check the documented app startup, notebook and Python
+paths against the versions being released. Preserve existing public
+page URLs when moving content.
 
 Code of conduct
-===============
-Everyone's goals here are aligned: to help asset owners and asset managers reduce their impact on climate change.
-The only way we can achieve this goal is by fostering an inclusive and welcome environment. Therefore, this project is governed by a `code of conduct <https://github.com/ScienceBasedTargets/SBTi-finance-tool/blob/master/CODE_OF_CONDUCT.md>`_. By participating, you are expected to uphold this code. If you encounter any violations, please report them.
+---------------
 
-.. toctree::
-   :maxdepth: 4
+Please follow the repository's
+`Code of Conduct <https://github.com/WWF-Sweden/ITR-tool/blob/main/CODE_OF_CONDUCT.md>`_.
