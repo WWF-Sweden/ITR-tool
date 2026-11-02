@@ -1,8 +1,18 @@
-********************
 Terms of Use
-********************
+============
 
-The WWF Finance Tool is being made available under the MIT License.  It is one of approved licenses of the OSI (`Open Source Initiative <https://opensource.org/licenses>`__), which is the gold standard for open source licensing.  It is a "permissive" license that guarantees freedoms to use, modify, and redistribute, but that also permits proprietary derivative works.  The MIT License as WRI's standard license for source code. Here are the specific terms of the MIT License for the Tool:
+The source code and documentation are distributed under the MIT License.
+See the complete license text for
+`ITR-tool <https://github.com/WWF-Sweden/ITR-tool/blob/main/LICENSE>`_ and
+`WWF-ITR-APP <https://github.com/WWF-Sweden/WWF-ITR-APP/blob/main/LICENSE>`_,
+including the copyright notice, conditions and warranty disclaimer.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so.
+Results are for informational purposes and should not be considered
+financial or investment advice. Temperature scores depend on input data,
+method assumptions, software version and the selected parameters; they
+do not guarantee future emissions outcomes or official target approval.
 
+For public online services, portfolio data is processed on the service
+host. Use sample or public data in the demo and choose a local environment
+for confidential information; see :doc:`getting_started_app` and
+:doc:`notebooks`.

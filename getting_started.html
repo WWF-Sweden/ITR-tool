@@ -4,10 +4,11 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Getting Started Using Python &mdash; WWF Finance Tool  documentation</title>
+  <title>Getting Started Using Python &mdash; WWF ITR Tool  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="_static/theme_overrides.css?v=dc073278" />
 
   
   <!--[if lt IE 9]>
@@ -23,7 +24,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Functional Overview" href="FunctionalOverview.html" />
-    <link rel="prev" title="Introduction to temperature scoring and portfolio coverage methods" href="intro.html" /> 
+    <link rel="prev" title="Getting Started with Notebooks" href="notebooks.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -35,7 +36,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            WWF Finance Tool
+            WWF ITR Tool
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -45,20 +46,24 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction to temperature scoring and portfolio coverage methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started_app.html">Getting Started with the App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_app.html">Using the App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks.html">Getting Started with Notebooks</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started Using Python</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#first-temperature-score-calculation">First temperature score calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#portfolio-coverage">Portfolio coverage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#google-colab">Google Colab</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#jupyter-notebooks">Jupyter Notebooks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#python-code">Python code</a><ul class="simple">
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="FunctionalOverview.html">Functional Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="DataRequirements.html">Data Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Legends.html">Data Legends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="links.html">Project Links</a></li>
 <li class="toctree-l1"><a class="reference internal" href="terms.html">Terms of Use</a></li>
@@ -71,7 +76,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">WWF Finance Tool</a>
+          <a href="index.html">WWF ITR Tool</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -91,59 +96,136 @@
              
   <section id="getting-started-using-python">
 <h1>Getting Started Using Python<a class="headerlink" href="#getting-started-using-python" title="Link to this heading"></a></h1>
-<p>The most fundamental part of the project is the Python module, which takes care of all the heavy lifting.
-You can install it easily through PIP. There are a couple ways to get started using the module.
-The easiest option is to run our getting started notebook on <a class="reference external" href="https://colab.research.google.com/">Google Colab</a>.
-Alternatively, you can also run the <a class="reference external" href="https://github.com/WWF-Sweden/ITR-tool/tree/master/examples">notebooks</a> locally.
-We recommend that you run the tool in your local environment when you are using your actual portfolio data as input.</p>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">wwf-itr</span></code> package to integrate temperature scoring into your own
+analysis. The Python import name is <code class="docutils literal notranslate"><span class="pre">ITR</span></code>. For a graphical interface,
+use <a class="reference internal" href="getting_started_app.html"><span class="doc">Getting Started with the App</span></a>; for guided runnable examples, use
+<a class="reference internal" href="notebooks.html"><span class="doc">Getting Started with Notebooks</span></a>.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>Use Python 3.10 or later. Python 3.11 is a practical starting point.
+Create and activate an environment, for example on macOS/Linux:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python3 -m venv .venv</span>
+<span class="go">source .venv/bin/activate</span>
+</pre></div>
+</div>
+<p>On Windows PowerShell:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">py</span> <span class="p">-</span><span class="n">3</span><span class="p">.</span><span class="n">11</span> <span class="n">-m</span> <span class="n">venv</span> <span class="p">.</span><span class="n">venv</span>
+<span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">Activate</span><span class="p">.</span><span class="n">ps1</span>
+</pre></div>
+</div>
+<p>Install the published package:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pip install wwf-itr</span>
+</pre></div>
+</div>
+<p>For source development, clone
+<code class="docutils literal notranslate"><span class="pre">https://github.com/WWF-Sweden/ITR-tool.git</span></code> and install with
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span></code> from the repository root. See
+<a class="reference internal" href="contributing.html"><span class="doc">Contributing</span></a> for development and documentation dependencies.</p>
+</section>
+<section id="first-temperature-score-calculation">
+<span id="python-code"></span><h2>First temperature score calculation<a class="headerlink" href="#first-temperature-score-calculation" title="Link to this heading"></a></h2>
+<p>Save the following as <code class="docutils literal notranslate"><span class="pre">first_analysis.py</span></code> in your working folder and
+run <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">first_analysis.py</span></code>. The script downloads two public sample
+files only when they are absent, calculates all scopes for the mid-term
+timeframe, prints portfolio scores, and writes company results to CSV.
+The example uses the same fictional 360-company dataset as the notebooks;
+see <a class="reference internal" href="notebooks.html"><span class="doc">Getting Started with Notebooks</span></a> for direct downloads. Sample data is illustrative;
+scores can change with the calendar year
+because target timeframes are forward-looking.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;First analysis with the public WWF ITR sample files.&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.request</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlretrieve</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ITR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ITR.data.excel</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExcelProvider</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ITR.interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">EScope</span><span class="p">,</span> <span class="n">ETimeFrames</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ITR.portfolio_aggregation</span><span class="w"> </span><span class="kn">import</span> <span class="n">PortfolioAggregationMethod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ITR.temperature_score</span><span class="w"> </span><span class="kn">import</span> <span class="n">TemperatureScore</span>
+
+<span class="n">data_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
+<span class="n">data_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/WWF-Sweden/ITR-tool/main/examples/data/&quot;</span>
+<span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;data_provider_example_360.xlsx&quot;</span><span class="p">,</span> <span class="s2">&quot;example_portfolio_360.csv&quot;</span><span class="p">):</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">data_dir</span> <span class="o">/</span> <span class="n">filename</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">urlretrieve</span><span class="p">(</span><span class="n">base_url</span> <span class="o">+</span> <span class="n">filename</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;wwf-itr version: </span><span class="si">{</span><span class="n">ITR</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">provider</span> <span class="o">=</span> <span class="n">ExcelProvider</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;data_provider_example_360.xlsx&quot;</span><span class="p">))</span>
+<span class="n">portfolio</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;example_portfolio_360.csv&quot;</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;company_id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;company_isin&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;company_lei&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">},</span>
+<span class="p">)</span>
+<span class="n">companies</span> <span class="o">=</span> <span class="n">ITR</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">dataframe_to_portfolio</span><span class="p">(</span><span class="n">portfolio</span><span class="p">)</span>
+<span class="n">scorer</span> <span class="o">=</span> <span class="n">TemperatureScore</span><span class="p">(</span>
+    <span class="n">time_frames</span><span class="o">=</span><span class="p">[</span><span class="n">ETimeFrames</span><span class="o">.</span><span class="n">MID</span><span class="p">],</span>
+    <span class="n">scopes</span><span class="o">=</span><span class="p">[</span><span class="n">EScope</span><span class="o">.</span><span class="n">S1</span><span class="p">,</span> <span class="n">EScope</span><span class="o">.</span><span class="n">S2</span><span class="p">,</span> <span class="n">EScope</span><span class="o">.</span><span class="n">S1S2</span><span class="p">,</span> <span class="n">EScope</span><span class="o">.</span><span class="n">S3</span><span class="p">,</span> <span class="n">EScope</span><span class="o">.</span><span class="n">S1S2S3</span><span class="p">],</span>
+    <span class="n">aggregation_method</span><span class="o">=</span><span class="n">PortfolioAggregationMethod</span><span class="o">.</span><span class="n">WATS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">company_scores</span> <span class="o">=</span> <span class="n">scorer</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">data_providers</span><span class="o">=</span><span class="p">[</span><span class="n">provider</span><span class="p">],</span> <span class="n">portfolio</span><span class="o">=</span><span class="n">companies</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">scorer</span><span class="o">.</span><span class="n">invalid_targets</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Skipped targets:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">scorer</span><span class="o">.</span><span class="n">invalid_targets</span><span class="p">)</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+<span class="n">portfolio_scores</span> <span class="o">=</span> <span class="n">scorer</span><span class="o">.</span><span class="n">aggregate_scores</span><span class="p">(</span><span class="n">company_scores</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">scope</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">portfolio_scores</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()[</span><span class="s2">&quot;mid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MID </span><span class="si">{</span><span class="n">scope</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">][</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> degrees C&quot;</span><span class="p">)</span>
+<span class="n">company_scores</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;company_temperature_scores.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saved company_temperature_scores.csv&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">company_scores</span></code> has one row per calculated company/scope/timeframe
+combination, including <code class="docutils literal notranslate"><span class="pre">temperature_score</span></code> and underlying data.
+<code class="docutils literal notranslate"><span class="pre">portfolio_scores</span></code> contains the weighted results and contributions.
+Use <code class="docutils literal notranslate"><span class="pre">portfolio_scores.model_dump()</span></code> for a dictionary representation.
+Review skipped-target messages before relying on the outputs. See
+<a class="reference internal" href="FunctionalOverview.html"><span class="doc">Functional Overview</span></a> for weighting and default-score interpretation.</p>
+<p>Replace the two input paths with your own files using
+<a class="reference internal" href="DataRequirements.html"><span class="doc">Data Requirements</span></a>. Include prerequisite scopes when calculating
+combined scopes; this example explicitly requests all five.
+For grouped results, pass a list such as <code class="docutils literal notranslate"><span class="pre">grouping=[&quot;sector&quot;]</span></code> to
+<code class="docutils literal notranslate"><span class="pre">TemperatureScore</span></code>. For more analysis and export examples, use
+<a class="reference internal" href="notebooks.html"><span class="doc">Getting Started with Notebooks</span></a>.</p>
+</section>
+<section id="portfolio-coverage">
+<h2>Portfolio coverage<a class="headerlink" href="#portfolio-coverage" title="Link to this heading"></a></h2>
+<p>SBTi portfolio coverage can be calculated from a portfolio file without
+calculating temperature scores. The following example uses WATS and the
+sample portfolio downloaded above:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ITR.portfolio_aggregation</span><span class="w"> </span><span class="kn">import</span> <span class="n">PortfolioAggregationMethod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ITR.portfolio_coverage_tvp</span><span class="w"> </span><span class="kn">import</span> <span class="n">PortfolioCoverageTVP</span>
+
+<span class="n">portfolio</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="s2">&quot;data/example_portfolio_360.csv&quot;</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;company_id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;company_isin&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;company_lei&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">},</span>
+<span class="p">)</span>
+<span class="n">coverage_calculator</span> <span class="o">=</span> <span class="n">PortfolioCoverageTVP</span><span class="p">()</span>
+<span class="n">coverage</span> <span class="o">=</span> <span class="n">coverage_calculator</span><span class="o">.</span><span class="n">get_portfolio_coverage</span><span class="p">(</span>
+    <span class="n">portfolio</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">PortfolioAggregationMethod</span><span class="o">.</span><span class="n">WATS</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Portfolio coverage: </span><span class="si">{</span><span class="n">coverage</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The result is already a percentage from 0 to 100. To use a specific CTA
+snapshot, construct <code class="docutils literal notranslate"><span class="pre">PortfolioCoverageTVP(cta_file_path=&quot;data/my-cta.xlsx&quot;)</span></code>.
+See <a class="reference internal" href="DataRequirements.html#sbti-status"><span class="std std-ref">SBTi status</span></a> for status matching, caches and fallback behaviour.
+Keep input snapshots and record <code class="docutils literal notranslate"><span class="pre">ITR.__version__</span></code> with the analysis.</p>
+<p>If you only need investment-weighted coverage and do not want to install
+the scoring package, use the standalone coverage notebook in
+<a class="reference internal" href="notebooks.html"><span class="doc">Getting Started with Notebooks</span></a>. It uses pandas directly and has its own CTA loading rules.</p>
+</section>
 <section id="google-colab">
 <h2>Google Colab<a class="headerlink" href="#google-colab" title="Link to this heading"></a></h2>
-<p>The easiest way to get started is by using the getting started notebook on Google Colab.
-It guides you through all the steps involved in installing the module and consequently running it, i.e. calculating a temperature scores and analyzing portfolios.
-There are five (+1) notebooks that go through the process step-by-step:</p>
-<p>We recommend that you start with notebook 1 analysis example, especially
-if you are new to Python and/or the <a class="reference external" href="https://wwfint.awsassets.panda.org/downloads/cdp-wwf-temperature-scoring-methodology-for-public-consultation---may-2024.pdf">temperature scoring
-methodology</a>.</p>
-<ol class="arabic simple">
-<li><p><a class="reference external" href="https://colab.research.google.com/github/WWF-Sweden/ITR-tool/blob/main/examples/1_analysis_example.ipynb">Analysis example (with abbreviated methodology)</a></p></li>
-<li><p><a class="reference external" href="https://colab.research.google.com/github/WWF-Sweden/ITR-tool/blob/main/examples/2_quick_temp_score_calculation.ipynb">Quick temperature calculation</a></p></li>
-<li><p><a class="reference external" href="https://colab.research.google.com/github/WWF-Sweden/ITR-tool/blob/main/examples/3_what-if-analysis.ipynb">What-if analysis</a></p></li>
-<li><dl class="simple">
-<dt>Portfolio aggregation</dt><dd><ul class="simple">
-<li><p>4a <a class="reference external" href="https://colab.research.google.com/github/WWF-Sweden/ITR-tool/blob/main/examples/4_portfolio_aggregations.ipynb">Portfolio aggregation of scores generated by user</a></p></li>
-<li><p>4b <a class="reference external" href="https://colab.research.google.com/github//WWF-Sweden/ITR-tool/blob/main/examples/4b_portfolio_agg_readymade_TS.ipynb">Aggregation of ready made scores from data providers</a></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p><a class="reference external" href="https://colab.research.google.com/github//WWF-Sweden/ITR-tool/blob/main/examples/5_reporting.ipynb">Reporting</a></p></li>
-</ol>
-<p>We have also added a simplied notebook for calculations of Portfolio Coverage using only a portfolio file:
-<a class="reference external" href="https://colab.research.google.com/github/WWF-Sweden/ITR-tool/blob/main/examples/Simple_portfolio_coverage.ipynb">Simplified PC</a></p>
+<p>The notebook instructions have moved to <a class="reference internal" href="notebooks.html"><span class="doc">Getting Started with Notebooks</span></a>. This section
+is retained for existing links to <code class="docutils literal notranslate"><span class="pre">getting_started.html#google-colab</span></code>.</p>
 </section>
 <section id="jupyter-notebooks">
 <h2>Jupyter Notebooks<a class="headerlink" href="#jupyter-notebooks" title="Link to this heading"></a></h2>
-<p>Alternatively, you can also run the notebooks locally. To do so, you first need to set-up a new environment.
-In this example, we assume you use <a class="reference external" href="https://www.anaconda.com/">Anaconda</a> to manage your environments.
-To do this, run the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">examples</span> <span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">environment</span><span class="o">.</span><span class="n">yml</span> <span class="n">activate</span> <span class="n">ITR_getting_started</span> <span class="n">jupyter</span> <span class="n">notebook</span>
-</pre></div>
-</div>
-<p>A tab should now open in your web browser. If you are using a virtual environment, you can install the required packages using the requirements.txt file in the examples directory.
-Make sure that your Python version is at least 3.9.</p>
-</section>
-<section id="python-code">
-<h2>Python code<a class="headerlink" href="#python-code" title="Link to this heading"></a></h2>
-<p>If you are starting from scratch, you can install the latest version of the package directly from Github as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">git</span><span class="o">+</span><span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">//</span><span class="n">WWF</span><span class="o">-</span><span class="n">Sweden</span><span class="o">/</span><span class="n">ITR</span><span class="o">-</span><span class="n">tool</span>
-</pre></div>
-</div>
-<p>Or you can install the latest stable release from PyPi</p>
-<blockquote>
-<div><p>pip install wwf-itr</p>
-</div></blockquote>
-<div class="toctree-wrapper compound">
-</div>
+<p>For local setup and the complete notebook guide, see <a class="reference internal" href="notebooks.html"><span class="doc">Getting Started with Notebooks</span></a>.
+This section retains the existing <code class="docutils literal notranslate"><span class="pre">#jupyter-notebooks</span></code> link.</p>
 </section>
 </section>
 
@@ -151,14 +233,14 @@ Make sure that your Python version is at least 3.9.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="intro.html" class="btn btn-neutral float-left" title="Introduction to temperature scoring and portfolio coverage methods" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="notebooks.html" class="btn btn-neutral float-left" title="Getting Started with Notebooks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="FunctionalOverview.html" class="btn btn-neutral float-right" title="Functional Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, WWF Sweden.</p>
+    <p>&#169; Copyright 2026, WWF Sweden.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

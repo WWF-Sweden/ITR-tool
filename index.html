@@ -4,10 +4,11 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WWF Finance Tool for Temperature Scoring &amp; Portfolio Coverage &mdash; WWF Finance Tool  documentation</title>
+  <title>WWF ITR Tool: Temperature Scoring &amp; Portfolio Coverage &mdash; WWF ITR Tool  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="_static/theme_overrides.css?v=dc073278" />
 
   
   <!--[if lt IE 9]>
@@ -34,7 +35,7 @@
           
           
           <a href="#" class="icon icon-home">
-            WWF Finance Tool
+            WWF ITR Tool
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -44,13 +45,17 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction to temperature scoring and portfolio coverage methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started_app.html">Getting Started with the App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_app.html">Using the App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks.html">Getting Started with Notebooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started Using Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FunctionalOverview.html">Functional Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="DataRequirements.html">Data Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Legends.html">Data Legends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="links.html">Project Links</a></li>
 <li class="toctree-l1"><a class="reference internal" href="terms.html">Terms of Use</a></li>
@@ -63,7 +68,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">WWF Finance Tool</a>
+          <a href="#">WWF ITR Tool</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -71,7 +76,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">WWF Finance Tool for Temperature Scoring &amp; Portfolio Coverage</li>
+      <li class="breadcrumb-item active">WWF ITR Tool: Temperature Scoring &amp; Portfolio Coverage</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -81,166 +86,152 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="wwf-finance-tool-for-temperature-scoring-portfolio-coverage">
-<h1>WWF Finance Tool for Temperature Scoring &amp; Portfolio Coverage<a class="headerlink" href="#wwf-finance-tool-for-temperature-scoring-portfolio-coverage" title="Link to this heading"></a></h1>
-<p><em>Do you want to understand what drives the temperature score of your
-portfolio to make better engagement and investment decisions?</em></p>
-<p><a class="reference internal" href="_images/image1.png"><img alt="image1" src="_images/image1.png" style="width: 6.47222in; height: 4.97682in;" /></a></p>
-<p>Based on the temperature scoring method, developed by CDP and WWF, this
-tool helps companies and financial institutions to assess the
-temperature alignment of current emission reduction targets,
-commitments, and investment and lending portfolios. They can for
-instance use this information to develop their own GHG emission
-reduction targets for official validation by the Science Based Targets
-initiative (SBTi), develop engagement strategies and help with strategic
-security selection and allocation decisions.</p>
-<p>This chapter provides a non-technical introduction and overview of what
-the tool is for, the types of outputs it delivers, what data is
-required, how it works, and where you can find more information and
-documentation to start using the tool.</p>
-<section id="an-introduction-to-the-technical-documentation">
-<h2>An introduction to the technical documentation<a class="headerlink" href="#an-introduction-to-the-technical-documentation" title="Link to this heading"></a></h2>
-<p>The WWF Finance tool has been built as an open-source, data-agnostic
-tool and works with input data from any data provider and in many
-different IT infrastructures.</p>
-<p>As such, the WWF Finance Tool for Temperature Scoring &amp; Portfolio
-Coverage can be used in several ways, depending on the specific
-preferences of the user.</p>
-<table class="docutils align-default">
+  <section id="wwf-itr-tool-temperature-scoring-portfolio-coverage">
+<h1>WWF ITR Tool: Temperature Scoring &amp; Portfolio Coverage<a class="headerlink" href="#wwf-itr-tool-temperature-scoring-portfolio-coverage" title="Link to this heading"></a></h1>
+<p>Understand what drives your portfolio’s temperature score and use the
+results to inform engagement and portfolio analysis. The WWF ITR Tool
+implements the <a class="reference external" href="https://wwfint.awsassets.panda.org/downloads/cdp-wwf-temperature-scoring-methodology---september-2024.pdf">CDP-WWF Temperature Scoring Methodology v1.5</a>.
+It calculates company and portfolio temperature scores from climate
+targets, and portfolio coverage by SBTi-validated near-term targets.</p>
+<section id="choose-how-to-use-the-tool">
+<h2>Choose how to use the tool<a class="headerlink" href="#choose-how-to-use-the-tool" title="Link to this heading"></a></h2>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Start here</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 28.0%" />
+<col style="width: 38.0%" />
+<col style="width: 34.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Your goal</p></th>
+<th class="head"><p>Start with</p></th>
+<th class="head"><p>Where it runs</p></th>
+</tr>
+</thead>
 <tbody>
-<tr class="row-odd"><td><p><strong>Quickstart</strong></p>
-<p>The tool is available as a python package on pypi, but the easiest way to test the tool is with notebooks:</p>
-<ul class="simple">
-<li><p><strong>Python</strong>: Run a Jupyter notebook, without any installation in <a class="reference external" href="https://wwf-sweden.github.io/ITR-tool/getting_started.html#google-colab">Google Colab</a> or <a class="reference external" href="https://wwf-sweden.github.io/ITR-tool/getting_started.html#jupyter-notebooks">locally</a>.</p></li>
-</ul>
-<p class="rubric" id="section">Section</p>
-</td>
+<tr class="row-even"><td><p>Try the tool without installing anything</p></td>
+<td><p><a class="reference external" href="https://wwf-itr.streamlit.app/">Open the online app</a> with sample data; see <a class="reference internal" href="getting_started_app.html"><span class="doc">Getting Started with the App</span></a>.</p></td>
+<td><p>Streamlit Community Cloud, in your browser.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Analyze your own data in a graphical interface</p></td>
+<td><p><a class="reference internal" href="getting_started_app.html#app-docker"><span class="std std-ref">Run the app with Docker</span></a>.</p></td>
+<td><p>On your own computer.</p></td>
+</tr>
+<tr class="row-even"><td><p>Learn the method and adapt a worked analysis</p></td>
+<td><p><a class="reference internal" href="notebooks.html"><span class="doc">Getting Started with Notebooks</span></a>: Google Colab or local Jupyter.</p></td>
+<td><p>Google’s infrastructure or your own computer.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Integrate scoring into your own workflow</p></td>
+<td><p><a class="reference internal" href="getting_started.html"><span class="doc">Getting Started Using Python</span></a>: install the <code class="docutils literal notranslate"><span class="pre">wwf-itr</span></code> Python package.</p></td>
+<td><p>Your chosen Python environment.</p></td>
 </tr>
 </tbody>
 </table>
-<p>If you are unsure whether the tool will be useful for your application
-and workflow, or you would first like to run some examples to get a
-better idea of how the tool works and what types of outputs it
-generates, the <a class="reference external" href="https://colab.research.google.com/github//WWF-Sweden/ITR-tool/blob/main/examples/1_analysis_example.ipynb">Analysis notebook (with abbreviated methodology)</a>
-offers a quick and no-code opportunity for such testing. The notebook
-combines text and code to provide a testing environment for your
-research, to give you an understanding for how the tool can help you
-analyze companies’ and portfolios’ temperature scores, to aid your
-engagement and investment decisions.</p>
-<p>The notebook is loaded with example data, but you can also use your own
-data. For your first test, you can simply run the code cells one by one
-in the current sequence, to get an understanding of how it works. If you
-are not familiar with Notebooks, please refer to <a class="reference external" href="https://colab.research.google.com/notebooks/basic_features_overview.ipynb">this
-introduction</a>.</p>
-<p>See the section ‘Data Legends’ for information on the various input data the tool can ingest.
-There is also an Excel file with details and examples that may be helpul. The file is
-available <a class="reference download internal" download="" href="_downloads/e074ef679dd2f251bbab75d5ccc6220d/ITR%201.5%20Data%20Legends.xlsx"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>.</p>
-<p>The following diagram provides an overview of the different parts of the
-full toolkit and their dependencies:</p>
-<p><a class="reference internal" href="_images/image2.png"><img alt="image2" src="_images/image2.png" style="width: 3.71642in; height: 3.58652in;" /></a></p>
-<p>As shown above, the Python code forms the core codebase of the
-WWF Finance tool. It is recommended to use the Python package if the
-user would like to integrate the tool in their own codebase. We are considering
-providing an option to run the tool via an API if the user’s
-preference is to include the tool as a Microservice in their existing IT
-infrastructure in the cloud or on premise. This development project may also
-include the creation of a simple user interface (UI), which can be used
-for easier user interaction in combination with the API.</p>
-<p>The ITR tool enables two ways of installing and/or running the
-tool:</p>
-<ol class="arabic simple">
-<li><p>Users can integrate the <strong>Python package</strong> in their codebase. For
-more detailed and up-to-date information on how to run the tool via
-the Python package, please consult the ‘Getting Started Using Python’
-section.</p></li>
-<li><p>During the development of this tool, we have worked with several data
-and service providers to the financial and ESG markets, some who have
-or are in the process of implementing the tool and methodology into
-their commercial solutions. These providers include Bloomberg, CDP,
-ISS, MSCI, Ortec Finance, TruCost and Urgentem. Making use of their
-solutions can for some users be the easiest way to integrate the tool
-into existing infrastructure and workflow, to analyze portfolios’ and
-companies’ temperature scores.</p></li>
-</ol>
-<p>Given the open source nature of the tool, the community is encouraged to
-make contributions (refer to <a class="reference external" href="https://wwf-sweden.github.io/ITR-tool/contributing.html">Contributing</a> section to further develop
-and/or update the codebase. Contributions can range from submitting a
-bug report, to submitting a new feature request, all the way to further
-enhancing the tool’s functionalities by contributing code.</p>
+<p>Docker runs the same Streamlit app locally. You can also
+<a class="reference internal" href="getting_started_app.html#app-local-streamlit"><span class="std std-ref">run Streamlit directly with Python</span></a>.
+For confidential portfolios, choose a local app or notebook environment
+rather than the public cloud demo or Colab.</p>
+</section>
+<section id="one-toolkit-shared-calculations">
+<h2>One toolkit, shared calculations<a class="headerlink" href="#one-toolkit-shared-calculations" title="Link to this heading"></a></h2>
+<p><strong>WWF ITR Tool</strong> is the toolkit as a whole. <strong>wwf-itr</strong>, developed in
+<a class="reference external" href="https://github.com/WWF-Sweden/ITR-tool">ITR-tool</a>, is the Python scoring
+engine (imported as <code class="docutils literal notranslate"><span class="pre">ITR</span></code>). <strong>WWF-ITR-APP</strong> provides the Streamlit
+interface to that engine. The scoring notebooks use the engine too;
+the simplified portfolio coverage notebook is a standalone pandas example.</p>
+<a class="reference internal image-reference" href="_images/toolkit.svg"><img alt="The online app and local app use wwf-itr; scoring notebooks and Python workflows also use wwf-itr. Standalone coverage uses pandas and CTA data." src="_images/toolkit.svg" style="width: 100%;" /></a>
+<p>Use <a class="reference internal" href="intro.html"><span class="doc">Introduction to temperature scoring and portfolio coverage methods</span></a> for an explanation of the method and outputs,
+<a class="reference internal" href="DataRequirements.html"><span class="doc">Data Requirements</span></a> to prepare files, and <a class="reference internal" href="Legends.html"><span class="doc">Data Legends</span></a> for field
+definitions. The tool accepts user-supplied company and portfolio data;
+example files are demonstrations, not an investment data service.
+The <a class="reference internal" href="autoapi/index.html"><span class="doc">API Reference</span></a> describes the Python interface.</p>
+<p>Questions or problems? See <a class="reference internal" href="troubleshooting.html"><span class="doc">Troubleshooting</span></a> and <a class="reference internal" href="links.html"><span class="doc">Project Links</span></a>.
+Contributions to code, examples and documentation are welcome; see
+<a class="reference internal" href="contributing.html"><span class="doc">Contributing</span></a>. Results describe target-based alignment assumptions
+and do not guarantee future emissions or official target validation.</p>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction to temperature scoring and portfolio coverage methods</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#why-have-we-built-this-tool">Why have we built this tool?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="intro.html#why-have-we-built-the-wwf-finance-tool-in-this-way">Why have we built the  WWF Finance tool in this way?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="intro.html#what-can-i-use-the-sbti-finance-tool-for">What can I use the SBTi-Finance tool for?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#why-have-we-built-the-wwf-finance-tool-in-this-way">Why have we built the WWF Finance tool in this way?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#what-can-i-use-the-wwf-finance-tool-for">What can I use the WWF Finance tool for?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#what-data-do-i-need-to-use-the-tool">What data do I need to use the tool?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#where-can-i-find-the-data">Where can I find the data?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#overview-of-how-the-tool-works">Overview of how the tool works</a></li>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#what-are-the-outputs-the-tool-generates">What are the outputs the tool generates?</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started Using Python</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#google-colab">Google Colab</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#jupyter-notebooks">Jupyter Notebooks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#python-code">Python code</a><ul class="simple">
+<li class="toctree-l1"><a class="reference internal" href="getting_started_app.html">Getting Started with the App</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting_started_app.html#try-the-online-demo">Try the online demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started_app.html#run-locally-with-docker">Run locally with Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started_app.html#run-locally-with-python-and-streamlit">Run locally with Python and Streamlit</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="using_app.html">Using the App</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="using_app.html#first-analysis-with-sample-data">First analysis with sample data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_app.html#upload-and-edit-your-own-data">Upload and edit your own data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_app.html#use-pre-scored-data-4b-format">Use pre-scored data (4b format)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_app.html#analysis-parameters-and-portfolio-coverage">Analysis parameters and portfolio coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_app.html#results-scenarios-and-export">Results, scenarios and export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_app.html#save-and-reload-datasets">Save and reload datasets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks.html">Getting Started with Notebooks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks.html#google-colab">Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks.html#local-jupyter">Local Jupyter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks.html#notebook-guide">Notebook guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started Using Python</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#first-temperature-score-calculation">First temperature score calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#portfolio-coverage">Portfolio coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#google-colab">Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#jupyter-notebooks">Jupyter Notebooks</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="FunctionalOverview.html">Functional Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="FunctionalOverview.html#temperature-score">Temperature Score</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="FunctionalOverview.html#time-frames">Time Frames</a></li>
-<li class="toctree-l3"><a class="reference internal" href="FunctionalOverview.html#scopes">Scopes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="FunctionalOverview.html#aggregation-methods">Aggregation methods</a></li>
-<li class="toctree-l3"><a class="reference internal" href="FunctionalOverview.html#grouping-data">Grouping data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="FunctionalOverview.html#choose-fields-to-show">Choose fields to show</a></li>
-<li class="toctree-l3"><a class="reference internal" href="FunctionalOverview.html#what-if-analyses">What-If Analyses</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="FunctionalOverview.html#temperature-score">Temperature Score</a></li>
 <li class="toctree-l2"><a class="reference internal" href="FunctionalOverview.html#portfolio-coverage">Portfolio coverage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="FunctionalOverview.html#output-options">Output options</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="DataRequirements.html">Data Requirements</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DataRequirements.html#choose-the-input-workflow">Choose the input workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DataRequirements.html#portfolio-data">Portfolio data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DataRequirements.html#company-data">Company data</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="DataRequirements.html#fundamental-data">Fundamental data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="DataRequirements.html#target-data">Target data</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="DataRequirements.html#company-data">Company data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DataRequirements.html#ready-made-company-scores">Ready-made company scores</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DataRequirements.html#sbti-status">SBTi status</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Legends.html">Data Legends</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Legends.html#input-data">Input Data</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Legends.html#portfolio-data">Portfolio Data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Legends.html#fundamental-data">Fundamental Data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Legends.html#target-data">Target Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Legends.html#input-data">Input Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Legends.html#output-data">Output data</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Legends.html#output-data">Output data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#the-app-does-not-open-at-localhost-8501">The app does not open at localhost:8501</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#python-cannot-import-itr-or-streamlit">Python cannot import ITR or Streamlit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#example-files-cannot-be-found">Example files cannot be found</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#an-uploaded-file-cannot-be-read">An uploaded file cannot be read</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#scores-are-missing-or-use-the-default-score">Scores are missing or use the default score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#cta-download-or-portfolio-coverage-fails">CTA download or portfolio coverage fails</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#saved-data-or-changed-settings-seem-to-disappear">Saved data or changed settings seem to disappear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#report-a-problem">Report a problem</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="contributing.html#submitting-a-bug-report-or-a-feature-request">Submitting a bug report or a feature request</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributing.html#contributing-code">Contributing code</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="contributing.html#getting-started">Getting started</a></li>
-<li class="toctree-l3"><a class="reference internal" href="contributing.html#coding-guidelines">Coding guidelines</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="contributing.html#releasing">Releasing</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="contributing.html#generate-documentation">Generate documentation</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="contributing.html#code-of-conduct">Code of conduct</a><ul class="simple">
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#contributing-code">Contributing code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#releasing">Releasing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#code-of-conduct">Code of conduct</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="links.html">Project Links</a></li>
 <li class="toctree-l1"><a class="reference internal" href="terms.html">Terms of Use</a></li>
-<li class="toctree-l1"><a class="reference internal" href="autoapi/index.html">API Reference</a><ul class="simple">
+<li class="toctree-l1"><a class="reference internal" href="autoapi/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/ITR/index.html">ITR</a></li>
 </ul>
 </li>
 </ul>
@@ -258,7 +249,7 @@ enhancing the tool’s functionalities by contributing code.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, WWF Sweden.</p>
+    <p>&#169; Copyright 2026, WWF Sweden.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

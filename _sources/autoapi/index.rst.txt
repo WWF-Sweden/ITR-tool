@@ -1,8 +1,10 @@
 API Reference
 =============
 
-This page contains auto-generated API reference documentation
+Python interfaces for the ``wwf-itr`` engine. For a complete first
+calculation, see :doc:`/getting_started`.
 
 .. toctree::
    :titlesonly:
 
+   ITR/index

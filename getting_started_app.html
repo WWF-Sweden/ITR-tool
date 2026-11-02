@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Getting Started with the App &mdash; WWF ITR Tool  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="_static/theme_overrides.css?v=dc073278" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Using the App" href="using_app.html" />
+    <link rel="prev" title="Introduction to temperature scoring and portfolio coverage methods" href="intro.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            WWF ITR Tool
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction to temperature scoring and portfolio coverage methods</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started with the App</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#try-the-online-demo">Try the online demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-locally-with-docker">Run locally with Docker</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#stop-restart-and-update">Stop, restart and update</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#keep-your-saved-data">Keep your saved data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#run-locally-with-python-and-streamlit">Run locally with Python and Streamlit</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="using_app.html">Using the App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks.html">Getting Started with Notebooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started Using Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FunctionalOverview.html">Functional Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DataRequirements.html">Data Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Legends.html">Data Legends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="links.html">Project Links</a></li>
+<li class="toctree-l1"><a class="reference internal" href="terms.html">Terms of Use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">WWF ITR Tool</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Getting Started with the App</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/getting_started_app.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="getting-started-with-the-app">
+<h1>Getting Started with the App<a class="headerlink" href="#getting-started-with-the-app" title="Link to this heading"></a></h1>
+<p>The WWF ITR App is a Streamlit interface to the <code class="docutils literal notranslate"><span class="pre">wwf-itr</span></code> calculation
+engine. Use it to load data, calculate temperature scores, explore
+companies and scenarios, and download results without writing analysis code.</p>
+<section id="try-the-online-demo">
+<h2>Try the online demo<a class="headerlink" href="#try-the-online-demo" title="Link to this heading"></a></h2>
+<p>Open the <a class="reference external" href="https://wwf-itr.streamlit.app/">WWF ITR App</a> in your browser.
+Choose <strong>Sample Data</strong>, click <strong>Load Data</strong>, and follow <a class="reference internal" href="using_app.html"><span class="doc">Using the App</span></a>.
+No installation is required.</p>
+<p>The public demo runs on Streamlit Community Cloud. Use sample or public
+data there; do not upload confidential or proprietary portfolio data.
+For your own confidential data, run the app locally using Docker or Python.
+Cloud storage is temporary across app restarts; download any results you
+want to keep.</p>
+</section>
+<section id="run-locally-with-docker">
+<span id="app-docker"></span><h2>Run locally with Docker<a class="headerlink" href="#run-locally-with-docker" title="Link to this heading"></a></h2>
+<p>Docker runs the same Streamlit app on your own computer. You do not need
+to install Python or clone either GitHub repository.</p>
+<ol class="arabic">
+<li><p>Install and start Docker. See the official instructions for
+<a class="reference external" href="https://docs.docker.com/desktop/setup/install/windows-install/">Windows</a>,
+<a class="reference external" href="https://docs.docker.com/desktop/setup/install/mac-install/">macOS</a>, or
+<a class="reference external" href="https://docs.docker.com/engine/install/">Linux</a>. Docker Desktop
+includes Compose; on Linux, also install the
+<a class="reference external" href="https://docs.docker.com/compose/install/linux/">Compose plugin</a>.</p></li>
+<li><p>Create a folder for the app, for example <code class="docutils literal notranslate"><span class="pre">wwf-itr-app</span></code>. Download
+<a class="reference download internal" download="" href="_downloads/4e5e90c6228fd48698d074241c2ba760/docker-compose.yml"><code class="xref download docutils literal notranslate"><span class="pre">docker-compose.yml</span></code></a> into that folder.
+The file contains:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">itr</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ghcr.io/wwf-sweden/wwf-itr-app:latest</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;127.0.0.1:8501:8501&quot;</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./data:/app/data</span>
+</pre></div>
+</div>
+</li>
+<li><p>Open a terminal in that folder and start the app:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docker compose up -d --pull always</span>
+</pre></div>
+</div>
+</li>
+<li><p>Open <a class="reference external" href="http://localhost:8501">http://localhost:8501</a> and follow
+<a class="reference internal" href="using_app.html"><span class="doc">Using the App</span></a>.</p></li>
+</ol>
+<p>The port is bound to <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code> for access from your own computer.
+The first start downloads the image from GitHub Container Registry.
+Example data may also be downloaded from GitHub when not already present.
+SBTi data is downloaded when required unless you select an uploaded CTA
+file or use the app’s offline option with available local data.</p>
+<section id="stop-restart-and-update">
+<h3>Stop, restart and update<a class="headerlink" href="#stop-restart-and-update" title="Link to this heading"></a></h3>
+<p>Run these commands from the folder containing <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code>.
+To stop the app and remove its container:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docker compose down</span>
+</pre></div>
+</div>
+<p>To start it again and check for a newer published image:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docker compose up -d --pull always</span>
+</pre></div>
+</div>
+<p>To inspect its status and logs:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docker compose ps</span>
+<span class="go">docker compose logs -f itr</span>
+</pre></div>
+</div>
+<p>Press <code class="docutils literal notranslate"><span class="pre">Ctrl+C</span></code> to stop following the logs. <code class="docutils literal notranslate"><span class="pre">latest</span></code> follows the latest
+published app image. For a reproducible installation, use an existing
+release tag or image digest from the
+<a class="reference external" href="https://github.com/WWF-Sweden/WWF-ITR-APP/pkgs/container/wwf-itr-app">container registry</a>
+and record it with the analysis. App image tags and Python package versions
+are separate version identifiers.</p>
+</section>
+<section id="keep-your-saved-data">
+<h3>Keep your saved data<a class="headerlink" href="#keep-your-saved-data" title="Link to this heading"></a></h3>
+<p>The volume <code class="docutils literal notranslate"><span class="pre">./data:/app/data</span></code> keeps saved application data in the
+<code class="docutils literal notranslate"><span class="pre">data</span></code> folder beside your Compose file:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data/itr_data.db</span></code> contains datasets explicitly saved using <strong>Save</strong>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data/cta/current-Companies-Taking-Action.xlsx</span></code> is the app’s CTA cache.</p></li>
+</ul>
+<p>These files survive <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">down</span></code> and image updates. Back up
+the folder before updating and keep it if you want to retain saved datasets.
+Loading or editing a dataset does not automatically save it to the database.
+Temporary uploads are not all retained by the volume. Downloaded exports
+are saved through your browser, normally to your Downloads folder.</p>
+</section>
+</section>
+<section id="run-locally-with-python-and-streamlit">
+<span id="app-local-streamlit"></span><h2>Run locally with Python and Streamlit<a class="headerlink" href="#run-locally-with-python-and-streamlit" title="Link to this heading"></a></h2>
+<p>This alternative is useful if you want to work with the app’s source code.
+Use Python 3.11, the version used by the app’s Dockerfile and test workflow,
+and Git. Clone the app repository:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/WWF-Sweden/WWF-ITR-APP.git</span>
+<span class="go">cd WWF-ITR-APP</span>
+</pre></div>
+</div>
+<p>Create and activate a virtual environment. On macOS or Linux:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python3.11 -m venv .venv</span>
+<span class="go">source .venv/bin/activate</span>
+</pre></div>
+</div>
+<p>On Windows PowerShell:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">py</span> <span class="p">-</span><span class="n">3</span><span class="p">.</span><span class="n">11</span> <span class="n">-m</span> <span class="n">venv</span> <span class="p">.</span><span class="n">venv</span>
+<span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">Activate</span><span class="p">.</span><span class="n">ps1</span>
+</pre></div>
+</div>
+<p>Then, from the app repository root:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pip install -r requirements.txt</span>
+<span class="go">python -m streamlit run app.py</span>
+</pre></div>
+</div>
+<p>Open <code class="docutils literal notranslate"><span class="pre">http://localhost:8501</span></code>. Stop the server with <code class="docutils literal notranslate"><span class="pre">Ctrl+C</span></code>.
+The app’s pinned requirements install its <code class="docutils literal notranslate"><span class="pre">wwf-itr</span></code> dependency.
+Installing <code class="docutils literal notranslate"><span class="pre">wwf-itr</span></code> alone does not install the Streamlit app.</p>
+<p>For input files and the first analysis, continue with <a class="reference internal" href="using_app.html"><span class="doc">Using the App</span></a>.
+If startup fails, see <a class="reference internal" href="troubleshooting.html"><span class="doc">Troubleshooting</span></a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="intro.html" class="btn btn-neutral float-left" title="Introduction to temperature scoring and portfolio coverage methods" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="using_app.html" class="btn btn-neutral float-right" title="Using the App" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, WWF Sweden.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

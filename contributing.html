@@ -4,10 +4,11 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contributing &mdash; WWF Finance Tool  documentation</title>
+  <title>Contributing &mdash; WWF ITR Tool  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="_static/theme_overrides.css?v=dc073278" />
 
   
   <!--[if lt IE 9]>
@@ -23,7 +24,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Project Links" href="links.html" />
-    <link rel="prev" title="Data Legends" href="Legends.html" /> 
+    <link rel="prev" title="Troubleshooting" href="troubleshooting.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -35,7 +36,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            WWF Finance Tool
+            WWF ITR Tool
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -45,13 +46,17 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction to temperature scoring and portfolio coverage methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started_app.html">Getting Started with the App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_app.html">Using the App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks.html">Getting Started with Notebooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started Using Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FunctionalOverview.html">Functional Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="DataRequirements.html">Data Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Legends.html">Data Legends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submitting-a-bug-report-or-a-feature-request">Submitting a bug report or a feature request</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#contributing-code">Contributing code</a><ul>
@@ -63,9 +68,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#generate-documentation">Generate documentation</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#code-of-conduct">Code of conduct</a><ul class="simple">
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#code-of-conduct">Code of conduct</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="links.html">Project Links</a></li>
@@ -79,7 +82,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">WWF Finance Tool</a>
+          <a href="index.html">WWF ITR Tool</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -99,60 +102,79 @@
              
   <section id="contributing">
 <h1>Contributing<a class="headerlink" href="#contributing" title="Link to this heading"></a></h1>
-<p>Any contribution is highly appreciated. The most common way to contribute to the project is through coding, however contributions to
-the documentation are also very welcome.</p>
+<p>Code, documentation, examples, reproducible bug reports and feature
+requests are welcome. Report engine/notebook issues in
+<a class="reference external" href="https://github.com/WWF-Sweden/ITR-tool/issues">ITR-tool</a> and app issues in
+<a class="reference external" href="https://github.com/WWF-Sweden/WWF-ITR-APP/issues">WWF-ITR-APP</a>.
+Do not include confidential portfolio data in public reports.</p>
 <section id="submitting-a-bug-report-or-a-feature-request">
 <h2>Submitting a bug report or a feature request<a class="headerlink" href="#submitting-a-bug-report-or-a-feature-request" title="Link to this heading"></a></h2>
-<p>To keep track of open issues and feature requests, we will use <a class="reference external" href="https://github.com//WWF-Sweden/ITR-tool/issues/">Github’s issue tracker</a>.</p>
-<p>If you encounter any bugs or missing features, please do not hesitate to open a ticket. Before submitting a report, please check that the issue has not already been reported.
-For ease of comprehension, please ensure your report includes the following characteristics:</p>
-<ul class="simple">
-<li><p>Reproducible: It should be possible for others to reproduce the issue, ideally through a small code snippet in the description of the issue</p></li>
-<li><p>Labelled: Add a label that describes the contents of the ticket, e.g. “bug”, “feature request” or “documentation”</p></li>
-</ul>
+<p>Include the package version or image tag, Python/OS version where relevant,
+steps to reproduce, expected behaviour and error text. Provide a small
+non-confidential example and check existing issues first.</p>
 </section>
 <section id="contributing-code">
 <h2>Contributing code<a class="headerlink" href="#contributing-code" title="Link to this heading"></a></h2>
-<p>Our preferred way for contributing code is to fork the repository, make changes on your personal fork and then create a pull request to merge your changes back into the main repository.
-Before a pull request can be approved it needs to be reviewed by two core contributors, then these automated checks need to be passed (see “Coding Guidelines” section below).</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Please assign the issue you are working on to yourself so we can avoid duplicate efforts.</p>
-</div>
+<p>Use a branch or fork and submit a pull request. Keep user-facing
+documentation and examples aligned with behavioural changes. Run checks
+appropriate to the change and describe what was verified in the PR.</p>
 <section id="getting-started">
 <h3>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h3>
-<p>Before getting started it is important to have a clean Python environment. The recommended Python version is 3.9 or higher.
-An anaconda environment file is provided in the root of the project, as is a PIP requirements.txt file.
-The easiest way to work on the Python module is by installing it in development mode. This can be done using the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span><span class="p">[</span><span class="n">dev</span><span class="p">]</span>
+<p>Use Python 3.10 or later and Poetry. From the ITR-tool repository root:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">poetry install</span>
 </pre></div>
 </div>
-<p>This will install the module as a reference to your current directory.
-The Jupyter notebooks in the “examples” directory have been setup to use auto-reload. Thus, if you now make any changes to your local code, they will be automatically reflected in the notebook.</p>
+<p>The development dependencies and optional docs group are defined in
+<code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>. The configuration uses an in-project virtual environment.
+For an editable pip installation of the engine, use
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span></code>; this does not install Poetry’s development
+or documentation groups.</p>
 </section>
 <section id="coding-guidelines">
 <h3>Coding guidelines<a class="headerlink" href="#coding-guidelines" title="Link to this heading"></a></h3>
-<p>In general the code follows three principals, <a class="reference external" href="https://en.wikipedia.org/wiki/Object-oriented_programming">OOP</a>, <a class="reference external" href="https://www.python.org/dev/peps/pep-0008/">PEP8 (code style)</a> and <a class="reference external" href="https://www.python.org/dev/peps/pep-0484/">PEP 484 (type hinting)</a>.
-In addition, we use Flake8 to lint the code, MyPy to check the type hints and Nose2 to do unit testing. These checks are done automatically when attempting to merge a pull request into master.</p>
+<p>Follow the surrounding code style and include type information where
+useful. Tests are in <code class="docutils literal notranslate"><span class="pre">test</span></code>; use the repository’s unittest-compatible
+test modules for relevant changes. Do not assume the old workflows
+targeting <code class="docutils literal notranslate"><span class="pre">master</span></code> run on current <code class="docutils literal notranslate"><span class="pre">main</span></code> pull requests; inspect the
+actual workflows under <code class="docutils literal notranslate"><span class="pre">.github/workflows</span></code>.</p>
 </section>
 </section>
 <section id="releasing">
 <h2>Releasing<a class="headerlink" href="#releasing" title="Link to this heading"></a></h2>
-<p>To release a new version of the module you need to take two steps, create a new PyPi release and generate the documentation.</p>
+<p>Maintain consistent version values in package metadata and
+<code class="docutils literal notranslate"><span class="pre">ITR/__init__.py</span></code>. Build and publish a reviewed release using the
+project’s release process; merging source alone does not establish that
+a new package is available on PyPI. With Poetry, the package commands are:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">poetry build</span>
+<span class="go">poetry publish</span>
+</pre></div>
+</div>
+<p>After publishing, verify the version on PyPI. The app locks its engine
+dependency in its own <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>; its dependency-update PR and
+container publication are separate from the Python release. Check both
+repositories before describing a release as available to all users.</p>
 <section id="generate-documentation">
 <h3>Generate documentation<a class="headerlink" href="#generate-documentation" title="Link to this heading"></a></h3>
-<p>To generate the documentation, you should follow these steps in the “WWF-Sweden” repository (the one containing the Python module).</p>
-<ol class="arabic simple">
-<li><p>The documentation is automatically generated by docs2pages.yaml. It takes the .rst from /docs and generates html in the branch gh-pages.</p></li>
-</ol>
+<p>Edit the Sphinx sources under <code class="docutils literal notranslate"><span class="pre">docs</span></code> in ITR-tool. To build locally:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">poetry install --with docs</span>
+<span class="go">poetry run sphinx-build -b html docs docs/_build/html -W --keep-going</span>
+</pre></div>
+</div>
+<p>Open <code class="docutils literal notranslate"><span class="pre">docs/_build/html/index.html</span></code> to review the result. Check navigation,
+downloads, code examples and existing public anchors. Generated HTML is
+not the source to edit. The <code class="docutils literal notranslate"><span class="pre">Docs2Pages</span></code> workflow builds from <code class="docutils literal notranslate"><span class="pre">docs</span></code>
+and deploys to the <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> branch on pushes to <code class="docutils literal notranslate"><span class="pre">main</span></code> or manual
+dispatch. Changes on a documentation branch do not themselves update
+the public site; app-repository changes do not rebuild ITR-tool docs.</p>
+<p>Before release, check the documented app startup, notebook and Python
+paths against the versions being released. Preserve existing public
+page URLs when moving content.</p>
 </section>
 </section>
 <section id="code-of-conduct">
 <h2>Code of conduct<a class="headerlink" href="#code-of-conduct" title="Link to this heading"></a></h2>
-<p>Everyone’s goals here are aligned: to help asset owners and asset managers reduce their impact on climate change.
-The only way we can achieve this goal is by fostering an inclusive and welcome environment. Therefore, this project is governed by a <a class="reference external" href="https://github.com/ScienceBasedTargets/SBTi-finance-tool/blob/master/CODE_OF_CONDUCT.md">code of conduct</a>. By participating, you are expected to uphold this code. If you encounter any violations, please report them.</p>
-<div class="toctree-wrapper compound">
-</div>
+<p>Please follow the repository’s
+<a class="reference external" href="https://github.com/WWF-Sweden/ITR-tool/blob/main/CODE_OF_CONDUCT.md">Code of Conduct</a>.</p>
 </section>
 </section>
 
@@ -160,14 +182,14 @@ The only way we can achieve this goal is by fostering an inclusive and welcome e
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="Legends.html" class="btn btn-neutral float-left" title="Data Legends" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="troubleshooting.html" class="btn btn-neutral float-left" title="Troubleshooting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="links.html" class="btn btn-neutral float-right" title="Project Links" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, WWF Sweden.</p>
+    <p>&#169; Copyright 2026, WWF Sweden.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

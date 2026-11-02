@@ -92,7 +92,7 @@ Module Contents
    Convert a data frame to a list of portfolio company objects.
 
    :param df_portfolio: The data frame to parse. The column names should align with the attribute names of the
-   PortfolioCompany model.
+       PortfolioCompany model.
    :return: A list of portfolio companies
 
 

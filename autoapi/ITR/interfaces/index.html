@@ -4,10 +4,11 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ITR.interfaces &mdash; WWF Finance Tool  documentation</title>
+  <title>ITR.interfaces &mdash; WWF ITR Tool  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/theme_overrides.css?v=dc073278" />
 
   
   <!--[if lt IE 9]>
@@ -21,7 +22,9 @@
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="ITR.portfolio_aggregation" href="../portfolio_aggregation/index.html" />
+    <link rel="prev" title="ITR.example_utils" href="../example_utils/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -33,7 +36,7 @@
           
           
           <a href="../../../index.html" class="icon icon-home">
-            WWF Finance Tool
+            WWF ITR Tool
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -43,17 +46,40 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Introduction to temperature scoring and portfolio coverage methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started_app.html">Getting Started with the App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../using_app.html">Using the App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks.html">Getting Started with Notebooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started Using Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../FunctionalOverview.html">Functional Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../DataRequirements.html">Data Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Legends.html">Data Legends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../links.html">Project Links</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../terms.html">Terms of Use</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../index.html">API Reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">ITR</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../configs/index.html">ITR.configs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data/index.html">ITR.data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../example_utils/index.html">ITR.example_utils</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ITR.interfaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../portfolio_aggregation/index.html">ITR.portfolio_aggregation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../portfolio_coverage_tvp/index.html">ITR.portfolio_coverage_tvp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../target_validation/index.html">ITR.target_validation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../temperature_score/index.html">ITR.temperature_score</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils/index.html">ITR.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#attributes">Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#package-contents">Package Contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -62,7 +88,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">WWF Finance Tool</a>
+          <a href="../../../index.html">WWF ITR Tool</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -70,6 +96,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">ITR</a></li>
       <li class="breadcrumb-item active">ITR.interfaces</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/autoapi/ITR/interfaces/index.rst.txt" rel="nofollow"> View page source</a>
@@ -2139,12 +2167,15 @@ with mode=’before’ and default_factory the users can supply single strings, 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../example_utils/index.html" class="btn btn-neutral float-left" title="ITR.example_utils" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../portfolio_aggregation/index.html" class="btn btn-neutral float-right" title="ITR.portfolio_aggregation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, WWF Sweden.</p>
+    <p>&#169; Copyright 2026, WWF Sweden.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

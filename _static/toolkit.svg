@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="350" viewBox="0 0 820 350" role="img" aria-labelledby="title desc">
+<title id="title">Ways to use WWF ITR Tool</title><desc id="desc">The online and local app use the wwf-itr engine, as do scoring notebooks and Python workflows. Standalone portfolio coverage uses pandas and CTA data.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#466778"/></marker></defs>
+<rect width="820" height="350" rx="12" fill="#f1f6f8"/>
+<g font-family="Arial, sans-serif" text-anchor="middle" fill="#193b4a">
+<g fill="white" stroke="#93b3c2" stroke-width="1.5"><rect x="20" y="25" width="240" height="82" rx="9"/><rect x="290" y="25" width="240" height="82" rx="9"/><rect x="560" y="25" width="240" height="82" rx="9"/></g>
+<g font-size="18" font-weight="bold"><text x="140" y="56">Streamlit app</text><text x="410" y="56">Scoring notebooks</text><text x="680" y="56">Python workflows</text></g>
+<g font-size="15"><text x="140" y="82">Online or local (Docker/Python)</text><text x="410" y="82">Colab or local Jupyter</text><text x="680" y="82">Your own integrations</text></g>
+<g fill="none" stroke="#466778" stroke-width="2" marker-end="url(#arrow)"><path d="M140 107 V132 H355 V160"/><path d="M410 107 V160"/><path d="M680 107 V132 H465 V160"/></g>
+<rect x="235" y="165" width="350" height="72" rx="10" fill="#185b72"/><text x="410" y="194" fill="white" font-size="20" font-weight="bold">wwf-itr calculation engine</text><text x="410" y="219" fill="white" font-size="15">Shared target scoring and aggregation</text>
+<rect x="65" y="268" width="690" height="60" rx="9" fill="white" stroke="#93b3c2"/><text x="410" y="294" font-size="17" font-weight="bold">Standalone portfolio coverage notebook</text><text x="410" y="316" font-size="15">Portfolio + CTA data → pandas calculation; no wwf-itr required</text>
+</g></svg>

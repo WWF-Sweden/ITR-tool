@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Troubleshooting &mdash; WWF ITR Tool  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="_static/theme_overrides.css?v=dc073278" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="Data Legends" href="Legends.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            WWF ITR Tool
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction to temperature scoring and portfolio coverage methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started_app.html">Getting Started with the App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_app.html">Using the App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks.html">Getting Started with Notebooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started Using Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FunctionalOverview.html">Functional Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DataRequirements.html">Data Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Legends.html">Data Legends</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-app-does-not-open-at-localhost-8501">The app does not open at localhost:8501</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#python-cannot-import-itr-or-streamlit">Python cannot import ITR or Streamlit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-files-cannot-be-found">Example files cannot be found</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#an-uploaded-file-cannot-be-read">An uploaded file cannot be read</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scores-are-missing-or-use-the-default-score">Scores are missing or use the default score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cta-download-or-portfolio-coverage-fails">CTA download or portfolio coverage fails</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#saved-data-or-changed-settings-seem-to-disappear">Saved data or changed settings seem to disappear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#report-a-problem">Report a problem</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="links.html">Project Links</a></li>
+<li class="toctree-l1"><a class="reference internal" href="terms.html">Terms of Use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">WWF ITR Tool</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Troubleshooting</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/troubleshooting.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="troubleshooting">
+<h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h1>
+<section id="the-app-does-not-open-at-localhost-8501">
+<h2>The app does not open at localhost:8501<a class="headerlink" href="#the-app-does-not-open-at-localhost-8501" title="Link to this heading"></a></h2>
+<p>For Docker, ensure Docker is running and run <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">ps</span></code> and
+<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">logs</span> <span class="pre">-f</span> <span class="pre">itr</span></code> from the folder containing your Compose file.
+If port 8501 is already occupied, stop the other app or change the host
+port to <code class="docutils literal notranslate"><span class="pre">127.0.0.1:8502:8501</span></code> and open <code class="docutils literal notranslate"><span class="pre">http://localhost:8502</span></code>.</p>
+<p>If pulling the image fails, check internet access and the
+<a class="reference external" href="https://github.com/WWF-Sweden/WWF-ITR-APP/pkgs/container/wwf-itr-app">published container</a>.
+An error about a missing platform manifest means that the image does not
+provide your platform; use <a class="reference internal" href="getting_started_app.html#app-local-streamlit"><span class="std std-ref">Run locally with Python and Streamlit</span></a> as an alternative.</p>
+</section>
+<section id="python-cannot-import-itr-or-streamlit">
+<h2>Python cannot import ITR or Streamlit<a class="headerlink" href="#python-cannot-import-itr-or-streamlit" title="Link to this heading"></a></h2>
+<p>Activate the environment where you installed dependencies. Use
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span></code> to install into that interpreter. In Jupyter, select
+the matching kernel and restart it after upgrading an imported package.
+The package name is <code class="docutils literal notranslate"><span class="pre">wwf-itr</span></code> and the import name is <code class="docutils literal notranslate"><span class="pre">ITR</span></code>.
+For the app, install the app repository’s <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>;
+installing the scoring package alone does not install Streamlit.</p>
+</section>
+<section id="example-files-cannot-be-found">
+<h2>Example files cannot be found<a class="headerlink" href="#example-files-cannot-be-found" title="Link to this heading"></a></h2>
+<p>Run the notebooks from <code class="docutils literal notranslate"><span class="pre">examples</span></code> and run resource-download cells when
+using Colab. Run <code class="docutils literal notranslate"><span class="pre">streamlit</span> <span class="pre">run</span> <span class="pre">app.py</span></code> from the app repository root.
+Use the <a class="reference internal" href="DataRequirements.html"><span class="doc">Data Requirements</span></a> downloads rather than renaming unrelated
+Excel files. Filenames and sheet names must match the instructions.</p>
+</section>
+<section id="an-uploaded-file-cannot-be-read">
+<h2>An uploaded file cannot be read<a class="headerlink" href="#an-uploaded-file-cannot-be-read" title="Link to this heading"></a></h2>
+<p>Check the sheet names <code class="docutils literal notranslate"><span class="pre">fundamental_data</span></code> and <code class="docutils literal notranslate"><span class="pre">target_data</span></code> for
+target-based provider workbooks. A portfolio needs <code class="docutils literal notranslate"><span class="pre">company_name</span></code>,
+<code class="docutils literal notranslate"><span class="pre">company_id</span></code> and <code class="docutils literal notranslate"><span class="pre">investment_value</span></code>. Upload a UTF-8, comma-separated
+CSV or use Excel. Keep identifiers as text to preserve leading zeros.
+For pre-scored data, use the six required columns and scope/timeframe
+values described in <a class="reference internal" href="using_app.html"><span class="doc">Using the App</span></a>.</p>
+</section>
+<section id="scores-are-missing-or-use-the-default-score">
+<h2>Scores are missing or use the default score<a class="headerlink" href="#scores-are-missing-or-use-the-default-score" title="Link to this heading"></a></h2>
+<p>Check that company IDs match across files and that the selected scopes
+and timeframes have relevant targets. Review invalid-target messages,
+units, year fields and coverage fractions. A default score means a valid
+target-based score was not available for that combination; it is not
+evidence of the company’s actual future temperature outcome.</p>
+<p>For an emissions- or ownership-weighted method, provide the emissions
+and financial denominators required by <a class="reference internal" href="DataRequirements.html"><span class="doc">Data Requirements</span></a>. Do not
+substitute zero for unknown values merely to remove an error.</p>
+</section>
+<section id="cta-download-or-portfolio-coverage-fails">
+<h2>CTA download or portfolio coverage fails<a class="headerlink" href="#cta-download-or-portfolio-coverage-fails" title="Link to this heading"></a></h2>
+<p>Check network access to SBTi or supply a saved CTA Excel file. The file
+must have the current columns and recognized statuses listed in
+<a class="reference internal" href="DataRequirements.html#sbti-status"><span class="std std-ref">SBTi status</span></a>. An old <code class="docutils literal notranslate"><span class="pre">Action</span></code>/<code class="docutils literal notranslate"><span class="pre">Target</span></code> workbook is not the
+current schema. Errors should be investigated rather than interpreted
+as zero coverage.</p>
+<p>In the app, inspect the CTA source, modification time and fallback
+warnings. <strong>Offline mode</strong> prevents downloading; <strong>Upload custom file</strong>
+lets you choose an explicit snapshot. The standalone coverage notebook
+has no automatic fallback and stops on a failed download.</p>
+<p>If coverage is unexpectedly low, check LEI/ISIN quality. LEI is preferred
+when available; an unmatched usable LEI does not trigger a second lookup
+by ISIN. Unmatched holdings stay in the denominator. Current CTA data
+does not reconstruct historical validation status.</p>
+</section>
+<section id="saved-data-or-changed-settings-seem-to-disappear">
+<h2>Saved data or changed settings seem to disappear<a class="headerlink" href="#saved-data-or-changed-settings-seem-to-disappear" title="Link to this heading"></a></h2>
+<p>Click <strong>Apply changes</strong> to accept edits and <strong>Save</strong> to persist a dataset.
+For Docker, keep the mounted <code class="docutils literal notranslate"><span class="pre">data</span></code> folder and run Compose from the
+same folder. Cloud storage may be lost on restart. After changing scoring
+parameters, click <strong>Run Analysis</strong> again. Downloads are stored by your
+browser, separately from the application database.</p>
+</section>
+<section id="report-a-problem">
+<h2>Report a problem<a class="headerlink" href="#report-a-problem" title="Link to this heading"></a></h2>
+<p>Report package/notebook issues in
+<a class="reference external" href="https://github.com/WWF-Sweden/ITR-tool/issues">ITR-tool</a> and interface
+or Docker issues in
+<a class="reference external" href="https://github.com/WWF-Sweden/WWF-ITR-APP/issues">WWF-ITR-APP</a>. Include
+the software version or image tag, operating system, steps to reproduce,
+and error text. Use a small non-confidential example rather than a real
+portfolio in a public report.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Legends.html" class="btn btn-neutral float-left" title="Data Legends" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="contributing.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, WWF Sweden.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

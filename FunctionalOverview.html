@@ -4,10 +4,11 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Functional Overview &mdash; WWF Finance Tool  documentation</title>
+  <title>Functional Overview &mdash; WWF ITR Tool  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="_static/theme_overrides.css?v=dc073278" />
 
   
   <!--[if lt IE 9]>
@@ -35,7 +36,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            WWF Finance Tool
+            WWF ITR Tool
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -45,9 +46,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction to temperature scoring and portfolio coverage methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started_app.html">Getting Started with the App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_app.html">Using the App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks.html">Getting Started with Notebooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started Using Python</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Functional Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#temperature-score">Temperature Score</a><ul>
@@ -65,6 +69,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="DataRequirements.html">Data Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Legends.html">Data Legends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="links.html">Project Links</a></li>
 <li class="toctree-l1"><a class="reference internal" href="terms.html">Terms of Use</a></li>
@@ -77,7 +82,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">WWF Finance Tool</a>
+          <a href="index.html">WWF ITR Tool</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -99,153 +104,116 @@
 <h1>Functional Overview<a class="headerlink" href="#functional-overview" title="Link to this heading"></a></h1>
 <section id="temperature-score">
 <h2>Temperature Score<a class="headerlink" href="#temperature-score" title="Link to this heading"></a></h2>
-<p>Portfolio temperature scores are calculated through an aggregation of
-all companies’ temperature scores within your portfolio. For each
-company, the score is calculated based on the publicly announced
-targets, which are mapped to regression models based on IPCC climate
-scenarios. The company is then awarded a score for each period and scope
-based on the ambition and coverage of the relevant targets. For more
-information, refer to the methodology <a class="reference external" href="https://wwfint.awsassets.panda.org/downloads/cdp-wwf-temperature-scoring-methodology---september-2024.pdf">here</a>.
-If you are interested in knowing more about how scenarios are used to
-create regression parameters, please see this <a class="reference external" href="https://github.com/WWF-Sweden/ITR-regression">github repo</a>.</p>
+<p>The engine translates eligible company targets into temperature scores
+using the <a class="reference external" href="https://wwfint.awsassets.panda.org/downloads/cdp-wwf-temperature-scoring-methodology---september-2024.pdf">CDP-WWF methodology v1.5</a>
+and packaged AR6 regression parameters. It then aggregates company scores
+using portfolio weights. Companies can receive default scores when no
+eligible target-based score is available for a combination.
+The default configuration uses 3.4°C and a floor of 1.5°C.</p>
 <section id="time-frames">
 <h3>Time Frames<a class="headerlink" href="#time-frames" title="Link to this heading"></a></h3>
-<p>By default, the WWF ITR-tool reports temperature scores
-on the mid-term time frames (i.e. based on emissions reduction targets
-aimed at 5-10 years into the future). However, it is also possible to
-inspect short (less than 5 years) and long-term time frames (10 to 30
-years). The time frames are set when running the tool.</p>
+<p>Select <code class="docutils literal notranslate"><span class="pre">SHORT</span></code>, <code class="docutils literal notranslate"><span class="pre">MID</span></code> or <code class="docutils literal notranslate"><span class="pre">LONG</span></code>. The standard target assignment is
+forward-looking from the calculation year: less than five years to the
+target end year is short, five through ten is mid, and more than ten is
+long, subject to the method’s target eligibility and exceptions.
+The <code class="docutils literal notranslate"><span class="pre">T_score</span></code> target type has a five-year adjustment in timeframe
+assignment. Sample results can therefore change over time.
+The app initially selects MID; Python callers explicitly supply timeframes.</p>
 </section>
 <section id="scopes">
 <h3>Scopes<a class="headerlink" href="#scopes" title="Link to this heading"></a></h3>
-<p>The WWF ITR-tool reports on the scores for Scope 1, 2 and 3 as well as
-the combined Scope 1+2 and Scope 1+2+3.</p>
+<p>The scopes are S1, S2, S1+S2, S3 and S1+S2+S3. In Python and ready-made
+score files, the combined enum names are <code class="docutils literal notranslate"><span class="pre">S1S2</span></code> and <code class="docutils literal notranslate"><span class="pre">S1S2S3</span></code>.
+Combined scores use emissions data. The app adds prerequisite scopes
+internally; Python callers should include them, as demonstrated in
+<a class="reference internal" href="getting_started.html"><span class="doc">Getting Started Using Python</span></a>.</p>
 </section>
 <section id="aggregation-methods">
 <h3>Aggregation methods<a class="headerlink" href="#aggregation-methods" title="Link to this heading"></a></h3>
-<p>The portfolio temperature score can be calculated using different
-aggregation methods based on emission and financial data of the
-individual companies. The available options are:</p>
 <ul class="simple">
-<li><p>Weighted average temperature score (WATS)</p></li>
-<li><p>Total emissions weighted temperature score (TETS)</p></li>
-<li><p>Market Owned emissions weighted temperature score (MOTS)</p></li>
-<li><p>Enterprise Owned emissions weighted temperature score (EOTS).</p></li>
-<li><p>EV + Cash emissions weighted temperature score (ECOTS)</p></li>
-<li><p>Total Assets emissions weighted temperature score (AOTS)</p></li>
-<li><p>Revenue emissions weighted temperature score (ROTS)</p></li>
+<li><p><strong>WATS</strong>: weighted average using portfolio investment values.</p></li>
+<li><p><strong>TETS</strong>: total emissions weighted temperature score.</p></li>
+<li><p><strong>MOTS</strong>: owned emissions weighted using market capitalization.</p></li>
+<li><p><strong>EOTS</strong>: owned emissions weighted using enterprise value.</p></li>
+<li><p><strong>ECOTS</strong>: owned emissions weighted using enterprise value plus cash.</p></li>
+<li><p><strong>AOTS</strong>: owned emissions weighted using total assets.</p></li>
+<li><p><strong>ROTS</strong>: owned emissions weighted using revenue.</p></li>
 </ul>
-<p>It is also possible to calculate scores of the individual companies
-without aggregating to a portfolio score.</p>
+<p>The weighting method changes the question answered by the portfolio
+score. Required emissions and financial values are listed in
+<a class="reference internal" href="DataRequirements.html"><span class="doc">Data Requirements</span></a>. Company scores can also be examined before
+aggregation. Existing provider scores can be aggregated without
+recalculating targets; see notebook 4b in <a class="reference internal" href="notebooks.html"><span class="doc">Getting Started with Notebooks</span></a>.</p>
 </section>
 <section id="grouping-data">
 <h3>Grouping data<a class="headerlink" href="#grouping-data" title="Link to this heading"></a></h3>
-<p>This functionality enables the user to analyze (for examples see Jupyter
-notebook
-<a class="reference external" href="https://github.com/WWF-Sweden/ITR-tool/blob/master/examples/1_analysis_example.ipynb">analysis_example</a><strong>)</strong>
-the temperature score of the portfolio in depth by slicing and dicing
-through the portfolio. By choosing to “group by” a certain field (for
-example region or sector), the user receives output of temperature
-scores per category in the chosen field (so per region or sector). It is
-possible to group over region, country, sector, and industry level 1-4.
-Furthermore, it is also possible to add your own fields to group the
-score over (e.g. investments strategies, market cap buckets) via the
-portfolio data.</p>
+<p>In Python, pass <code class="docutils literal notranslate"><span class="pre">grouping=[&quot;sector&quot;]</span></code> or a list of grouping columns
+to obtain weighted scores and contributions for those groups. Categories
+can include region, country, sector, industry levels and user fields
+supplied through the portfolio. See notebook 1 in <a class="reference internal" href="notebooks.html"><span class="doc">Getting Started with Notebooks</span></a>.
+The app offers hotspot and company views with its own filters and chart
+controls; it does not expose every Python grouping option. Read each
+chart’s labels to distinguish descriptive statistics from weighted scores.</p>
 </section>
 <section id="choose-fields-to-show">
 <h3>Choose fields to show<a class="headerlink" href="#choose-fields-to-show" title="Link to this heading"></a></h3>
-<p>By default, the SBTi temperature scoring tool reports Company name,
-Company ID, Scope, Time frame and Temperature score for each individual
-combination. However, using this option allows the user to add
-additional columns to the output. It is possible to add all fields
-imported via either the portfolio data or the company data (fundamental
-and target).</p>
+<p>The company-score DataFrame includes company, timeframe, scope and score
+with supporting input and calculation fields. Python lets you select
+columns, inspect the detailed data and create custom exports. The app’s
+downloads are described in <a class="reference internal" href="using_app.html"><span class="doc">Using the App</span></a>; they are not a complete
+archive of every input and intermediate result.</p>
 </section>
 <section id="what-if-analyses">
 <h3>What-If Analyses<a class="headerlink" href="#what-if-analyses" title="Link to this heading"></a></h3>
-<p>To analyze the effect of engagement on your portfolio temperature score
-it is possible to run “what-if” analyses. In these scenarios, the
-temperature score is recalculated with the presumption that based on
-various engagements some or all companies decided to set different (more
-ambitious) targets.</p>
-<p>The possible scenarios are:</p>
+<p>Scenarios change assumptions to explore engagement effects; they do not
+prove actual target improvements or change observed SBTi validation.
+The Python scenarios are:</p>
 <ul class="simple">
-<li><p>Scenario 1: In this scenario, all companies in the portfolio that did
-not yet set a valid target have been persuaded to set 1.75<sup>o</sup>
-Celsius (C) targets. This is simulated by changing all scores that
-used the default score to a score of 1.75<sup>o</sup> C.</p></li>
-<li><p>Scenario 2: In this scenario, all companies that already set targets
-are persuaded to set 1.5<sup>o</sup> C targets. This
-is simulated by setting all scores of the companies that have valid
-targets to at most 1.5<sup>o</sup> C.</p></li>
-<li><p>Scenario 3: In these scenarios, the top 10 contributors to the
-portfolio temperature score are persuaded to set 1.75<sup>o</sup> C
-targets.</p>
-<ul>
-<li><p>Scenario 3a: All top 10 contributors set WB2C, i.e. 1.75<sup>o</sup> C targets.</p></li>
-<li><p>Scenario 3b: All top 10 contributors set 1.5<sup>o</sup> C targets.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TARGETS</span></code> (1): use 1.75°C in place of the default score.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">APPROVED_TARGETS</span></code> (2): cap scores with target references, using
+1.5°C when configured for the SBTi-target engagement type.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">HIGHEST_CONTRIBUTORS</span></code> (3): cap the ten highest contributors for
+each selected scope/timeframe combination.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">HIGHEST_CONTRIBUTORS_APPROVED</span></code> (4): cap companies whose
+<code class="docutils literal notranslate"><span class="pre">engagement_target</span></code> is true. Despite its enum name, this is the
+selective-engagement scenario in the implementation.</p></li>
 </ul>
-</li>
-<li><p>Scenario 4: In this scenario, the user can specify which companies it
-wants to engage with to influence to set WB2C<sup>o</sup> C or 1.5C
-targets. The user selects companies to engage with in the portfolio
-input file by settings the <em>engagement_target</em> field to TRUE for
-these companies.</p>
-<ul>
-<li><p>Scenario 4a: All companies that are marked as engagement targets
-set WB2C<sup>o</sup> C targets</p></li>
-<li><p>Scenario 4b: All companies that are marked as engagement targets
-set 1.5C targets.</p></li>
-</ul>
-</li>
-</ul>
+<p><code class="docutils literal notranslate"><span class="pre">SET_TARGETS</span></code> applies a 1.75°C cap and <code class="docutils literal notranslate"><span class="pre">SET_SBTI_TARGETS</span></code> a 1.5°C cap
+where engagement caps are used. Explicitly set both the scenario and
+engagement type in Python. See notebook 3 for worked combinations.
+The app offers selectors and an engagement-candidate workflow. Scenarios
+are unavailable in the app’s pre-scored data mode.</p>
 </section>
 </section>
 <section id="portfolio-coverage">
 <h2>Portfolio coverage<a class="headerlink" href="#portfolio-coverage" title="Link to this heading"></a></h2>
-<p>The portfolio coverage calculates the percentage of the portfolio that
-is covered by companies with an approved SBTi target. This coverage is
-calculated using one of the aggregation methods above.</p>
+<p>Coverage is the weighted percentage of holdings with validated near-term
+SBTi targets in the CTA data used for the run. With WATS, the numerator
+is investment value with matched validated targets and the denominator
+is total investment value. Unmatched holdings contribute zero to the
+numerator. The result is from 0 to 100, not a fraction requiring another
+multiplication by 100.</p>
+<p>Portfolio-only WATS coverage does not require a temperature calculation.
+The standalone notebook uses pandas without <code class="docutils literal notranslate"><span class="pre">wwf-itr</span></code>. The Python
+package also provides <code class="docutils literal notranslate"><span class="pre">PortfolioCoverageTVP</span></code> for this purpose. Other
+weighting methods require their additional company data.
+For CTA formats and matching limitations, see <a class="reference internal" href="DataRequirements.html#sbti-status"><span class="std std-ref">SBTi status</span></a>.</p>
 </section>
 <section id="output-options">
 <h2>Output options<a class="headerlink" href="#output-options" title="Link to this heading"></a></h2>
-<p>The temperature score can be requested for all time frames and scope
-combinations on the following levels.</p>
-<ul class="simple">
-<li><p>Portfolio temperature score: the aggregated score over all companies
-in the portfolio</p></li>
-<li><p>Company temperature score: the temperature score of an individual
-company</p></li>
-<li><p>Grouped temperature score: using the “group by” option, the user can
-get the aggregated temperature score per category in a chosen field
-(for example per region or per sector).</p></li>
-</ul>
-<p>For the portfolio temperature score and the temperature score grouped by
-some category, the following additional information is reported for the
-composition of the score</p>
-<ul class="simple">
-<li><p>Contributions: the level to which each company contributes to the
-total score based on the chosen aggregation method. This value is
-split into company temperature score and relative contribution.</p></li>
-<li><p>The percentage of the score that is based on reported targets vs. the
-percentage based on the default score</p></li>
-<li><p>For the grouped temperature scores: the percentage each group
-contributes to the portfolio temperature score. For example: how much
-each region or sector contributes to the total score.</p></li>
-</ul>
-<p>For the company temperature scores it is possible to request all
-underlying data.</p>
-<ul class="simple">
-<li><p>Portfolio data</p></li>
-<li><p>Financial data</p></li>
-<li><p>GHG emissions</p></li>
-<li><p>Used target and all its parameters and the target id</p></li>
-<li><p>Values used during calculation such as the Compound annual reduction
-(CAR), mapped regression scenario, and parameters for the formula to
-calculate the temperature score.</p></li>
-</ul>
-<p>Finally, it is possible to anonymize all names and identifiers, e.g. for
-submission to the SBTi or other organization for approval.</p>
+<p>Python can return company scores, aggregate scores, grouped scores and
+company contributions with supporting data. <code class="docutils literal notranslate"><span class="pre">temperature_results</span></code>
+tracks default-score influence: 0 indicates a target-based score and
+1 a fully default score; combined scopes can be intermediate. The
+aggregated <code class="docutils literal notranslate"><span class="pre">influence_percentage</span></code> expresses default-score influence
+as a percentage. This is distinct from SBTi portfolio coverage.</p>
+<p>For ready-made scores, the app supplies <code class="docutils literal notranslate"><span class="pre">temperature_results=0</span></code> when
+the field is absent. Such an influence value does not independently
+verify the provenance or quality of external scores.</p>
+<p>The app provides CSV and Excel exports. Python/notebooks offer custom
+selection and anonymization. Check all exported identifiers and other
+potentially identifying fields before sharing data; see notebook 5 for
+reporting examples.</p>
 </section>
 </section>
 
@@ -260,7 +228,7 @@ submission to the SBTi or other organization for approval.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, WWF Sweden.</p>
+    <p>&#169; Copyright 2026, WWF Sweden.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
