@@ -5,6 +5,7 @@ import pandas as pd
 from ITR.data.data_provider import DataProvider
 from ITR.interfaces import IDataProviderCompany, IDataProviderTarget, S3Category
 from ITR.configs import ColumnsConfig
+from ITR.diagnostics import validation_error_summary
 
 class_definitions = {
     "fundamental": {
@@ -114,10 +115,15 @@ class InMemoryProvider(DataProvider):
                     target['s3_category'] = S3Category(int(target['s3_category']))
                 model_targets.append(IDataProviderTarget.model_validate(target))
             except (ValidationError, TypeError) as e:
+                reason = validation_error_summary(e) if isinstance(e, ValidationError) else "invalid target field type"
                 logger.warning(
-                    f"Target validation failed and will be skipped: {e}"
+                    "Target validation failed and will be skipped: %s", reason
                 )
                 continue
+            except ValueError:
+                raise ValueError(
+                    "Target conversion failed; check year and Scope 3 category fields."
+                ) from None
 
         return model_targets
 
@@ -130,9 +136,12 @@ class InMemoryProvider(DataProvider):
         :return: A list containing the company data
         """
         companies = self.data_fundamental.to_dict(orient="records")
-        model_companies: List[IDataProviderCompany] = [
-            IDataProviderCompany.model_validate(company) for company in companies
-        ]
+        try:
+            model_companies: List[IDataProviderCompany] = [
+                IDataProviderCompany.model_validate(company) for company in companies
+            ]
+        except ValidationError as error:
+            raise ValueError("Company validation failed: " + validation_error_summary(error)) from None
         model_companies = [
             target for target in model_companies if target.company_id in company_ids
         ]

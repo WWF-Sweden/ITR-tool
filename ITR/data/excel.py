@@ -8,6 +8,7 @@ import numpy as np
 from ITR.data.data_provider import DataProvider
 from ITR.configs import ColumnsConfig
 from ITR.interfaces import IDataProviderCompany, IDataProviderTarget, S3Category
+from ITR.diagnostics import validation_error_summary
 
 
 class ExcelProvider(DataProvider):
@@ -35,8 +36,10 @@ class ExcelProvider(DataProvider):
        
         try:
            self.data['target_data']['s3_category'] = self.data['target_data'].apply(self._process_row, axis=1)
-        except Exception as e:
-            print(f"An error occurred: {e}")
+        except Exception:
+            logging.getLogger(__name__).warning(
+                "Scope 3 category conversion failed; check s3_category values."
+            )
        
         self.c = config
         self.invalid_targets: List[dict] = []
@@ -122,10 +125,9 @@ class ExcelProvider(DataProvider):
                 elif target_ids is None:
                     target_ids = ''
                 if isinstance(e, ValidationError):
-                    fields = [str(err['loc'][0]) for err in e.errors() if err.get('loc')]
-                    reason = f"missing or invalid field(s): {', '.join(fields)}"
+                    reason = validation_error_summary(e)
                 else:
-                    reason = str(e)
+                    reason = "invalid target field type"
                 self.invalid_targets.append({
                     'company_id': company_id,
                     'company_name': name_lookup.get(company_id, company_id),
@@ -133,8 +135,12 @@ class ExcelProvider(DataProvider):
                     'reason': reason,
                 })
                 logger.warning(
-                    f"Target validation failed and will be skipped: {e}"
+                    "Target validation failed and will be skipped: %s", reason
                 )
+            except ValueError:
+                raise ValueError(
+                    "Target conversion failed; check year and Scope 3 category fields."
+                ) from None
         return model_targets
 
     def get_company_data(self, company_ids: List[str]) -> List[IDataProviderCompany]:
@@ -155,9 +161,12 @@ class ExcelProvider(DataProvider):
             data_company[field] = data_company[field].fillna('')
 
         companies = data_company.to_dict(orient="records")
-        model_companies: List[IDataProviderCompany] = [
-            IDataProviderCompany.model_validate(company) for company in companies
-        ]
+        try:
+            model_companies: List[IDataProviderCompany] = [
+                IDataProviderCompany.model_validate(company) for company in companies
+            ]
+        except ValidationError as error:
+            raise ValueError("Company validation failed: " + validation_error_summary(error)) from None
         for company in model_companies:
             if company.ghg_s1 is not None or company.ghg_s2 is not None:
                 company.ghg_s1s2 = company.ghg_s1 + company.ghg_s2  # type: ignore (data set to 0.0 when reading)

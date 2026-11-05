@@ -44,7 +44,7 @@ class TestCTAStatus(unittest.TestCase):
             self.reader.filter_cta_file(self.frame(['Validated Targets']).drop(columns='lei'))
 
     def test_unknown_status(self):
-        with self.assertRaisesRegex(ValueError, 'unknown near-term status values: New status'):
+        with self.assertRaisesRegex(ValueError, '1 unknown near-term status value'):
             self.reader.filter_cta_file(self.frame(['Validated Targets', 'New status']))
 
     def test_matching_lei_and_isin(self):
@@ -75,5 +75,5 @@ class TestCTAStatus(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / 'cta.xlsx'
             self.frame(['Unexpected']).to_excel(path, index=False)
-            with self.assertRaisesRegex(ValueError, 'Unexpected'):
+            with self.assertRaisesRegex(ValueError, 'unknown near-term status value'):
                 SBTi(config=self.config, cta_file_path=str(path))

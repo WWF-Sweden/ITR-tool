@@ -43,13 +43,13 @@ class SBTi:
                 os.makedirs(target_dir, exist_ok=True)
                 shutil.copy2(bundled_path, self.c.FILE_TARGETS)
                 print(f'WARNING: Using bundled CTA file as fallback. Data may be outdated.')
-                print(f'Copied bundled file to: {self.c.FILE_TARGETS}')
+                print('Copied bundled CTA file to the configured cache.')
                 return True
-            except Exception as e:
-                print(f'Error copying bundled CTA file: {e}')
+            except Exception:
+                print('Error copying bundled CTA file; check cache permissions.')
                 return False
         else:
-            print(f'ERROR: Bundled CTA file not found at {bundled_path}')
+            print('ERROR: Bundled CTA file was not found.')
             return False
 
 
@@ -76,7 +76,7 @@ class SBTi:
             # week_in_seconds = 7 * 24 * 60 * 60 # frequency of CTA file updates
 
             if not self._check_CTA_less_than_one_week_old(): 
-                print(f'CTA file is older than a week, if you want to keep your file up-to-date please update the file at {self.c.FILE_TARGETS}.')
+                print('CTA file is older than a week; update the configured local CTA file if needed.')
         else:
             raise ValueError('CTA file does not exist')
 
@@ -98,15 +98,15 @@ class SBTi:
                 download_successful = True
             
             except requests.HTTPError as err:
-                if err.response.status_code == 403:
-                    print(f'403 Error fetching the CTA file: {err}')
+                if err.response is not None and err.response.status_code == 403:
+                    print('403 Error fetching the CTA file.')
                 else:
-                    print(f'HTTP Error fetching the CTA file: {err}')
-            except requests.RequestException as err:
-                print(f'Network error fetching the CTA file: {err}')
+                    print('HTTP Error fetching the CTA file.')
+            except requests.RequestException:
+                print('Network error fetching the CTA file.')
                 print(f'This may be due to firewall restrictions or network connectivity issues.')
-            except Exception as err:
-                print(f'Unexpected error fetching the CTA file: {err}')
+            except Exception:
+                print('Unexpected error fetching the CTA file.')
             
             # If download failed and file still doesn't exist, use bundled fallback
             if not download_successful and not self._check_if_cta_file_exists():
@@ -118,7 +118,7 @@ class SBTi:
                         'with a valid FILE_TARGETS_CUSTOM_PATH.'
                     )
         else:            
-            print(f'CTA file already exists in {self.c.FILE_TARGETS}, skipping download.')
+            print('CTA file already exists in the configured cache, skipping download.')
 
     def _fetch_and_save_cta_file(self):
         # Ensure the directory exists
@@ -138,7 +138,7 @@ class SBTi:
         with open(self.c.FILE_TARGETS, 'wb') as output:
             output.write(response.content)
             print(f'Successfully downloaded CTA file (Status: {response.status_code})')
-            print(f'Saved to: {self.c.FILE_TARGETS}')
+            print('Saved CTA file to the configured cache.')
 
     def _is_offline(self):
         env_val = os.environ.get("ITR_OFFLINE", "").strip().lower()
@@ -149,10 +149,10 @@ class SBTi:
     def handle_cta_file(self):
         if self._is_offline():
             if self._check_if_cta_file_exists():
-                print(f'ITR_OFFLINE: Using existing CTA file at {self.c.FILE_TARGETS}')
+                print('ITR_OFFLINE: Using the existing CTA file.')
             elif self.c.USE_LOCAL_CTA and os.path.isfile(self.c.FILE_TARGETS_CUSTOM_PATH):
                 self.c.FILE_TARGETS = self.c.FILE_TARGETS_CUSTOM_PATH
-                print(f'ITR_OFFLINE: Using local CTA file at {self.c.FILE_TARGETS}')
+                print('ITR_OFFLINE: Using the configured local CTA file.')
             elif self._use_bundled_fallback():
                 pass  # bundled fallback prints its own messages
             else:
@@ -203,8 +203,10 @@ class SBTi:
         # Empty cells indicate no near-term status and do not count as validated.
         unknown = status.notna() & status.ne("") & ~status.isin(self.c.TARGET_STATUS_ALIASES)
         if unknown.any():
-            values = sorted(targets.loc[unknown, self.c.COL_TARGET].astype(str).unique())
-            raise ValueError("CTA file contains unknown near-term status values: " + ", ".join(values))
+            count = targets.loc[unknown, self.c.COL_TARGET].nunique()
+            raise ValueError(
+                f"CTA file contains {count} unknown near-term status value(s); check near_term_status."
+            )
         targets[self.c.COL_TARGET] = status.map(self.c.TARGET_STATUS_ALIASES)
         return targets
 
@@ -272,5 +274,3 @@ class SBTi:
                     self.c.VALUE_STATUS_SET in targets[self.c.COL_TARGET].values
                 )
         return companies
-
-   

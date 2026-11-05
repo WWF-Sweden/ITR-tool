@@ -28,6 +28,7 @@ classifiers = [
 ]
 keywords = ['Climate', 'ITR', 'SBTi', 'Finance', 'WWF']
 packages = [{ include = "ITR" }]
+exclude = ["**/.DS_Store"]
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/WWF-Sweden/ITR-tool/issues"
