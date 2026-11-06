@@ -1,0 +1,27 @@
+ITR.diagnostics
+===============
+
+.. py:module:: ITR.diagnostics
+
+.. autoapi-nested-parse::
+
+   Safe summaries for automatic diagnostics; never render validation inputs.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   ITR.diagnostics.validation_error_summary
+
+
+Module Contents
+---------------
+
+.. py:function:: validation_error_summary(error: pydantic.ValidationError) -> str
+
+   Return only known schema field names, excluding input values and context.
+
+

@@ -19,6 +19,7 @@ Submodules
 
    /autoapi/ITR/configs/index
    /autoapi/ITR/data/index
+   /autoapi/ITR/diagnostics/index
    /autoapi/ITR/example_utils/index
    /autoapi/ITR/interfaces/index
    /autoapi/ITR/portfolio_aggregation/index

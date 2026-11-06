@@ -54,6 +54,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#run-locally-with-docker">Run locally with Docker</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#stop-restart-and-update">Stop, restart and update</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#keep-your-saved-data">Keep your saved data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#loaded-data-and-session-lifetime">Loaded data and session lifetime</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#run-locally-with-python-and-streamlit">Run locally with Python and Streamlit</a></li>
@@ -109,6 +110,8 @@ No installation is required.</p>
 <p>The public demo runs on Streamlit Community Cloud. Use sample or public
 data there; do not upload confidential or proprietary portfolio data.
 For your own confidential data, run the app locally using Docker or Python.
+Use a separate installation and data directory for each user. The app does
+not provide user accounts or dataset permissions for a shared installation.
 Cloud storage is temporary across app restarts; download any results you
 want to keep.</p>
 </section>
@@ -144,8 +147,12 @@ The file contains:</p>
 <li><p>Open <a class="reference external" href="http://localhost:8501">http://localhost:8501</a> and follow
 <a class="reference internal" href="using_app.html"><span class="doc">Using the App</span></a>.</p></li>
 </ol>
-<p>The port is bound to <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code> for access from your own computer.
-The first start downloads the image from GitHub Container Registry.
+<p>The port is bound to <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code> for access from your own computer,
+rather than through its LAN or Wi-Fi address. Use Docker Engine 28.0.0 or
+later: older versions have a known issue that can allow other devices on
+the same network segment to reach ports published to localhost. See
+<a class="reference external" href="https://docs.docker.com/engine/network/port-publishing/">Docker’s port publishing documentation</a>.</p>
+<p>The first start downloads the image from GitHub Container Registry.
 Example data may also be downloaded from GitHub when not already present.
 SBTi data is downloaded when required unless you select an uploaded CTA
 file or use the app’s offline option with available local data.</p>
@@ -186,6 +193,34 @@ Loading or editing a dataset does not automatically save it to the database.
 Temporary uploads are not all retained by the volume. Downloaded exports
 are saved through your browser, normally to your Downloads folder.</p>
 </section>
+<section id="loaded-data-and-session-lifetime">
+<h3>Loaded data and session lifetime<a class="headerlink" href="#loaded-data-and-session-lifetime" title="Link to this heading"></a></h3>
+<p>The app reads provider uploads, portfolios and pre-scored files in
+memory without creating application-managed temporary disk copies. Provider
+uploads read only the required <code class="docutils literal notranslate"><span class="pre">fundamental_data</span></code> and <code class="docutils literal notranslate"><span class="pre">target_data</span></code> sheets.
+The app does not store analysis data or results in global Streamlit caches;
+loaded data and reusable results belong to the current browser session.
+Repeated what-if scenarios can reuse up to three results within that session,
+with a total budget of 32 MiB of serialized result data. This budget does not
+limit the app’s total memory use. Provider data, the portfolio, scenario
+settings and CTA contents are included in the cache key. Least recently used
+results are evicted; oversized results are calculated without caching.
+This cache remains in memory and is cleared with the loaded data.
+Streamlit usage statistics are disabled in the supplied app configuration.</p>
+<p>Use <strong>Clear loaded data / Change source</strong> to release the session’s loaded
+data, results and uploads. This keeps explicitly saved SQLite datasets and
+browser downloads. It does not securely erase process memory. Closing a tab
+does not guarantee immediate session disposal; stop the app or container to
+end the running process.</p>
+<p>Custom CTA uploads still need a temporary file. Their session-owned directory
+is removed when the upload is replaced, removed or cleared, or when the
+session owner is normally released. Abrupt process termination can leave
+temporary files behind. Updating does not remove files left by older versions.
+Device access, disk encryption, backups and operating-system swap remain
+the user’s or organization’s responsibility.</p>
+<p>These changes require the updated app version. Updating this documentation
+or the calculation package alone does not update an installed app/container.</p>
+</section>
 </section>
 <section id="run-locally-with-python-and-streamlit">
 <span id="app-local-streamlit"></span><h2>Run locally with Python and Streamlit<a class="headerlink" href="#run-locally-with-python-and-streamlit" title="Link to this heading"></a></h2>
@@ -208,7 +243,7 @@ and Git. Clone the app repository:</p>
 </div>
 <p>Then, from the app repository root:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pip install -r requirements.txt</span>
-<span class="go">python -m streamlit run app.py</span>
+<span class="go">python -m streamlit run app.py --server.address=127.0.0.1</span>
 </pre></div>
 </div>
 <p>Open <code class="docutils literal notranslate"><span class="pre">http://localhost:8501</span></code>. Stop the server with <code class="docutils literal notranslate"><span class="pre">Ctrl+C</span></code>.

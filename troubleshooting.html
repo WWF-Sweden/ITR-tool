@@ -172,6 +172,23 @@ browser, separately from the application database.</p>
 </section>
 <section id="report-a-problem">
 <h2>Report a problem<a class="headerlink" href="#report-a-problem" title="Link to this heading"></a></h2>
+<p>Known validation failures in the built-in providers and portfolio conversion
+report schema field names rather than input values. Company and portfolio
+model-validation failures are exposed as <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> with a sanitized
+summary, rather than raw Pydantic <code class="docutils literal notranslate"><span class="pre">ValidationError</span></code> output. Code that caught
+only the latter should handle <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> at these boundaries. Target rows
+that were previously skipped remain skipped; malformed year/category
+conversions still fail with <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>.</p>
+<p>Automatic duplicate warnings report counts instead of company names. Target
+IDs and calculation values are not included in the reviewed calculation-error
+messages. CTA status errors report the number of unknown values without
+echoing the uploaded text; download/cache messages omit local paths and raw
+exception details.</p>
+<p>Detailed target diagnostics remain available explicitly through the existing
+<code class="docutils literal notranslate"><span class="pre">invalid_targets</span></code> records. These records, analysis results and exports can
+contain sensitive information. This protection is not a general log filter:
+unexpected exceptions, third-party parsers and application-level logging
+still require separate review. Check diagnostic material before sharing it.</p>
 <p>Report package/notebook issues in
 <a class="reference external" href="https://github.com/WWF-Sweden/ITR-tool/issues">ITR-tool</a> and interface
 or Docker issues in

@@ -86,6 +86,26 @@ browser, separately from the application database.
 Report a problem
 ----------------
 
+Known validation failures in the built-in providers and portfolio conversion
+report schema field names rather than input values. Company and portfolio
+model-validation failures are exposed as ``ValueError`` with a sanitized
+summary, rather than raw Pydantic ``ValidationError`` output. Code that caught
+only the latter should handle ``ValueError`` at these boundaries. Target rows
+that were previously skipped remain skipped; malformed year/category
+conversions still fail with ``ValueError``.
+
+Automatic duplicate warnings report counts instead of company names. Target
+IDs and calculation values are not included in the reviewed calculation-error
+messages. CTA status errors report the number of unknown values without
+echoing the uploaded text; download/cache messages omit local paths and raw
+exception details.
+
+Detailed target diagnostics remain available explicitly through the existing
+``invalid_targets`` records. These records, analysis results and exports can
+contain sensitive information. This protection is not a general log filter:
+unexpected exceptions, third-party parsers and application-level logging
+still require separate review. Check diagnostic material before sharing it.
+
 Report package/notebook issues in
 `ITR-tool <https://github.com/WWF-Sweden/ITR-tool/issues>`_ and interface
 or Docker issues in

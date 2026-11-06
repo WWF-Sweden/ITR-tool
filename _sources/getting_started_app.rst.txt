@@ -15,6 +15,8 @@ No installation is required.
 The public demo runs on Streamlit Community Cloud. Use sample or public
 data there; do not upload confidential or proprietary portfolio data.
 For your own confidential data, run the app locally using Docker or Python.
+Use a separate installation and data directory for each user. The app does
+not provide user accounts or dataset permissions for a shared installation.
 Cloud storage is temporary across app restarts; download any results you
 want to keep.
 
@@ -48,7 +50,12 @@ to install Python or clone either GitHub repository.
 4. Open `http://localhost:8501 <http://localhost:8501>`_ and follow
    :doc:`using_app`.
 
-The port is bound to ``127.0.0.1`` for access from your own computer.
+The port is bound to ``127.0.0.1`` for access from your own computer,
+rather than through its LAN or Wi-Fi address. Use Docker Engine 28.0.0 or
+later: older versions have a known issue that can allow other devices on
+the same network segment to reach ports published to localhost. See
+`Docker's port publishing documentation <https://docs.docker.com/engine/network/port-publishing/>`_.
+
 The first start downloads the image from GitHub Container Registry.
 Example data may also be downloaded from GitHub when not already present.
 SBTi data is downloaded when required unless you select an uploaded CTA
@@ -99,6 +106,38 @@ Loading or editing a dataset does not automatically save it to the database.
 Temporary uploads are not all retained by the volume. Downloaded exports
 are saved through your browser, normally to your Downloads folder.
 
+Loaded data and session lifetime
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The app reads provider uploads, portfolios and pre-scored files in
+memory without creating application-managed temporary disk copies. Provider
+uploads read only the required ``fundamental_data`` and ``target_data`` sheets.
+The app does not store analysis data or results in global Streamlit caches;
+loaded data and reusable results belong to the current browser session.
+Repeated what-if scenarios can reuse up to three results within that session,
+with a total budget of 32 MiB of serialized result data. This budget does not
+limit the app's total memory use. Provider data, the portfolio, scenario
+settings and CTA contents are included in the cache key. Least recently used
+results are evicted; oversized results are calculated without caching.
+This cache remains in memory and is cleared with the loaded data.
+Streamlit usage statistics are disabled in the supplied app configuration.
+
+Use **Clear loaded data / Change source** to release the session's loaded
+data, results and uploads. This keeps explicitly saved SQLite datasets and
+browser downloads. It does not securely erase process memory. Closing a tab
+does not guarantee immediate session disposal; stop the app or container to
+end the running process.
+
+Custom CTA uploads still need a temporary file. Their session-owned directory
+is removed when the upload is replaced, removed or cleared, or when the
+session owner is normally released. Abrupt process termination can leave
+temporary files behind. Updating does not remove files left by older versions.
+Device access, disk encryption, backups and operating-system swap remain
+the user's or organization's responsibility.
+
+These changes require the updated app version. Updating this documentation
+or the calculation package alone does not update an installed app/container.
+
 .. _app-local-streamlit:
 
 Run locally with Python and Streamlit
@@ -132,7 +171,7 @@ Then, from the app repository root:
 .. code-block:: console
 
    python -m pip install -r requirements.txt
-   python -m streamlit run app.py
+   python -m streamlit run app.py --server.address=127.0.0.1
 
 Open ``http://localhost:8501``. Stop the server with ``Ctrl+C``.
 The app's pinned requirements install its ``wwf-itr`` dependency.
