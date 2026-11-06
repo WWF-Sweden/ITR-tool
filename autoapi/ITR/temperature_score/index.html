@@ -603,8 +603,9 @@ aggregated S1S2 score.</p>
 1) Calculate the mean temperature score for <cite>s3_category == CAT_15</cite>.
 2) Remove original CAT_15 rows and append the mean CAT_15 score back to the data.
 3) For each company and time frame:
-a) If GHG data is available for all categories, calculate a weighted average.
-b) If not, calculate a simple average of the scores.
+a) If a headline (CAT_H_LINE) target exists, use its score as is.
+b) Else, if GHG data is available for all categories, calculate a weighted average.
+c) If not, calculate a simple average of the scores.
 4) Replace the original scores with the aggregated score.</p>
 </dd></dl>
 
