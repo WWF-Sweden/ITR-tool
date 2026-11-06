@@ -14,6 +14,8 @@ import sys
 import unittest
 from typing import Any, List
 
+import pandas as pd
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from ITR.interfaces import (
@@ -22,6 +24,7 @@ from ITR.interfaces import (
     IDataProviderCompany,
     IDataProviderTarget,
     PortfolioCompany,
+    S3Category,
 )
 from ITR.temperature_score import TemperatureScore
 from ITR.portfolio_aggregation import PortfolioAggregationMethod
@@ -337,6 +340,40 @@ class TestTemperatureScore(unittest.TestCase):
                 (scores2["company_id"] == company_id) & (scores2["scope"] == EScope.S1S2)
             ]["temperature_score"].iloc[0]
             self.assertAlmostEqual(s1, s2, places=10, msg="Scores should be deterministic")
+
+
+class TestAggregateS3Score(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temperature_score = TemperatureScore(
+            time_frames=list(ETimeFrames), scopes=EScope.get_result_scopes()
+        )
+
+    def _s3_row(self, company_id, s3_category, score):
+        row = {
+            "company_id": company_id,
+            "company_name": company_id,
+            "time_frame": ETimeFrames.MID,
+            "scope": EScope.S3,
+            "s3_category": s3_category,
+            "temperature_score": score,
+            "target_ids": [f"{company_id}-{s3_category.name}"],
+            "target_type": "abs",
+        }
+        for i in range(1, 16):
+            row[f"ghg_s3_{i}"] = float("nan")
+        return row
+
+    def _s3_score(self, data, company_id):
+        result = self.temperature_score._aggregate_s3_score(data)
+        return result.loc[result["company_id"] == company_id, "temperature_score"].item()
+
+    def test_headline_target_scored_on_its_own(self):
+        data = pd.DataFrame([self._s3_row("A", S3Category.CAT_H_LINE, 1.5)])
+        self.assertAlmostEqual(self._s3_score(data, "A"), 1.5)
+
+    def test_category_targets_without_headline_are_averaged(self):
+        data = pd.DataFrame([self._s3_row("B", S3Category.CAT_1, 1.5)])
+        self.assertAlmostEqual(self._s3_score(data, "B"), (1.5 + 14 * 3.4) / 15)
 
 
 if __name__ == "__main__":

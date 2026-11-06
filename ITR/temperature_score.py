@@ -923,8 +923,9 @@ class TemperatureScore(PortfolioAggregation):
         1) Calculate the mean temperature score for `s3_category == CAT_15`.
         2) Remove original CAT_15 rows and append the mean CAT_15 score back to the data.
         3) For each company and time frame:
-        a) If GHG data is available for all categories, calculate a weighted average.
-        b) If not, calculate a simple average of the scores.
+        a) If a headline (CAT_H_LINE) target exists, use its score as is.
+        b) Else, if GHG data is available for all categories, calculate a weighted average.
+        c) If not, calculate a simple average of the scores.
         4) Replace the original scores with the aggregated score.
         """
         # Separate Scope 3 data
@@ -983,6 +984,12 @@ class TemperatureScore(PortfolioAggregation):
         aggregated_rows = []
         grouped = s3_data.groupby(['company_id', 'time_frame'])
         for _ , group in grouped:
+            # Method 6.4: a headline Scope 3 target takes priority over category targets
+            headline = group[group['s3_category'] == S3Category.CAT_H_LINE]
+            if not headline.empty:
+                aggregated_rows.append(headline.iloc[0].copy())
+                continue
+
             temperature_scores = np.full(15, 3.4) # Set all scores to the default value
             ghg_columns = [f'ghg_s3_{i}' for i in range(1, 16)]
             ghg_values = group.iloc[0][ghg_columns].to_numpy(dtype=float, na_value=np.nan)
