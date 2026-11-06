@@ -341,6 +341,34 @@ class TestTemperatureScore(unittest.TestCase):
             ]["temperature_score"].iloc[0]
             self.assertAlmostEqual(s1, s2, places=10, msg="Scores should be deterministic")
 
+    def test_headline_score_through_full_pipeline(self):
+        """Validate target selection and scoring through the public calculation API."""
+        for include_category_target in (False, True):
+            with self.subTest(include_category_target=include_category_target):
+                targets = [self._make_target(
+                    "A", scope=EScope.S3, s3_category=S3Category.CAT_H_LINE,
+                    coverage_s3=1.0, base_year_ghg_s3=50,
+                    reduction_ambition=0.8, target_ids=["headline"],
+                )]
+                if include_category_target:
+                    targets.append(self._make_target(
+                        "A", scope=EScope.S3, s3_category=S3Category.CAT_1,
+                        coverage_s3=1.0, base_year_ghg_s3=50,
+                        reduction_ambition=0.1, target_ids=["category-1"],
+                    ))
+                provider = TestDataProvider(
+                    targets=targets, companies=[self._make_company("A")]
+                )
+                scorer = TemperatureScore(time_frames=[ETimeFrames.MID], scopes=[EScope.S3])
+                scores = scorer.calculate(
+                    data_providers=[provider], portfolio=[self._make_pf_company("A")]
+                )
+                self.assertEqual(len(scores), 1)
+                self.assertEqual(scores.iloc[0]["scope"], EScope.S3)
+                self.assertEqual(scores.iloc[0]["time_frame"], ETimeFrames.MID)
+                self.assertAlmostEqual(scores.iloc[0]["temperature_score"], 1.5)
+                self.assertEqual(scores.iloc[0]["target_ids"], ["headline"])
+
 
 class TestAggregateS3Score(unittest.TestCase):
     def setUp(self) -> None:
@@ -374,6 +402,54 @@ class TestAggregateS3Score(unittest.TestCase):
     def test_category_targets_without_headline_are_averaged(self):
         data = pd.DataFrame([self._s3_row("B", S3Category.CAT_1, 1.5)])
         self.assertAlmostEqual(self._s3_score(data, "B"), (1.5 + 14 * 3.4) / 15)
+
+    def test_headline_takes_priority_over_categories_in_either_order(self):
+        headline = self._s3_row("A", S3Category.CAT_H_LINE, 1.5)
+        category = self._s3_row("A", S3Category.CAT_15, 2.5)
+        for rows in ([headline, category], [category, headline]):
+            with self.subTest(headline_first=rows[0] is headline):
+                result = self.temperature_score._aggregate_s3_score(pd.DataFrame(rows))
+                self.assertEqual(len(result), 1)
+                self.assertAlmostEqual(result.iloc[0]["temperature_score"], 1.5)
+                self.assertEqual(result.iloc[0]["target_ids"], headline["target_ids"])
+                self.assertEqual(result.iloc[0]["s3_category"], S3Category.CAT_H_LINE)
+
+    def test_headline_is_not_weighted_by_category_emissions(self):
+        row = self._s3_row("A", S3Category.CAT_H_LINE, 1.5)
+        row.update({f"ghg_s3_{i}": float(i) for i in range(1, 16)})
+        self.assertAlmostEqual(self._s3_score(pd.DataFrame([row]), "A"), 1.5)
+
+    def test_category_scores_are_emissions_weighted_without_headline(self):
+        rows = [self._s3_row("A", S3Category.CAT_1, 1.5),
+                self._s3_row("A", S3Category.CAT_2, 2.5)]
+        for row in rows:
+            row.update({f"ghg_s3_{i}": 0.0 for i in range(1, 16)})
+            row.update(ghg_s3_1=30.0, ghg_s3_2=70.0)
+        self.assertAlmostEqual(self._s3_score(pd.DataFrame(rows), "A"), 2.2)
+
+    def test_uncovered_categories_keep_default_scores_when_weighted(self):
+        row = self._s3_row("A", S3Category.CAT_1, 1.5)
+        row.update({f"ghg_s3_{i}": float(i) for i in range(1, 16)})
+        # Category 1 has weight 1; the remaining categories have total weight 119.
+        self.assertAlmostEqual(
+            self._s3_score(pd.DataFrame([row]), "A"), (1.5 + 119 * 3.4) / 120
+        )
+
+    def test_multiple_category_15_targets_are_averaged(self):
+        rows = [self._s3_row("A", S3Category.CAT_15, score) for score in (1.5, 2.5)]
+        self.assertAlmostEqual(self._s3_score(pd.DataFrame(rows), "A"), (2.0 + 14 * 3.4) / 15)
+
+    def test_company_and_time_frame_groups_remain_separate(self):
+        rows = [self._s3_row("A", S3Category.CAT_H_LINE, 1.5),
+                self._s3_row("A", S3Category.CAT_H_LINE, 2.0),
+                self._s3_row("B", S3Category.CAT_1, 2.5)]
+        rows[1]["time_frame"] = ETimeFrames.LONG
+        result = self.temperature_score._aggregate_s3_score(pd.DataFrame(rows))
+        self.assertEqual(len(result), 3)
+        scores = result.set_index(["company_id", "time_frame"])["temperature_score"]
+        self.assertAlmostEqual(scores.loc[("A", ETimeFrames.MID)], 1.5)
+        self.assertAlmostEqual(scores.loc[("A", ETimeFrames.LONG)], 2.0)
+        self.assertAlmostEqual(scores.loc[("B", ETimeFrames.MID)], (2.5 + 14 * 3.4) / 15)
 
 
 if __name__ == "__main__":
