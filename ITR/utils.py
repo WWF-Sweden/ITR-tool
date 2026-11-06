@@ -1,6 +1,8 @@
 import logging
 import pandas as pd
 import ast
+from pydantic import ValidationError
+from ITR.diagnostics import validation_error_summary
 from typing import List, Optional, Tuple, Type, Dict
 
 from ITR.configs import ColumnsConfig
@@ -206,10 +208,13 @@ def dataframe_to_portfolio(df_portfolio: pd.DataFrame) -> List[PortfolioCompany]
             return None
 
         df_portfolio['user_fields'] = df_portfolio['user_fields'].apply(process_user_fields)
-    return [
-        PortfolioCompany.model_validate(company)
-        for company in df_portfolio.to_dict(orient="records")
-    ]
+    try:
+        return [
+            PortfolioCompany.model_validate(company)
+            for company in df_portfolio.to_dict(orient="records")
+        ]
+    except ValidationError as error:
+        raise ValueError("Portfolio validation failed: " + validation_error_summary(error)) from None
 
 def check_sbti_validation(
     targets: List[IDataProviderTarget], 

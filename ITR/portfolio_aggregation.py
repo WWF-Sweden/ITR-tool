@@ -81,11 +81,11 @@ class PortfolioAggregation(ABC):
             ):
                 raise ValueError(
                     f"A value for {column} is needed for all aggregation methods except for WATS. \n"
-                    f"So please try to estimate appropriate values or remove these companies from the aggregation calculation: {','.join(missing_data)}"            
+                    f"Estimate appropriate values or remove the {len(missing_data)} affected companies from the aggregation calculation."
                 )
             else:
                 raise ValueError(
-                    f"The value for {column} is missing for the following companies: {','.join(missing_data)}"                      
+                    f"The value for {column} is missing for {len(missing_data)} companies."
                 )
                 
 

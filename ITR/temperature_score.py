@@ -345,8 +345,10 @@ class TemperatureScore(PortfolioAggregation):
                     + target[self.c.COLS.REGRESSION_INTERCEPT],
                     self.c.TEMPERATURE_FLOOR,
                 )
-            except TypeError as e:
-                print(f"TypeError: {e}, {target[self.c.COLS.REGRESSION_PARAM]}, ambition: {target[self.c.COLS.REDUCTION_AMBITION]}")
+            except TypeError:
+                logging.getLogger(__name__).warning(
+                    "Target score calculation received invalid field types; using the default score."
+                )
                 ts = self.default_score
         if target[self.c.COLS.SBTI_VALIDATED]:
             return ts, 0
@@ -702,10 +704,10 @@ class TemperatureScore(PortfolioAggregation):
             dup_companies = filtered_data.loc[dup_mask, self.c.COLS.COMPANY_NAME].unique().tolist()
             logging.warning(
                 "Duplicate company entries detected for %d company/companies in "
-                "time_frame=%s, scope=%s: %s. "
+                "time_frame=%s, scope=%s. "
                 "Consolidating by company_name — investment_value is summed, "
                 "temperature_score is investment-weighted, other columns take first value.",
-                len(dup_companies), time_frame.value, scope.name, dup_companies,
+                len(dup_companies), time_frame.value, scope.name,
             )
             _key = [self.c.COLS.COMPANY_NAME]
             filtered_data["_iv_ts"] = (
@@ -884,8 +886,9 @@ class TemperatureScore(PortfolioAggregation):
                         s1s2_score = (s1_score * s1_ghg + s2_score * s2_ghg) / (s1_ghg + s2_ghg)
                         s1_s2_results = (s1_results * s1_ghg + s2_results * s2_ghg) / (s1_ghg + s2_ghg)
                     except ZeroDivisionError:
-                       print("Division by zero")
-                       print(f"Target ID {group['target_ids'].values[0]}")
+                       logging.getLogger(__name__).warning(
+                           "Cannot combine S1/S2 scores because the emissions denominator is zero."
+                       )
                 else:
                     s1s2_score = max(s1_score, s2_score)
                     s1_s2_results = 0.5

@@ -5,6 +5,7 @@ import logging
 import pandas as pd
 from ITR.data.data_provider import DataProvider
 from ITR.interfaces import IDataProviderCompany, IDataProviderTarget
+from ITR.diagnostics import validation_error_summary
 
 
 class CSVProvider(DataProvider):
@@ -48,8 +49,8 @@ class CSVProvider(DataProvider):
                 model_targets.append(IDataProviderTarget.model_validate(target))
             except ValidationError as e:
                 logger.warning(
-                    "(one of) the target(s) of company %s is invalid and will be skipped"
-                    % target[self.c.COMPANY_NAME]
+                    "Target validation failed and will be skipped: %s",
+                    validation_error_summary(e),
                 )
                 pass
         return model_targets
@@ -63,9 +64,12 @@ class CSVProvider(DataProvider):
         :return: A list containing the company data
         """
         companies = self.data.to_dict(orient="records")
-        model_companies: List[IDataProviderCompany] = [
-            IDataProviderCompany.model_validate(company) for company in companies
-        ]
+        try:
+            model_companies: List[IDataProviderCompany] = [
+                IDataProviderCompany.model_validate(company) for company in companies
+            ]
+        except ValidationError as error:
+            raise ValueError("Company validation failed: " + validation_error_summary(error)) from None
         model_companies = [
             target for target in model_companies if target.company_id in company_ids
         ]
