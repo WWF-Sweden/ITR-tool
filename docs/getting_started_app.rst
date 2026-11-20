@@ -17,8 +17,10 @@ data there; do not upload confidential or proprietary portfolio data.
 For your own confidential data, run the app locally using Docker or Python.
 Use a separate installation and data directory for each user. The app does
 not provide user accounts or dataset permissions for a shared installation.
-Cloud storage is temporary across app restarts; download any results you
-want to keep.
+The dataset database is disabled in the demo: **Load from Database**, **Save**
+and dataset deletion are unavailable. Uploads, calculations, editing and
+exports remain available. Uploaded data is processed on Community Cloud
+servers in the United States; download any results you want to keep.
 
 .. _app-docker:
 
@@ -55,6 +57,13 @@ rather than through its LAN or Wi-Fi address. Use Docker Engine 28.0.0 or
 later: older versions have a known issue that can allow other devices on
 the same network segment to reach ports published to localhost. See
 `Docker's port publishing documentation <https://docs.docker.com/engine/network/port-publishing/>`_.
+
+The Docker image sets ``ITR_DEPLOYMENT=local``, enabling the dataset database.
+This setting does not verify that the app is local or provide authentication.
+Keep the localhost port mapping above. A shared or public deployment would
+require additional access controls, or disabling the dataset database.
+After starting the app, run ``docker compose ps`` and verify that the
+published port is ``127.0.0.1:8501->8501/tcp``.
 
 The first start downloads the image from GitHub Container Registry.
 Example data may also be downloaded from GitHub when not already present.
@@ -166,16 +175,57 @@ On Windows PowerShell:
    py -3.11 -m venv .venv
    .\.venv\Scripts\Activate.ps1
 
-Then, from the app repository root:
+Install dependencies from the app repository root:
 
 .. code-block:: console
 
    python -m pip install -r requirements.txt
-   python -m streamlit run app.py --server.address=127.0.0.1
+
+To enable the dataset database, start the app on macOS or Linux with:
+
+.. code-block:: console
+
+   ITR_DEPLOYMENT=local python -m streamlit run app.py
+
+On Windows PowerShell:
+
+.. code-block:: powershell
+
+   $env:ITR_DEPLOYMENT = "local"
+   python -m streamlit run app.py
 
 Open ``http://localhost:8501``. Stop the server with ``Ctrl+C``.
+Run from the repository root so its ``.streamlit/config.toml`` is loaded.
+It defaults to listening on ``127.0.0.1``; Streamlit environment variables
+and command-line flags can override that setting.
+
+Without ``ITR_DEPLOYMENT=local``, the app runs in demo mode with the dataset
+database disabled and upload warnings shown. Uploads, calculations, editing
+and exports remain available. The sidebar displays the current mode.
+Local mode enables database access but does not provide authentication.
+Enable it only for an installation you control and have restricted to
+authorised users.
 The app's pinned requirements install its ``wwf-itr`` dependency.
 Installing ``wwf-itr`` alone does not install the Streamlit app.
 
 For input files and the first analysis, continue with :doc:`using_app`.
 If startup fails, see :doc:`troubleshooting`.
+
+Deploying a Community Cloud demo
+--------------------------------
+
+No deployment-mode secret is required. Missing, empty or unrecognised
+``ITR_DEPLOYMENT`` values disable the dataset database. Do not set
+``ITR_DEPLOYMENT=local`` in Community Cloud. An existing
+``ITR_DEPLOYMENT = "cloud"`` secret also disables the database and can be
+removed.
+
+Verify startup and browser access in a separate test deployment before
+updating the public demo, including compatibility with ``server.address``
+in ``.streamlit/config.toml``.
+
+Disabling database access does not delete existing database files. If an
+older deployment stored datasets, handle removal explicitly and verify the
+result. An app reboot is not proof that a particular file was deleted.
+Disabling the database also does not mean uploaded data is never processed,
+cached or held temporarily on the server.
