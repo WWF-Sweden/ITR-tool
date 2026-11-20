@@ -58,6 +58,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#run-locally-with-python-and-streamlit">Run locally with Python and Streamlit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deploying-a-community-cloud-demo">Deploying a Community Cloud demo</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="using_app.html">Using the App</a></li>
@@ -112,8 +113,10 @@ data there; do not upload confidential or proprietary portfolio data.
 For your own confidential data, run the app locally using Docker or Python.
 Use a separate installation and data directory for each user. The app does
 not provide user accounts or dataset permissions for a shared installation.
-Cloud storage is temporary across app restarts; download any results you
-want to keep.</p>
+The dataset database is disabled in the demo: <strong>Load from Database</strong>, <strong>Save</strong>
+and dataset deletion are unavailable. Uploads, calculations, editing and
+exports remain available. Uploaded data is processed on Community Cloud
+servers in the United States; download any results you want to keep.</p>
 </section>
 <section id="run-locally-with-docker">
 <span id="app-docker"></span><h2>Run locally with Docker<a class="headerlink" href="#run-locally-with-docker" title="Link to this heading"></a></h2>
@@ -152,6 +155,12 @@ rather than through its LAN or Wi-Fi address. Use Docker Engine 28.0.0 or
 later: older versions have a known issue that can allow other devices on
 the same network segment to reach ports published to localhost. See
 <a class="reference external" href="https://docs.docker.com/engine/network/port-publishing/">Docker’s port publishing documentation</a>.</p>
+<p>The Docker image sets <code class="docutils literal notranslate"><span class="pre">ITR_DEPLOYMENT=local</span></code>, enabling the dataset database.
+This setting does not verify that the app is local or provide authentication.
+Keep the localhost port mapping above. A shared or public deployment would
+require additional access controls, or disabling the dataset database.
+After starting the app, run <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">ps</span></code> and verify that the
+published port is <code class="docutils literal notranslate"><span class="pre">127.0.0.1:8501-&gt;8501/tcp</span></code>.</p>
 <p>The first start downloads the image from GitHub Container Registry.
 Example data may also be downloaded from GitHub when not already present.
 SBTi data is downloaded when required unless you select an uploaded CTA
@@ -241,16 +250,49 @@ and Git. Clone the app repository:</p>
 <span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">Activate</span><span class="p">.</span><span class="n">ps1</span>
 </pre></div>
 </div>
-<p>Then, from the app repository root:</p>
+<p>Install dependencies from the app repository root:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pip install -r requirements.txt</span>
-<span class="go">python -m streamlit run app.py --server.address=127.0.0.1</span>
+</pre></div>
+</div>
+<p>To enable the dataset database, start the app on macOS or Linux with:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ITR_DEPLOYMENT=local python -m streamlit run app.py</span>
+</pre></div>
+</div>
+<p>On Windows PowerShell:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="nv">$env:ITR_DEPLOYMENT</span> <span class="p">=</span> <span class="s2">&quot;local&quot;</span>
+<span class="n">python</span> <span class="n">-m</span> <span class="n">streamlit</span> <span class="n">run</span> <span class="n">app</span><span class="p">.</span><span class="n">py</span>
 </pre></div>
 </div>
 <p>Open <code class="docutils literal notranslate"><span class="pre">http://localhost:8501</span></code>. Stop the server with <code class="docutils literal notranslate"><span class="pre">Ctrl+C</span></code>.
+Run from the repository root so its <code class="docutils literal notranslate"><span class="pre">.streamlit/config.toml</span></code> is loaded.
+It defaults to listening on <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code>; Streamlit environment variables
+and command-line flags can override that setting.</p>
+<p>Without <code class="docutils literal notranslate"><span class="pre">ITR_DEPLOYMENT=local</span></code>, the app runs in demo mode with the dataset
+database disabled and upload warnings shown. Uploads, calculations, editing
+and exports remain available. The sidebar displays the current mode.
+Local mode enables database access but does not provide authentication.
+Enable it only for an installation you control and have restricted to
+authorised users.
 The app’s pinned requirements install its <code class="docutils literal notranslate"><span class="pre">wwf-itr</span></code> dependency.
 Installing <code class="docutils literal notranslate"><span class="pre">wwf-itr</span></code> alone does not install the Streamlit app.</p>
 <p>For input files and the first analysis, continue with <a class="reference internal" href="using_app.html"><span class="doc">Using the App</span></a>.
 If startup fails, see <a class="reference internal" href="troubleshooting.html"><span class="doc">Troubleshooting</span></a>.</p>
+</section>
+<section id="deploying-a-community-cloud-demo">
+<h2>Deploying a Community Cloud demo<a class="headerlink" href="#deploying-a-community-cloud-demo" title="Link to this heading"></a></h2>
+<p>No deployment-mode secret is required. Missing, empty or unrecognised
+<code class="docutils literal notranslate"><span class="pre">ITR_DEPLOYMENT</span></code> values disable the dataset database. Do not set
+<code class="docutils literal notranslate"><span class="pre">ITR_DEPLOYMENT=local</span></code> in Community Cloud. An existing
+<code class="docutils literal notranslate"><span class="pre">ITR_DEPLOYMENT</span> <span class="pre">=</span> <span class="pre">&quot;cloud&quot;</span></code> secret also disables the database and can be
+removed.</p>
+<p>Verify startup and browser access in a separate test deployment before
+updating the public demo, including compatibility with <code class="docutils literal notranslate"><span class="pre">server.address</span></code>
+in <code class="docutils literal notranslate"><span class="pre">.streamlit/config.toml</span></code>.</p>
+<p>Disabling database access does not delete existing database files. If an
+older deployment stored datasets, handle removal explicitly and verify the
+result. An app reboot is not proof that a particular file was deleted.
+Disabling the database also does not mean uploaded data is never processed,
+cached or held temporarily on the server.</p>
 </section>
 </section>
 

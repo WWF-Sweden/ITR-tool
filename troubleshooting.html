@@ -64,6 +64,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#scores-are-missing-or-use-the-default-score">Scores are missing or use the default score</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cta-download-or-portfolio-coverage-fails">CTA download or portfolio coverage fails</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#saved-data-or-changed-settings-seem-to-disappear">Saved data or changed settings seem to disappear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#database-controls-are-missing-or-database-access-is-disabled">Database controls are missing or database access is disabled</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#report-a-problem">Report a problem</a></li>
 </ul>
 </li>
@@ -166,9 +167,21 @@ does not reconstruct historical validation status.</p>
 <h2>Saved data or changed settings seem to disappear<a class="headerlink" href="#saved-data-or-changed-settings-seem-to-disappear" title="Link to this heading"></a></h2>
 <p>Click <strong>Apply changes</strong> to accept edits and <strong>Save</strong> to persist a dataset.
 For Docker, keep the mounted <code class="docutils literal notranslate"><span class="pre">data</span></code> folder and run Compose from the
-same folder. Cloud storage may be lost on restart. After changing scoring
-parameters, click <strong>Run Analysis</strong> again. Downloads are stored by your
-browser, separately from the application database.</p>
+same folder. Saving and loading datasets require local mode; the public
+demo has no dataset database access. After changing scoring parameters,
+click <strong>Run Analysis</strong> again. Downloads are stored by your browser,
+separately from the application database.</p>
+</section>
+<section id="database-controls-are-missing-or-database-access-is-disabled">
+<h2>Database controls are missing or database access is disabled<a class="headerlink" href="#database-controls-are-missing-or-database-access-is-disabled" title="Link to this heading"></a></h2>
+<p>The default is demo mode. Check the mode shown in the sidebar. On your own
+restricted local installation, start Python with <code class="docutils literal notranslate"><span class="pre">ITR_DEPLOYMENT=local</span></code>
+as described in <a class="reference internal" href="getting_started_app.html#app-local-streamlit"><span class="std std-ref">Run locally with Python and Streamlit</span></a>. The Docker image enables this
+automatically; check for a Compose environment override if it is disabled.
+Do not enable the database in the public Community Cloud demo. No
+<code class="docutils literal notranslate"><span class="pre">ITR_DEPLOYMENT=cloud</span></code> secret is required there.</p>
+<p>Existing database files are retained when database access is disabled.
+Changing the mode neither deletes nor migrates saved datasets.</p>
 </section>
 <section id="report-a-problem">
 <h2>Report a problem<a class="headerlink" href="#report-a-problem" title="Link to this heading"></a></h2>

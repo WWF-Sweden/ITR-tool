@@ -79,9 +79,23 @@ Saved data or changed settings seem to disappear
 
 Click **Apply changes** to accept edits and **Save** to persist a dataset.
 For Docker, keep the mounted ``data`` folder and run Compose from the
-same folder. Cloud storage may be lost on restart. After changing scoring
-parameters, click **Run Analysis** again. Downloads are stored by your
-browser, separately from the application database.
+same folder. Saving and loading datasets require local mode; the public
+demo has no dataset database access. After changing scoring parameters,
+click **Run Analysis** again. Downloads are stored by your browser,
+separately from the application database.
+
+Database controls are missing or database access is disabled
+------------------------------------------------------------
+
+The default is demo mode. Check the mode shown in the sidebar. On your own
+restricted local installation, start Python with ``ITR_DEPLOYMENT=local``
+as described in :ref:`app-local-streamlit`. The Docker image enables this
+automatically; check for a Compose environment override if it is disabled.
+Do not enable the database in the public Community Cloud demo. No
+``ITR_DEPLOYMENT=cloud`` secret is required there.
+
+Existing database files are retained when database access is disabled.
+Changing the mode neither deletes nor migrates saved datasets.
 
 Report a problem
 ----------------
