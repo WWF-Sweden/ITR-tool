@@ -125,7 +125,13 @@ matters.
 Save and reload datasets
 ------------------------
 
-For target-based input data, expand **Save data to local database**,
+Database controls are available only in local mode, enabled with
+``ITR_DEPLOYMENT=local``. The Docker image sets this automatically; for
+Python startup commands, see :ref:`app-local-streamlit`. The public demo
+does not offer database loading, saving or deletion. Calculations, editing
+and exports remain available without database access.
+
+For target-based input data in local mode, expand **Save data to local database**,
 enter a dataset name and optionally a description, then click **Save**.
 This saves the current portfolio, fundamentals and target tables. It
 does not archive all calculation outputs or the selected CTA file.
@@ -136,6 +142,6 @@ dataset. **Delete this dataset** removes it from the database.
 
 For Docker, the database persists through the mounted ``data`` folder
 described in :ref:`app-docker`. For direct Python execution, it is in
-the app repository's ``data`` folder. In the public cloud demo, storage
-is on the cloud host and may be lost across restarts; it is not a
-private database on your computer.
+the app repository's ``data`` folder. Local mode does not separate datasets
+by user or provide authentication. Use a separate installation and data
+directory for each user, and restrict access to the app.
